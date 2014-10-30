@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<Body>
+   <Module Nom="Tous" Cmd="A00">
+      <TypeCmd Nom="Opération Spéciales" Cmd="X">
+         <Commande Nom="Redémarrer" Cmd="R"/>
+         <Commande Nom="Tester la présence" Cmd="P"/>
+      </TypeCmd>
+      <Recetion Nom="Lecture données" Cmd="L">
+        <Commande Nom="Valeur Température" Cmd="T" Hexa="false"/>
+      </Recetion >
+      <Recetion Nom="Démarre" Cmd="D"/>
+      <Recetion Nom="ERREUR COMMANDE" Cmd="E"/>
+   </Module>
+   <Module Nom="Serveur M1" Cmd="M01">
+    <TypeCmd Nom="Lecture données" Cmd="L">
+      <Commande Nom="Etat On/Off" Cmd="O"/>
+      <Commande Nom="Date et Heure" Cmd="D"/>
+      <Commande Nom="Tension Batterie" Cmd="U"/>
+      <Commande Nom="Ram disponible" Cmd="M"/>
+    </TypeCmd>
+    <TypeCmd Nom="Ecriture données" Cmd="E">
+      <Commande Nom="Date et Heure" Cmd="D">
+        <Parametre Aide="jj/mm/aaRjjHhh:mm:ss" Hexa="true"/>
+      </Commande>
+    </TypeCmd>
+    <TypeCmd Nom="Opération Spéciales" Cmd="X">
+      <Commande Nom="Allumer ou éteindre" Cmd="B">
+        <Parametre Aide="1=>On 0=>Off" Hexa="false"/>
+      </Commande>
+      <Commande Nom="Redémarrer" Cmd="R"/>
+      <Commande Nom="Tester la présence" Cmd="P"/>
+    </TypeCmd>
+    <Recetion Nom="Démarrage" Cmd="D00"/>
+  </Module>
+   <Module Nom="PWM M2" Cmd="M02">
+    <TypeCmd Nom="Lecture données" Cmd="L">
+      <Commande Nom="Etat On/Off" Cmd="O"/>
+      <Commande Nom="Luminosité Led" Cmd="L">
+        <Parametre Aide="Indiquer le numero de Led de 01 à 06" Hexa="false"/>
+      </Commande>
+      <Commande Nom="Valeur Température" Cmd="T" Hexa="false"/>
+      <Commande Nom="Ram disponible" Cmd="M" Hexa="false"/>
+      <Commande Nom="Valeur Puissance" Cmd="P" Hexa="false"/>
+    </TypeCmd>
+    <TypeCmd Nom="Ecriture d'un state" Cmd="S">
+    <Commande Nom="State de début de séquence" Cmd="D">
+      <Parametre Aide="Pause ms, Valeur ini(00->FF) Valeur fin(00->FF) 6x (Pour chaque jeu)" Hexa="true"/>
+    </Commande>
+    <Commande Nom="State à la suite dans la séquence" Cmd="S">
+      <Parametre Aide="Pause ms, Valeur fin(00->FF) 6x (Pour chaque jeu)" Hexa="true"/>
+    </Commande>
+    </TypeCmd>
+    <TypeCmd Nom="Opération Spéciales" Cmd="X">
+      <Commande Nom="Allumer ou éteindre" Cmd="B">
+        <Parametre Aide="1=>On 0=>Off" Hexa="true"/>
+      </Commande>
+      <Commande Nom="Allumer ou éteindre tous les jeux de Led" Cmd="A" Hexa="false">
+        <Parametre Aide="1=>On 0=>Off" Hexa="false"/>
+      </Commande>
+      <Commande Nom="Allumer ou éteindre un jeu de Led" Cmd="L" Hexa="false">
+        <Parametre Aide="Numero de Led de (01->06) suivit de: 1=>On 0=>Off" Hexa="false"/>
+      </Commande>
+      <Commande Nom="Redémarrer" Cmd="R"/>
+      <Commande Nom="Tester la présence" Cmd="P" Hexa="false"/>
+    </TypeCmd>
+    <Recetion Nom="Démarrage" Cmd="D00"/>
+  </Module>
+   <Module Nom="BCD M3" Cmd="M03">
+     <TypeCmd Nom="Lecture données" Cmd="L">
+        <Commande Nom="Valeur Puissance affichée" Cmd="P"/>
+        <Commande Nom="Valeur Température affichée" Cmd="T"/>
+        <Commande Nom="Données" Cmd="N"/>
+        <Commande Nom="Etat On/Off" Cmd="O"/>
+        <Commande Nom="Ram disponible" Cmd="M"/>
+     </TypeCmd>
+     <TypeCmd Nom="Ecriture données" Cmd="E">
+        <Commande Nom="Valeur Puissance affichée" Cmd="P">
+           <Parametre Aide="Valeur en Hexa" Hexa="true"/>
+        </Commande>
+        <Commande Nom="Valeur Température affichée" Cmd="T">
+           <Parametre Aide="Valeur en Hexa" Hexa="true"/>
+        </Commande>
+        <Commande Nom="Alterner les valeurs de P. et de T." Cmd="A">
+           <Parametre Aide="1=>On 0=>Off" Hexa="false"/>
+        </Commande>
+     </TypeCmd>
+     <TypeCmd Nom="Opération Spéciales" Cmd="X">
+        <Commande Nom="Allumer ou éteindre" Cmd="B">
+           <Parametre Aide="1=>On 0=>Off" Hexa="false"/>
+        </Commande>
+        <Commande Nom="Test de tous les segments" Cmd="A">
+           <Parametre Aide="1=>On 0=>Off" Hexa="false"/>
+        </Commande>
+        <Commande Nom="Redémarrer" Cmd="R"/>
+        <Commande Nom="Tester la présence" Cmd="P"/>
+     </TypeCmd>
+     <Recetion Nom="Démarrage" Cmd="D00"/>
+  </Module>
+   <Module Nom="BoutonServeur M4" Cmd="M04">
+  <TypeCmd Nom="Lecture données" Cmd="L">
+    <Commande Nom="Etat On/Off" Cmd="O"/>
+    <Commande Nom="Ram disponible" Cmd="M"/>
+    <Commande Nom="Synchronisation" Cmd="S"/>
+    <Commande Nom="Validation" Cmd="V"/>
+    <Commande Nom="Etat de la Led Rouge" Cmd="R"/>
+  </TypeCmd>
+  <TypeCmd Nom="Ecriture données" Cmd="E">
+  <Commande Nom="Synchronisation" Cmd="S">
+    <Parametre Aide="1=>On 0=>Off" Hexa="false"/>
+  </Commande>
+  <Commande Nom="Validation" Cmd="V">
+    <Parametre Aide="1=>On 0=>Off" Hexa="false"/>
+  </Commande>
+  <Commande Nom="Led témoin rouge" Cmd="R">
+    <Parametre Aide="1(on) 0(off) A(Alerte) T(travail) L(clignot lent)" Hexa="false"/>
+  </Commande>
+  </TypeCmd>
+  <TypeCmd Nom="Opération Spéciales" Cmd="X">
+    <Commande Nom="Allumer ou éteindre" Cmd="B">
+      <Parametre Aide="1=>On 0=>Off" Hexa="false"/>
+    </Commande>
+    <Commande Nom="Redémarrer" Cmd="R"/>
+    <Commande Nom="Tester la présence" Cmd="P"/>
+  </TypeCmd>
+  <Recetion Nom="Démarrage" Cmd="D00"/>
+  </Module>
+   <Module Nom="Lanterne M5" Cmd="M05">
+     <TypeCmd Nom="Lecture données" Cmd="L">
+       <Commande Nom="Etat On/Off" Cmd="O" Hexa="false"/>
+       <Commande Nom="Ram disponible" Cmd="M" Hexa="true"/>
+       <Commande Nom="Etat de l'éclairage" Cmd="L" Hexa="false">
+         <Parametre Aide="D(Delay) T(Type) L(Luminosité)" Hexa="false"/>
+       </Commande>
+     </TypeCmd>
+     <TypeCmd Nom="Ecriture données" Cmd="E">
+     <Commande Nom="Led état" Cmd="T" Hexa="false">
+       <Parametre Aide="1(on) 0(off) A(Clignote) V(Vacille)" Hexa="false"/>
+     </Commande>
+     <Commande Nom="Led delais" Cmd="D" Hexa="true">
+       <Parametre Aide="delais en milli seconde (0->FFFF)" Hexa="true"/>
+     </Commande>
+     <Commande Nom="Led luminosité" Cmd="L" Hexa="true">
+       <Parametre Aide="luminosité (0->255)" Hexa="true"/>
+     </Commande>
+     </TypeCmd>
+     <TypeCmd Nom="Opération Spéciales" Cmd="X">
+       <Commande Nom="Allumer ou éteindre" Cmd="B" Hexa="false">
+          <Parametre Aide="1=>On 0=>Off" Hexa="false"/>
+       </Commande>
+       <Commande Nom="Redémarrer" Cmd="R" Hexa="false"/>
+       <Commande Nom="Tester la présence" Cmd="P" Hexa="false"/>
+     </TypeCmd>
+   </Module>
+   <ProgrammePC Nom="Programme PC" Cmd="M00">
+     <TypeCmd Nom="Lecture données" Cmd="L">
+       <Commande Nom="Etat On/Off" Cmd="O" Hexa="false">
+         <Parametre Aide="1=>On 0=>Off" Hexa="false"/>
+       </Commande>
+       <Commande Nom="Ram disponible" Cmd="M" Hexa="true"/>
+       <Commande Nom="Etat de l'éclairage" Cmd="L" Hexa="false" Prov="M05">
+         <Parametre Aide="D(Delay) T(Type) L(Luminosité)" Hexa="false"/>
+       </Commande>
+       <Commande Nom="Etat de l'éclairage d'une Led" Cmd="L" Hexa="false" Prov="M02">
+         <Parametre Aide="Led, Demande, Luminosité, Variation, Interval, Pin" Hexa="false"/>
+       </Commande>
+       <Commande Nom="Date et Heure" Cmd="D" Hexa="false">
+         <Parametre Aide="jj/mm/aaRjjHhh:mm:ss" Hexa="true"/>
+       </Commande>
+       <Commande Nom="Tension Batterie" Cmd="U" Hexa="true"/>
+       <Commande Nom="Valeur Puissance" Cmd="P" Hexa="true"/>
+       <Commande Nom="Valeur Température" Cmd="T"/>
+       <Commande Nom="Données" Cmd="N"/>
+     </TypeCmd>
+     <TypeCmd Nom="Démarre" Cmd="D"/>
+     <TypeCmd Nom="Présent" Cmd="P"/>
+     <Recetion Nom="ERREUR COMMANDE" Cmd="E"/>
+   </ProgrammePC>
+</Body>

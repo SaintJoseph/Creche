@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NewModeDialog</class>
+ <widget class="QDialog" name="NewModeDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>424</width>
+    <height>330</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Effets lumineux de creche</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="InformationDialogue">
+       <property name="font">
+        <font>
+         <pointsize>13</pointsize>
+         <underline>false</underline>
+         <strikeout>false</strikeout>
+         <kerning>true</kerning>
+        </font>
+       </property>
+       <property name="text">
+        <string>Pour crée un nouveau &lt;b&gt;Mode&lt;/b&gt;,&lt;br&gt;commencez par compéter les champs suivant&lt;br&gt;puis cliquez sur &quot;Nouveau&quot;</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="IconeLayout"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="Nom">
+       <property name="text">
+        <string>Nom du &lt;b&gt;Mode&lt;/b&gt; :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="NomMode">
+       <property name="statusTip">
+        <string>Nomer le Mode </string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="NomModeLabel">
+     <property name="text">
+      <string>Description :</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="DescriptionTexte">
+     <property name="toolTip">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="LabelNomFichier">
+       <property name="text">
+        <string>Fichier :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="CheminFichier">
+       <property name="statusTip">
+        <string>Fichier &quot;Effet lumineux de creche&quot;qui sera créé</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="ParcourirDossier">
+       <property name="toolTip">
+        <string>Ouvrir un dossier</string>
+       </property>
+       <property name="text">
+        <string>Parcourir</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="IDModelabel">
+       <property name="statusTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Id du &lt;b&gt;Mode&lt;/b&gt; :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="IdValue">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Id : numero unique qui permet au système d'identifier chaque Mode</string>
+       </property>
+       <property name="statusTip">
+        <string/>
+       </property>
+       <property name="maximum">
+        <number>30</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelPriorite">
+       <property name="text">
+        <string>Priorite :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="PrioriteValue">
+       <property name="toolTip">
+        <string>Permet de definir la priorite d'un mode lumineux sur un autre, une valeur plus elevee est prioritaire</string>
+       </property>
+       <property name="maximum">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="Ouvrir">
+       <property name="toolTip">
+        <string>Ouvrir un fichier &quot;effet lumineux de creche&quot;</string>
+       </property>
+       <property name="text">
+        <string>Ouvrir</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="Nouveau">
+       <property name="text">
+        <string>Nouveau</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

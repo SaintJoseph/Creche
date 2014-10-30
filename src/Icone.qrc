@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="Books">books.ico</file>
+        <file alias="Creche">Creche.ico</file>
+        <file alias="Electronic">Electronic.ico</file>
+        <file alias="Arduino">LogoArduino.png</file>
+        <file alias="en_gb.qm">ComAndSavePart_en.qm</file>
+        <file alias="fr_be.qm">ComAndSavePart_fr.qm</file>
+        <file alias="nl_be.qm">ComAndSavePart_nl.qm</file>
+        <file alias="jp_jp.qm">ComAndSavePart_jp.qm</file>
+        <file alias="cmd.xml">CommandeModules.xml</file>
+    </qresource>
+</RCC>

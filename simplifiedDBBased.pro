@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = simplifiedDBBased
 TEMPLATE = app
 
+include(ComAndSavePart.pri)
 
 SOURCES += main.cpp\
         amainwindow.cpp \

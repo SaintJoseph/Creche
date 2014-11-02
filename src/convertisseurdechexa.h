@@ -1,12 +1,13 @@
 #ifndef CONVERTISSEURDECHEXA_H
 #define CONVERTISSEURDECHEXA_H
 
-#include <QDialog>
+#include <QWidget>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QBoxLayout>
+#include <QLabel>
 
-class ConvertisseurDecHexa : public QDialog
+class ConvertisseurDecHexa : public QWidget
 {
     Q_OBJECT
 public:
@@ -23,6 +24,7 @@ private:
     QPushButton *ButtonConvertir;
     QLineEdit *LineHexa, *LineDecimal;
     QHBoxLayout *Layout;
+    QLabel *Label;
 
 };
 

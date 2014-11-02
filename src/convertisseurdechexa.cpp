@@ -1,7 +1,7 @@
 #include "convertisseurdechexa.h"
 
 ConvertisseurDecHexa::ConvertisseurDecHexa(QWidget *parent) :
-    QDialog(parent)
+    QWidget(parent)
 {
     //Initialisations des widgets composant le dock
     //Définition d'une police pour le dock
@@ -19,17 +19,22 @@ ConvertisseurDecHexa::ConvertisseurDecHexa(QWidget *parent) :
     LineHexa->setFont(font);
     LineDecimal->setFixedHeight(22);
     LineHexa->setFixedHeight(22);
+    LineDecimal->setFixedWidth(50);
+    LineHexa->setFixedWidth(50);
     LineHexa->setReadOnly(true);
+    //Label
+    Label = new QLabel("Deci. -> Hexa.");
+    Label->setFont(font);
+    Label->setFixedHeight(22);
     //Layout unique
     Layout = new QHBoxLayout;
     Layout->setMargin(1);
     Layout->setSpacing(2);
+    Layout->addWidget(Label);
     Layout->addWidget(LineDecimal);
     Layout->addWidget(ButtonConvertir);
     Layout->addWidget(LineHexa);
     setLayout(Layout);
-    setWindowTitle(tr("Convertisseur Décimal -> Hexadécimal"));
-    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint |Qt::WindowTitleHint);
 
     connect(ButtonConvertir, SIGNAL(clicked()), SLOT(onButtonClicked()));
 }
@@ -39,6 +44,7 @@ ConvertisseurDecHexa::~ConvertisseurDecHexa() {
     delete ButtonConvertir;
     delete LineDecimal;
     delete LineHexa;
+    delete Label;
     delete Layout;
 }
 

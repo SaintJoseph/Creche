@@ -200,7 +200,7 @@ ComArduino::ComArduino(const QString & title, QWidget *parent , Qt::WindowFlags 
     PortBox->setFont(font);
     //Fenetre convertisseur Décimal vers Hexadécimal
     Convert = new ConvertisseurDecHexa;
-    Convert->setVisible(false);
+    Convert->setHidden(true);
 
     //Dessin du dock en attribuant les références de parents enfants
              //Ajout du Label avec la date et l'heure
@@ -230,6 +230,8 @@ ComArduino::ComArduino(const QString & title, QWidget *parent , Qt::WindowFlags 
              LayoutEnvoisRecep->addWidget(LineEditInstruction);
              //Ajout du Label d'aide pour les paramètre
              LayoutEnvoisRecep->addWidget(LabelAideParametre);
+             //Ajout du convertisseur hexa -> decimal
+             LayoutEnvoisRecep->addWidget(Convert);
           //Ajout de la zone envois recep Dans l'espace DockLiaison
           EspaceDockLiaison->addLayout(LayoutEnvoisRecep);
        //Application du layout au widget liaison Arduino
@@ -851,12 +853,14 @@ void ComArduino::onCmdChanged(int index)
 #endif /* DEBUG_COMANDSAVE */
     if (index == 0) {
         LineEditInstruction->setHidden(true);
+        LineEditInstruction->setInputMask("");
         LabelInstruction->setHidden(true);
         LabelAideParametre->setHidden(true);
         Convert->setHidden(true);
     }
     else {
         LineEditInstruction->setHidden(true);
+        LineEditInstruction->setInputMask("");
         LabelInstruction->setHidden(true);
         LabelAideParametre->setHidden(true);
         Convert->setHidden(true);
@@ -880,11 +884,15 @@ void ComArduino::onCmdChanged(int index)
                                     if (qdeabc.tagName() == "Parametre") {
                                         LineEditInstruction->setHidden(false);
                                         LineEditInstruction->clear();
+                                        if (qdeabc.hasAttribute("Format")) {
+                                           QString Format = qdeabc.attribute("Format");
+                                           LineEditInstruction->setInputMask(Format);
+                                        }
                                         LabelInstruction->setHidden(false);
                                         LabelAideParametre->setHidden(false);
                                         LabelAideParametre->setText(qdeabc.attribute("Aide"));
                                         if (qdeabc.attribute("Hexa") == "true") {
-                                            Convert->setVisible(true);
+                                            Convert->setHidden(false);
                                         }
                                     }
                                 }
@@ -907,9 +915,18 @@ void ComArduino::onHexaCame(QString Val)
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     QString Laligne = LineEditInstruction->text();
-    if (Val.length() == 1 || Val.length() == 3)
-        Laligne.append("0");
-    Laligne.append(Val);
+    QString Format = LineEditInstruction->inputMask();
+    if (Format != "") {
+       //Application du format à LaLigne avec la nouvelle Val Valeur
+        if (Val.length() == 1 || Val.length() == 3)
+            Laligne.append("0");
+        Laligne.append(Val);
+    }
+    else {
+        if (Val.length() == 1 || Val.length() == 3)
+            Laligne.append("0");
+        Laligne.append(Val);
+    }
     LineEditInstruction->setText(Laligne.toUpper());
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;

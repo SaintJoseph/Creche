@@ -365,6 +365,9 @@ ComArduino::ComArduino(const QString & title, QWidget *parent , Qt::WindowFlags 
     connect(QComboTypeCmd, SIGNAL(currentIndexChanged(int)), SLOT(onTypeCmdChanged(int)));
     connect(QComboCmd, SIGNAL(currentIndexChanged(int)), SLOT(onCmdChanged(int)));
     connect(Convert, SIGNAL(HexaVal(QString)), SLOT(onHexaCame(QString)));
+    //Signal return pressed des zones d'édition
+    connect(InstructionManuel, SIGNAL(returnPressed()), SLOT(onSendButtonClicked()));
+    connect(LineEditInstruction, SIGNAL(returnPressed()), SLOT(onSendButtonClicked()));
 
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
@@ -919,8 +922,9 @@ void ComArduino::onHexaCame(QString Val)
     if (Format != "") {
        //Application du format à LaLigne avec la nouvelle Val Valeur
         if (Val.length() == 1 || Val.length() == 3)
-            Laligne.append("0");
-        Laligne.append(Val);
+            Val.prepend("0");
+        int index = Laligne.indexOf(' ');
+        Laligne.prepend(Val);
     }
     else {
         if (Val.length() == 1 || Val.length() == 3)
@@ -970,13 +974,15 @@ QString ComArduino::Interpretation(QString Message)
                         if (test)
                         {
                             TextComplet.append(qdeab.attribute("Nom"));
-                            TextComplet.append(", ");
-                            TextComplet.append(qdeab.firstChildElement().attribute("Nom"));
                             TextComplet.append(": ");
                             //Ajouter si possible le convertisseur Hexa vers décimal
-                            //En XML l'attribu "Hexa" = "true"
-                            TextComplet.append(Message.mid(9));
-                            TextComplet.chop(1);
+                            if (qdeab.attribute("Hexa") == "true")
+                                TextComplet.append(ConvertHexaDec(qdeab.attribute("Format"), Message.mid(9)));
+                            //En XML l'attribu "Hexa" si la chaine contient du binaire ou de l'Hexa
+                            else {
+                                TextComplet.append(Message.mid(9));
+                                TextComplet.chop(1);
+                            }
                             TextComplet.append(" ( ");
                             TextComplet.append(qdeab.firstChildElement().attribute("Aide"));
                             TextComplet.append(" )");
@@ -1011,4 +1017,115 @@ QString ComArduino::Interpretation(QString Message)
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+}
+
+//Converti les valeurs hexa contenue dans Value en décimal
+QString ComArduino::ConvertHexaDec(QString Format, QString Value)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //On transforme la string format pour indiquer uniquement les booléen et les hexa
+    //FormatCorr => identifie les valeurs a remplacée, FormatCopy => Caractère de séparation
+    QString FormatCorr = "", FormatCopy = "", result = "";
+    //length longeur de la chaine, offset => lorsque l'on rencontre un \, il y a un décalage de 1 char dans le format
+    int length = Format.length(), offset = 0;
+    //La lettre 'C' est inscrite dans les cases vide pour les identifiers proprement
+    for (int i = 0; i < length; i++) {
+        switch (Format.at(i + offset).toLatin1()) {
+        case 'H':
+            FormatCorr.append(Format.at(i + offset));
+            FormatCopy.append('C');
+            break;
+        case 'B':
+            FormatCorr.append(Format.at(i + offset));
+            FormatCopy.append('C');
+            break;
+        case 'A':
+            FormatCorr.append(Format.at(i + offset));
+            FormatCopy.append('C');
+            break;
+        case 'N':
+            FormatCorr.append(Format.at(i + offset));
+            FormatCopy.append('C');
+            break;
+        case '\\':
+            //Ce carractère annule le carractère suivant
+            offset += 1;
+            length -= 1;
+            FormatCorr.append('C');
+            FormatCopy.append(Format.at(i + offset));
+            break;
+        default:
+            FormatCorr.append('C');
+            if (Value.at(i) == Format.at(i)) {
+               FormatCopy.append(Format.at(i + offset));
+            }
+            else {
+                FormatCopy.append('D');
+            }
+            break;
+        }
+    }
+    //result.append("<");
+    //result.append(Format);
+    //result.append("><");
+    //result.append(FormatCorr);
+    //result.append("><");
+    //result.append(FormatCopy);
+    //result.append(">");
+    //Traitement de la chaine
+    for (int i = 0; i < length; i++) {
+        if (FormatCorr.at(i).toLatin1() == 'H') {
+            result.append(" ");
+            if (i + 4 <= length) {
+                if (FormatCorr.at(i + 2).toLatin1() == 'H') {
+                    bool ok;
+                    result.append(QString::number(Value.mid(i,4).toInt(&ok, 16)));
+                    //result.append(Value.mid(i,4));
+                    i += 3;
+                }
+                else {
+                    bool ok;
+                    result.append(QString::number(Value.mid(i,2).toInt(&ok, 16)));
+                    //result.append(Value.mid(i,2));
+                    i += 1;
+                }
+            }
+            else {
+                bool ok;
+                result.append(QString::number(Value.mid(i,2).toInt(&ok, 16)));
+                //result.append(Value.mid(i,2));
+                i += 1;
+            }
+            result.append(" ");
+        }
+        else if (FormatCorr.at(i).toLatin1() == 'B') {
+            if (Value.at(i).toLatin1() == '1')
+                result.append(" On ");
+            else
+                result.append(" Off ");
+        }
+        else if (FormatCorr.at(i).toLatin1() == 'A' || FormatCorr.at(i).toLatin1() == 'N') {
+            result.append(" ");
+            result.append(Value.at(i).toLatin1());
+            while (FormatCorr.length() > i + 1) {
+               if (FormatCorr.at(i).toLatin1() == FormatCorr.at(i + 1).toLatin1()) {
+                   i++;
+                   result.append(Value.at(i).toLatin1());
+               }
+               else {
+                   result.append(" ");
+                   break;
+               }
+            }
+        }
+        else {
+            result.append(Value.at(i).toLatin1());
+        }
+    }
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    return result;
 }

@@ -37,6 +37,7 @@ ConvertisseurDecHexa::ConvertisseurDecHexa(QWidget *parent) :
     setLayout(Layout);
 
     connect(ButtonConvertir, SIGNAL(clicked()), SLOT(onButtonClicked()));
+    connect(LineDecimal, SIGNAL(returnPressed()), SLOT(onButtonClicked()));
 }
 
 //Destructeur
@@ -51,7 +52,7 @@ ConvertisseurDecHexa::~ConvertisseurDecHexa() {
 //Convertisseur Hexa
 void ConvertisseurDecHexa::onButtonClicked() {
     bool isInt;
-    int leChiffre = LineDecimal->text().toInt(&isInt);
+    LineDecimal->text().toInt(&isInt);
     if(!isInt) {
         LineDecimal->clear();
     }

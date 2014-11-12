@@ -27,16 +27,6 @@
 #include "func_name.h"
 #include "convertisseurdechexa.h"
 
-//définition des messages pour les opérations de synchronisation
-#define DEMANDE_DE_SYNCHRO "Z"
-#define ARDUINO_PRET_SYNCHRO "S"
-#define SYNCHRO_RAZ_RAM "M"
-#define SYNCHRO_HEURE_PC_ARDUINO "K"
-#define SYNCHRO_COND "C"
-#define SYNCHRO_DONNEES "D"
-#define ARDUINO_FIN_SYNCHRO "W"
-#define DEMANDE_DE_BRUT 'Y'
-
 //Message pour l'ouverture ou la fermeture du port serie
 #define OPEN_PORT 1
 #define CLOSE_PORT 2
@@ -102,6 +92,8 @@ private:
 
     QString Const_QString(int type);
     QString Interpretation(QString Message);
+    //Converti les valeurs hexa contenue dans Value en décimal
+    QString ConvertHexaDec(QString Format, QString Value);
 
 };
 

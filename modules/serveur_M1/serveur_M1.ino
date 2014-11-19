@@ -75,6 +75,13 @@ boolean LastStateAlim1240;
 String rxCmd ; // Commande reçue (sans délimiteurs)
 String txCmd ; // Commande à transmettre
 
+String fCmd[3]; //Message reçu par les cannaux de communication
+
+#define RAM_SS_PIN 47
+#define SD_SS_PIN 49
+
+SpiRAM spiRam(0, RAM_SS_PIN);
+
 /* Hardware SPI on arduino mega 2560 (arduino uno):
  * MISO -> 50 (12)
  * MOSI -> 51 (11)
@@ -99,14 +106,9 @@ String txCmd ; // Commande à transmettre
  * 'ping_server_interupt' on the server.
  */
 
+//Variable pour le block executable
 unsigned long pause = 0; //Temps d'attente avant la prochaine action
-
-String fCmd[3]; //Message reçu par les cannaux de communication
-
-#define RAM_SS_PIN 47
-#define SD_SS_PIN 49
-
-SpiRAM spiRam(0, RAM_SS_PIN);
+boolean actif = false;
 
 //---------------------------------FONCTIONS------------------------------------
 
@@ -400,8 +402,14 @@ void LectureVariable() {
           CmdError("LS SD ini faild");
           break;
        }
+    case 'A' : case 'a' :
+       //Message reçu: <(Lecture)(Actif)>
+       //Message envoyé: <(Lecture)(Actif)(On/Off)>
+       //Format ""
+       //Format "B"
+       break;
     default:   
-      CmdError("L Type de lecture (M.U.D.O.S.R)");
+      CmdError("L Type de lecture (M.U.D.O.S.R.A)");
   } 
 }
 
@@ -570,6 +578,24 @@ void logFile(String mesg) {
 
 //Fonction qui réagit au commande pour modifier le bloc executable
 void modifExecutable () {
+  switch (rxCmd[1])
+  {
+    case 'A' : case 'a' :
+       //(Run executable)(Actif)(On/Off)
+       //Format : "B"
+       switch (rxCmd[2])
+       {
+          case '1' :
+             actif = true;
+             break;
+          case '0' :
+             actif = false;
+             break;
+       }
+       break;
+    default:   
+      CmdError("R Run executable (A)");           
+  } 
 }
 
 void setup(){
@@ -648,7 +674,9 @@ void loop(){
   while (Serial2.available())
       TreatChar(Serial2.read(), Seria2);
 
-  //Bloc executant le programme lumineux
+  //Bloc executant le programme lumineu
+  if (actif) {
+  }
   
 }
 

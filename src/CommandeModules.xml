@@ -54,16 +54,25 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       <Recetion Nom="ERREUR COMMANDE" Cmd="E"/>
    </Module>
    <Module Nom="Serveur M1" Cmd="M01">
-      <TypeCmd Nom="Lecture données" Cmd="L">
-         <Commande Nom="Etat On/Off" Cmd="O"/>
-         <Commande Nom="Date et Heure" Cmd="D"/>
-         <Commande Nom="Tension Batterie" Cmd="U"/>
-         <Commande Nom="Ram disponible" Cmd="M"/>
-      </TypeCmd>
+   <TypeCmd Nom="Lecture données" Cmd="L">
+      <Commande Nom="Etat On/Off" Cmd="O"/>
+      <Commande Nom="Date et Heure" Cmd="D"/>
+      <Commande Nom="Tension Batterie" Cmd="U"/>
+      <Commande Nom="Ram disponible" Cmd="M"/>
+      <Commande Nom="Donnée dans la RAM" Cmd="R">
+         <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+      </Commande>
+   </TypeCmd>
+   <TypeCmd Nom="Executable" Cmd="R">
+      <Commande Nom="" Cmd=""/>
+   </TypeCmd>
       <TypeCmd Nom="Ecriture données" Cmd="E">
-         <Commande Nom="Date et Heure" Cmd="D">
-            <Parametre Aide="jj/mm/aaRjjHhh:mm:ss" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH"/>
-         </Commande>
+      <Commande Nom="Date et Heure" Cmd="D">
+         <Parametre Aide="jj/mm/aaRjjHhh:mm:ss" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH"/>
+      </Commande>
+      <Commande Nom="Donnée dans la RAM" Cmd="R">
+         <Parametre Aide="adresse V valeur" Hexa="true" Format="HHHHVHHHH"/>
+      </Commande>
       </TypeCmd>
       <TypeCmd Nom="Opération Spéciales" Cmd="X">
          <Commande Nom="Allumer ou éteindre" Cmd="B">

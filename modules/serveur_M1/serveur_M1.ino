@@ -107,12 +107,10 @@ SpiRAM spiRam(0, RAM_SS_PIN);
  */
 
 //Variable pour le block executable
-int pause = 0; //Temps d'attente avant la prochaine action
 unsigned long ExeTime = 0; //Heure de l'action
-boolean actif = false, validation = false, synchronisation = false;
 
 //Donnée pour le fichier de config
-#define BUFFER_SIZE = 32;
+#define BUFFER_SIZE 32
 //---------------------------------FONCTIONS------------------------------------
 
 // traitement du car recu
@@ -308,6 +306,7 @@ void EcritureVariable () {
        StringToWord(address, rxCmd, 2);
        StringToByte(wValue0, rxCmd, 7);
        StringToByte(wValue1, rxCmd, 9);
+       address *= 2; //Caque variable est stokée sur 2 bytes
        spiRam.write_byte((int)address, wValue0);
        spiRam.write_byte((int)address + 1, wValue1);
        break;
@@ -359,6 +358,7 @@ void LectureVariable() {
        //Format "HHHH"
        //Format "HHHHVHHHH"
        StringToWord(address, rxCmd, 2);
+       address *= 2; //Caque variable est stokée sur 2 bytes
        wValue0 = (byte)spiRam.read_byte((int)address);
        wValue1 = (byte)spiRam.read_byte((int)address + 1);
        txCmd = txCmd + "LR" + WordToString(address) + "V" + ByteToString(wValue0) + ByteToString(wValue1);
@@ -450,7 +450,6 @@ void DonneSpeciaux() {
   } 
 }
 
-
 //Ecriture d'un byte dans la mémoire eeprom a l'adresse indiquée
 boolean eepromWrite( unsigned int *eeaddress, byte data, int deviceadd)
 {
@@ -489,19 +488,18 @@ byte dec2bcd(byte dec) {
   return ((dec / 10 * 16) + (dec % 10));
 }
 
-
 //Fonction qui ecrit dans la ram de la RTC les variables necessaire pour le prog serveur
 //sauf la startdate qui ne doit pas changer
-void writeram(byte *states, byte *mode, byte *priorite) {
+void writeram(word *pause, boolean *actif, boolean *validation, boolean *synchronisation) {
   Wire.beginTransmission(DS1307_ADDRESS);
   //ecriture a partir de la position 0x08
   Wire.write(0x08);
   //ecriture du states (position dans la séquence  d'éclairage)
-  Wire.write(*states);
+  Wire.write(*actif);
   //ecriture du mode (normal J/N, messe (sans effet), séquence1, autres)
-  Wire.write(*mode);
+  Wire.write(*validation);
   //ecriture de la priorité du mode dans la ram
-  Wire.write(*priorite);
+  Wire.write(*synchronisation);
   Wire.endTransmission();
 }
 
@@ -590,13 +588,15 @@ void modifExecutable () {
        switch (rxCmd[2])
        {
           case '1' :
-             actif = true;
+             //On écrit dans la RAM l'état actif
+             TreatCommand("ER0000V0001");
              //On allume la Led témoin rouge de M4
              txCmd = "M04M01KR01T03E8";
              Send(Module);
              break;
           case '0' :
-             actif = false;
+             //On écrit dans la RAM l'état actif
+             TreatCommand("ER0000V0000");
              txCmd = "M04M01KT01O0";
              Send(Module);
              break;
@@ -605,18 +605,17 @@ void modifExecutable () {
     case 'V' : case 'v' :
        //(Run executable)(Validation)
        //Format : ""
-       validation = false;
+       TreatCommand("ER0001V0000");
        break;
     case 'S' : case 's' :
        //(Run executable)(Synchronisation)
        //Format : ""
-       synchronisation = false;
+       TreatCommand("ER0002V0000");
        break;
     case 'D' : case 'd' :
        //(Run executable)(Delais)(delais)
        //Format : "HHHH"
-       StringToWord(time, rxCmd, 2);
-       pause = (int)time;
+       TreatCommand("ER0002V" + rxCmd[2] + rxCmd[3] + rxCmd[4] + rxCmd[5]);
        break;
     default:   
       CmdError("R Run executable (A.V.S.D)");           
@@ -679,7 +678,79 @@ void setup(){
     Send(Module);
     delay(2000);
   }
-
+  //Cargement du fichier de config
+  /* Déclare le buffer qui stockera une ligne du fichier, ainsi que les deux pointeurs key et value */
+  char buffer[BUFFER_SIZE], *key, *value;
+  /* Déclare l'itérateur et le compteur de lignes */
+  byte i, buffer_lenght, line_counter = 0;
+  /* Ouvre le  fichier de configuration */
+  File config_file = SD.open("config.txt", FILE_READ);
+  if(!config_file) { // Gère les erreurs
+  /* Tant que non fin de fichier */
+  while(config_file.available() > 0 ){
+    /* Récupère une ligne entière dans le buffer */
+    i = 0;
+    while((buffer[i++] = config_file.read()) != '\n') {
+      /* Si la ligne dépasse la taille du buffer */
+      if(i == BUFFER_SIZE) {
+        /* On finit de lire la ligne mais sans stocker les données */
+        while(config_file.read() != '\n');
+        break; // Et on arrête la lecture de cette ligne
+      }
+    }
+    /* On garde de côté le nombre de char stocké dans le buffer */
+    buffer_lenght = i;
+    /* Finalise la chaine de caractéres ASCIIZ en supprimant le \n au passage */
+    buffer[--i] = '\0';
+    /* Incrémente le compteur de lignes */
+    ++line_counter;
+    /* Ignore les lignes vides ou les lignes de commentaires */
+    if(buffer[0] == '\0' || buffer[0] == '#') continue;
+    /* Cherche l'emplacement de la clef en ignorant les espaces et les tabulations en début de ligne */
+    i = 0;
+    while(buffer[i] == ' ' || buffer[i] == '\t') {
+      if(++i == buffer_lenght) break; // Ignore les lignes contenant uniquement des espaces et/ou des tabulations
+    }
+    if(i == buffer_lenght) continue; // Gère les lignes contenant uniquement des espaces et/ou des tabulations
+    key = &buffer[i];
+    /* Cherche l'emplacement du séparateur = en ignorant les espaces et les tabulations âpres la clef */
+    while(buffer[i] != '=') {
+      /* Ignore les espaces et les tabulations */
+      if(buffer[i] == ' ' || buffer[i] == '\t') buffer[i] = '\0';
+      if(++i == buffer_lenght) {
+        break; // Ignore les lignes mal formé
+      }
+    }
+    if(i == buffer_lenght) continue; // Gère les lignes mal formé
+    /* Transforme le séparateur = en \0 et continue */
+    buffer[i++] = '\0';
+    /* Cherche l'emplacement de la valeur en ignorant les espaces et les tabulations âpres le séparateur */
+    while(buffer[i] == ' ' || buffer[i] == '\t') {
+      if(++i == buffer_lenght) {
+        break; // Ignore les lignes mal formé
+      }
+    }
+    if(i == buffer_lenght) continue; // Gère les lignes mal formé
+    value = &buffer[i];
+    /* Transforme les données texte en valeur utilisable */
+    /* C'est ce morceaux de code qu'il vous faudra adapter pour votre application */
+    if(strcmp(key, "actif") == 0) { //Executant actif
+       //On lit la RAM 
+       byte test = (byte)spiRam.read_byte(0);
+       if (test != 1 || test != 0) {
+          TreatCommand("ER0000V00" + ByteToString((byte)*value));
+       }
+    }
+    else if(strcmp(key, "pause") == 0) { //Delais pour la prochaine action
+    }
+  }
+  /* Ferme le fichier de configuration */
+  config_file.close();
+  }
+  else {
+    txCmd = "A00M01No Config file";
+    Send(Module);
+  }
 
   //Au démarrage on considère que le système est allumé
   LastStateAlim1240 = true;

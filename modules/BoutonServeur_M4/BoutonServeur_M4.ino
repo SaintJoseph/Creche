@@ -602,7 +602,7 @@ void loop(){
   if (Bouton2.FrontState) {
      if (!Bouton2.state && testV){ 
        //On envois un signal appuis sur validation
-       txCmd = "M01M04Validation";
+       txCmd = "M01M04RV";
        Send();
      }
   }
@@ -610,7 +610,7 @@ void loop(){
   if (Bouton3.FrontState) {
      if (!Bouton3.state && testS){ 
        //On envois un signal appuis sur synchronisation
-       txCmd = "M01M04Synchronisation";
+       txCmd = "M01M04RS";
        Send();
      }
   }

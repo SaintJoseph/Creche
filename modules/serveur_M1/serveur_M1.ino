@@ -107,9 +107,12 @@ SpiRAM spiRam(0, RAM_SS_PIN);
  */
 
 //Variable pour le block executable
-unsigned long pause = 0; //Temps d'attente avant la prochaine action
-boolean actif = false;
+int pause = 0; //Temps d'attente avant la prochaine action
+unsigned long ExeTime = 0; //Heure de l'action
+boolean actif = false, validation = false, synchronisation = false;
 
+//Donnée pour le fichier de config
+#define BUFFER_SIZE = 32;
 //---------------------------------FONCTIONS------------------------------------
 
 // traitement du car recu
@@ -578,6 +581,7 @@ void logFile(String mesg) {
 
 //Fonction qui réagit au commande pour modifier le bloc executable
 void modifExecutable () {
+  word time;
   switch (rxCmd[1])
   {
     case 'A' : case 'a' :
@@ -587,14 +591,35 @@ void modifExecutable () {
        {
           case '1' :
              actif = true;
+             //On allume la Led témoin rouge de M4
+             txCmd = "M04M01KR01T03E8";
+             Send(Module);
              break;
           case '0' :
              actif = false;
+             txCmd = "M04M01KT01O0";
+             Send(Module);
              break;
        }
        break;
+    case 'V' : case 'v' :
+       //(Run executable)(Validation)
+       //Format : ""
+       validation = false;
+       break;
+    case 'S' : case 's' :
+       //(Run executable)(Synchronisation)
+       //Format : ""
+       synchronisation = false;
+       break;
+    case 'D' : case 'd' :
+       //(Run executable)(Delais)(delais)
+       //Format : "HHHH"
+       StringToWord(time, rxCmd, 2);
+       pause = (int)time;
+       break;
     default:   
-      CmdError("R Run executable (A)");           
+      CmdError("R Run executable (A.V.S.D)");           
   } 
 }
 
@@ -650,8 +675,11 @@ void setup(){
   if (!SD.begin(SD_SS_PIN)) while (mode != 0){
     txCmd = "A00M01No SD card";
     Send(Module);
+    txCmd = "M04M01KC01T00FA";
+    Send(Module);
     delay(2000);
   }
+
 
   //Au démarrage on considère que le système est allumé
   LastStateAlim1240 = true;
@@ -676,6 +704,9 @@ void loop(){
 
   //Bloc executant le programme lumineu
   if (actif) {
+    if (CR.currentMillis - ExeTime > pause && !validation) {
+      pause = 1;
+    }
   }
   
 }

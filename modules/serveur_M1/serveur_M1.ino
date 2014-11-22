@@ -108,9 +108,15 @@ SpiRAM spiRam(0, RAM_SS_PIN);
 
 //Variable pour le block executable
 unsigned long ExeTime = 0; //Heure de l'action
+boolean actif = false, validation = false, synchronisation = false;
+File ExeFile;
+int NumLigne = 0;
+word IndiceFile = word('0', '0'); //Nom des fichier programmes: Exe_00.cre
+//avec le 00 qui est remplacer par deux char qui identifient le fichier
 
 //Donnée pour le fichier de config
 #define BUFFER_SIZE 32
+
 //---------------------------------FONCTIONS------------------------------------
 
 // traitement du car recu
@@ -707,6 +713,17 @@ void loop(){
   }
   while (Serial2.available())
       TreatChar(Serial2.read(), Seria2);
+
+/*
+//Variable pour le block executable
+int pause = 0; //Temps d'attente avant la prochaine action
+unsigned long ExeTime = 0; //Heure de l'action
+boolean actif = false, validation = false, synchronisation = false;
+File ExeFile;
+int NumLigne = 0;
+word IndiceFile = word('0', '0'); //Nom des fichier programmes: Exe_00.cre
+//avec le 00 qui est remplacer par deux char qui identifient le fichier
+*/
 
   //Bloc executant le programme lumineu
   if (actif && !Serial.available() && StateAlim1240) {

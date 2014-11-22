@@ -113,6 +113,8 @@ File ExeFile;
 int NumLigne = 0;
 word IndiceFile = word('0', '0'); //Nom des fichier programmes: Exe_00.cre
 //avec le 00 qui est remplacer par deux char qui identifient le fichier
+#define BUFFER_SIZE 32
+
 
 //Donnée pour le fichier de config
 #define BUFFER_SIZE 32

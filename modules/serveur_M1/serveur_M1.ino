@@ -16,10 +16,8 @@
  *       A UTILISER UNIQUEMENT AVEC LA PROTOSHIELD ADAPTE A CE PROGRAMME        *
  *                                  MODULE 1                                    *
  *                      Cette carte est composée:                               *
- *          -3 LED jaune                                                        *
- *          -3 Boutons poussoir                                                 *
- *          -1 LED rouge témoin des communication radio                         *
- *          -1 Bornier 4 plots (en parallèle avec les boutons poussoir)         *
+ *          -Lecteur de carte micro SD                                          *
+ *          -De la mémoire RAM                                                  *
  *          -Module NRf24l01+                                                   *
  *          -WatchDog Harware avec un 555, avec une tempos de 9s                *
  *          -Module mémoire eeprom qui utilise le bus I²C                       *

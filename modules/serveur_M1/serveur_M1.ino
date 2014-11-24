@@ -73,7 +73,7 @@ boolean LastStateAlim1240;
 String rxCmd ; // Commande reçue (sans délimiteurs)
 String txCmd ; // Commande à transmettre
 
-String fCmd[3]; //Message reçu par les cannaux de communication
+String fCmd[4]; //Message reçu par les cannaux de communication
 
 #define RAM_SS_PIN 47
 #define SD_SS_PIN 49
@@ -109,7 +109,7 @@ unsigned long ExeTime = 0; //Heure de l'action
 boolean actif = false, validation = false, synchronisation = false;
 File ExeFile;
 int NumLigne = 0;
-word IndiceFile = word('0', '0'); //Nom des fichier programmes: Exe_00.cre
+word IndiceFile = word('2', '1'); //Nom des fichier programmes: Exe_00.cre
 //avec le 00 qui est remplacer par deux char qui identifient le fichier
 #define BUFFER_SIZE 32
 
@@ -313,10 +313,12 @@ void EcritureVariable () {
        StringToByte(wValue0, rxCmd, 7);
        StringToByte(wValue1, rxCmd, 9);
        address *= 2; //Caque variable est stokée sur 2 bytes
-       spiRam.write_byte((int)address, wValue0);
-       spiRam.write_byte((int)address + 1, wValue1);
+       if (address > 7) {
+          spiRam.write_byte((int)address, wValue0);
+          spiRam.write_byte((int)address + 1, wValue1);
+       }
        break;
-    default:   
+    default:
       CmdError("E Type d'ecriture (D.R)");
   }
 }
@@ -652,10 +654,6 @@ void setup(){
   Mirf.config(); // Tout est bon ? Ok let's go !
   Mirf.setRADDR((byte *)"nrf01"); // On définit ici l'adresse du module en question
 
-  //Commande demmarrage du module (attenttion réécrire le numéro du module après type démarage)
-  txCmd = "A00M01D01";
-  Send(Module);
-
   //Teste la présence de la RTC sur le bus I²C, si c'est negatif, il y a une boucle infini,
   //qui va faire travailler le watchdog
   Wire.begin();
@@ -696,7 +694,13 @@ void setup(){
   //Au démarrage on considère que le système est allumé
   LastStateAlim1240 = true;
   StateAlim1240 = true;
-  
+
+  //Commande demmarrage du module (attenttion réécrire le numéro du module après type démarage)
+  txCmd = "A00M01D01";
+  Send(Module);
+  txCmd = "M04M01KT01O0";
+  Send(Module);
+
 }
 
 void loop(){
@@ -713,17 +717,6 @@ void loop(){
   }
   while (Serial2.available())
       TreatChar(Serial2.read(), Seria2);
-
-/*
-//Variable pour le block executable
-int pause = 0; //Temps d'attente avant la prochaine action
-unsigned long ExeTime = 0; //Heure de l'action
-boolean actif = false, validation = false, synchronisation = false;
-File ExeFile;
-int NumLigne = 0;
-word IndiceFile = word('0', '0'); //Nom des fichier programmes: Exe_00.cre
-//avec le 00 qui est remplacer par deux char qui identifient le fichier
-*/
 
   //Bloc executant le programme lumineu
   if (actif && !Serial.available() && StateAlim1240) {

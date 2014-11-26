@@ -107,12 +107,11 @@ SpiRAM spiRam(0, RAM_SS_PIN);
 //Variable pour le block executable
 unsigned long ExeTime = 0; //Heure de l'action
 boolean actif = false, validation = false, synchronisation = false;
+int pause = 1;
 File ExeFile;
 int NumLigne = 0;
 word IndiceFile = word('2', '1'); //Nom des fichier programmes: Exe_00.cre
 //avec le 00 qui est remplacer par deux char qui identifient le fichier
-#define BUFFER_SIZE 32
-
 
 //Donnée pour le fichier de config
 #define BUFFER_SIZE 32
@@ -128,7 +127,7 @@ void TreatChar(char car, Mode canal)
     fCmd[canal] = "";
     break ;
   case '>' :
-    logFile(fCmd[canal]);
+    logFile(fCmd[canal], "Recep", canal);
     AdressageMessage(canal);
     break;
   default:
@@ -206,7 +205,7 @@ void Send(Mode canal) {
     StringToByte(desti,txCmd, 1);
     StringToByte(envoyeur,txCmd, 4);
     String cmd = '<' + txCmd + ">@";
-    logFile(txCmd);
+    logFile(txCmd, "Send", canal);
     if (canal != Radio) {
        //Message a destination de M2
        if (desti == Pwm_m2 || desti == Dbc_m3 || ((cmd[1] == 'A' || cmd[1] == 'a') && envoyeur != Pwm_m2 && envoyeur != Dbc_m3)) {
@@ -369,7 +368,7 @@ void LectureVariable() {
        address *= 2; //Caque variable est stokée sur 2 bytes
        wValue0 = (byte)spiRam.read_byte((int)address);
        wValue1 = (byte)spiRam.read_byte((int)address + 1);
-       txCmd = txCmd + "LR" + WordToString(address) + "V" + ByteToString(wValue0) + ByteToString(wValue1);
+       txCmd = txCmd + "LR" + WordToString(address/2) + "V" + ByteToString(wValue0) + ByteToString(wValue1);
        Send(Module);
        break;
     case 'S' : case 's' :
@@ -418,6 +417,8 @@ void LectureVariable() {
        //Message envoyé: <(Lecture)(Actif)(On/Off)>
        //Format ""
        //Format "B"
+       txCmd = txCmd + (actif)?"1":"0";
+       Send(Module);
        break;
     default:   
       CmdError("L Type de lecture (M.U.D.O.S.R.A)");
@@ -573,13 +574,33 @@ void lire(Date *date) {
 }
 
 //Fonction qui rempli le fichier log sur la carte micro SD
-void logFile(String mesg) {
+void logFile(String mesg, String type, Mode canal) {
    File dataFile = SD.open("datalog.txt", FILE_WRITE);
    Date date;
    lire(&date);
    // if the file is available, write to it:
    if (dataFile) {
       dataFile.print(ByteToString(date.jour) + "/" + ByteToString(date.mois) + "/" + ByteToString(date.annee) + "R" + ByteToString(date.jourDeLaSemaine) + "H" + ByteToString(date.heures) + ":" + ByteToString(date.minutes) + ":" + ByteToString(date.secondes) + "\t");
+      dataFile.print(type + "\t");
+      switch(canal) {
+         case Seria:
+            dataFile.print("Seria\t");
+            break;
+         case Radio:
+            dataFile.print("Radio\t");
+            break;
+         case Seria2:
+            dataFile.print("Seria2\t");
+            break;
+         case Executant:
+            dataFile.print("Execut\t");
+            break;
+         case Module:
+            dataFile.print("Module\t");
+            break;
+         default :
+            dataFile.print("No canal\t");
+      }
       dataFile.println(mesg);
       dataFile.close();
    }  
@@ -612,13 +633,30 @@ void modifExecutable () {
        break;
     case 'V' : case 'v' :
        //(Run executable)(Validation)
-       //Format : ""
-       TreatCommand("ER0001V0000");
+       //Format : "B"
+       switch (rxCmd[2])
+       {
+          case '1' :
+             validation = true;
+             break;
+          case '0' :
+             validation = false;
+             break;
+       }
        break;
     case 'S' : case 's' :
        //(Run executable)(Synchronisation)
-       //Format : ""
-       TreatCommand("ER0002V0000");
+       //Format : "B"
+       synchronisation = false;
+       switch (rxCmd[2])
+       {
+          case '1' :
+             synchronisation = true;
+             break;
+          case '0' :
+             synchronisation = false;
+             break;
+       }
        break;
     case 'D' : case 'd' :
        //(Run executable)(Delais)(delais)

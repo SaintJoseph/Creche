@@ -679,6 +679,14 @@ void setup(){
     delay(2000);
   }
 
+  if (!SD.exists("Exe_00.cre")) {
+    txCmd = "A00M01No Exe_00.cre File";
+    actif = false;
+    Send(Module);
+    txCmd = "M04M01KC01T00FA";
+    Send(Module);
+  }
+
   //Au démarrage on considère que le système est allumé
   LastStateAlim1240 = true;
   StateAlim1240 = true;
@@ -701,9 +709,79 @@ void loop(){
       TreatChar(Serial2.read(), Seria2);
 
   //Bloc executant le programme lumineu
-  if (actif) {
+  if (actif && !Serial.available() && StateAlim1240) {
     if (CR.currentMillis - ExeTime > pause && !validation) {
-      pause = 1;
+      pause = 100;
+      ExeTime = CR.currentMillis;
+      /* Déclare le buffer qui stockera une ligne du fichier, ainsi que les deux pointeurs key et value */
+      char buffer[BUFFER_SIZE];
+      /* Déclare l'itérateur et le compteur de lignes */
+      byte i, buffer_lenght;
+      // Noméro de ligne
+      word ligne_test, line_counter = 0;
+      /* Ouvre le  fichier de configuration */
+      char *Execre = "Exe_00.cre";
+      Execre[4] = (IndiceFile >> 8) & 0x00FF;
+      Execre[5] = IndiceFile & 0x00FF;
+      ExeFile = SD.open(Execre, FILE_READ);
+      if(ExeFile) { // Gère les erreurs
+         /* Tant que non fin de fichier */
+         while(ExeFile.available() > 0 ){
+            /* Récupère une ligne entière dans le buffer */
+            i = 0;
+            while((buffer[i++] = ExeFile.read()) != '\n') {
+               /* Si la ligne dépasse la taille du buffer */
+               if(i == BUFFER_SIZE) {
+                  /* On finit de lire la ligne mais sans stocker les données */
+                  while(ExeFile.read() != '\n');
+                  break; // Et on arrête la lecture de cette ligne
+               }
+            }
+            /* On garde de côté le nombre de char stocké dans le buffer */
+            buffer_lenght = i;
+            /* Finalise la chaine de caractéres ASCIIZ en supprimant le \n au passage */
+            buffer[--i] = '\0';
+            /* Incrémente le compteur de lignes */
+            ++line_counter;
+            /* Ignore les lignes vides ou les lignes de commentaires */
+            if(buffer[0] == '\0' || buffer[0] == '#') continue;
+            // On teste le numéro de ligne avec celui qui doit etre executé
+            StringToWord(ligne_test, buffer, 0);
+            if (ligne_test == NumLigne) {
+               //Comme ont est à la bonne ligne, on execute l'instruction
+               i = 4; //Les 4 premier char correspondent au numéro de la ligne en Hexa
+               boolean msg = false;
+               while (buffer[i] != '\0') {
+                  //A la fin du msg on l'envois, meme pour les msg a destination de serveur M1
+                  TreatChar(buffer[i], Executant);
+                  i++;
+               }
+               NumLigne++;
+            }
+            //Quand on à dépassé la ligne qui doit etre executé, on incrémente le compteur et on quitter la boucle
+            else if ((ligne_test > NumLigne)) {
+               NumLigne++;
+               break;
+            }
+         }
+      }
+      
+      ExeFile.close();
+      //Toutes les variables sont recopiée dans la RAM pour sauvegarde
+      spiRam.write_byte(0x0001, pause & 0x00FF);
+      spiRam.write_byte(0x0000, (pause >> 8) & 0x00FF);
+      int ValBool = (actif)?0x0001:0x0000;
+      ValBool = ValBool << 8;
+      ValBool = ValBool | (validation)?0x0001:0x0000;
+      ValBool = ValBool << 8;
+      ValBool = ValBool | (synchronisation)?0x0001:0x0000;
+      ValBool = ValBool << 8;
+      spiRam.write_byte(0x0003, ValBool & 0x00FF);
+      spiRam.write_byte(0x0005, NumLigne & 0x00FF);
+      spiRam.write_byte(0x0007, IndiceFile & 0x00FF);
+      spiRam.write_byte(0x0002, (ValBool >> 8) & 0x00FF);
+      spiRam.write_byte(0x0004, (NumLigne >> 8) & 0x00FF);
+      spiRam.write_byte(0x0006, (IndiceFile >> 8) & 0x00FF);
     }
   }
   

@@ -540,9 +540,9 @@ void ecrire(Date *date) {
 
 //Retourne la tension de la pile 
 int Tbatterie() {
-    const int potar = 0; // le potentiomètre, branché sur la broche analogique 0
+    const int potar = 0; // la pin de mesure analogique 0
     int valeurLue; //variable pour stocker la valeur lue après conversion
-    float tension; //on convertit cette valeur en une tension
+    //float tension; //on convertit cette valeur en une tension
     //on convertit en nombre binaire la tension lue en sortie du potentiomètre
     valeurLue = analogRead(potar);
     //on traduit la valeur brute en tension (produit en croix)
@@ -618,14 +618,14 @@ void modifExecutable () {
        {
           case '1' :
              //On écrit dans la RAM l'état actif
-             TreatCommand("ER0000V0001");
+             actif = true;
              //On allume la Led témoin rouge de M4
              txCmd = "M04M01KR01T03E8";
              Send(Module);
              break;
           case '0' :
              //On écrit dans la RAM l'état actif
-             TreatCommand("ER0000V0000");
+             actif = false;
              txCmd = "M04M01KT01O0";
              Send(Module);
              break;
@@ -661,10 +661,32 @@ void modifExecutable () {
     case 'D' : case 'd' :
        //(Run executable)(Delais)(delais)
        //Format : "HHHH"
-       TreatCommand("ER0002V" + rxCmd[2] + rxCmd[3] + rxCmd[4] + rxCmd[5]);
+       word time;
+       StringToWord(time, rxCmd, 2);
+       pause = (int)time;
+       break;
+    case 'F' : case 'f' :
+       //(Run executable)(File)(Condition ouverture fichier)
+       //Format : "HHHHCAFNN"
+       //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D) et le code du fichier
+       break;
+    case 'G' : case 'g' :
+       //(Run executable)(Goto)(Condition pour goto)
+       //Format : "HHHHCALHHHH"
+       //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D) et la ligne à laquelle sauter
+       break;
+    case 'P' : case 'p' :
+       //(Run executable)(Passe)(Condition de poursuivre sur réception de message)
+       //Format : "MHHAA"
+       //provenance du message, type de Cmd et Cmd du message
+       break;
+    case 'H' : case 'h' :
+       //(Run executable)(Horaire)(Condition on Date and Time)
+       //Format : "A\DHHFHHLHHHH"
+       //Type (mois, jour, minute), Valeur début et fin, Si false on fait un goto
        break;
     default:   
-      CmdError("R Run executable (A.V.S.D)");           
+      CmdError("R Run executable (A.V.S.D.F.G.P.H)");           
   } 
 }
 
@@ -681,6 +703,7 @@ void setup(){
   fCmd[Seria] = "";
   fCmd[Radio] = "";
   fCmd[Seria2] = "";
+  fCmd[Executant] = "";
   
   //Initialisation de la librairie Mirf
   Mirf.cePin = 48; // CE sur D8
@@ -759,7 +782,7 @@ void loop(){
   //Bloc executant le programme lumineu
   if (actif && !Serial.available() && StateAlim1240) {
     if (CR.currentMillis - ExeTime > pause && !validation) {
-      pause = 100;
+      pause = 20;
       ExeTime = CR.currentMillis;
       /* Déclare le buffer qui stockera une ligne du fichier, ainsi que les deux pointeurs key et value */
       char buffer[BUFFER_SIZE];

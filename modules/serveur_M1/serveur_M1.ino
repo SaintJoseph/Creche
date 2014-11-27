@@ -114,7 +114,7 @@ word IndiceFile = word('2', '1'); //Nom des fichier programmes: Exe_00.cre
 //avec le 00 qui est remplacer par deux char qui identifient le fichier
 
 //Donnée pour le fichier de config
-#define BUFFER_SIZE 32
+#define BUFFER_SIZE 40
 
 //---------------------------------FONCTIONS------------------------------------
 
@@ -326,8 +326,6 @@ void EcritureVariable () {
 void LectureVariable() {
   Date date;
   // set up variables using the SD utility library functions:
-  Sd2Card card;
-  SdVolume volume;
   word address = 0;
   byte wValue0, wValue1;
   switch (rxCmd[1])
@@ -376,48 +374,19 @@ void LectureVariable() {
        //Message envoyé: <(Lecture)(SD)(type)(espace mémoire)>
        //Format ""
        //Format "NNNNVHHHH"
-       txCmd = txCmd + "LS";
-       if (!card.init(SPI_HALF_SPEED, SD_SS_PIN)) {
-       switch(card.type()) {
-          case SD_CARD_TYPE_SD1:
-             txCmd = txCmd + " SD1";
-             break;
-          case SD_CARD_TYPE_SD2:
-             txCmd = txCmd + " SD2";
-             break;
-          case SD_CARD_TYPE_SDHC:
-             txCmd = txCmd + "SDHC";
-             break;
-          default:
-             txCmd = txCmd + "Unkw";
-       }
-       txCmd = txCmd + "V";
-       // Now we will try to open the 'volume'/'partition' - it should be FAT16 or FAT32
-       if (!volume.init(card)) {
-          txCmd = txCmd + "0000";
-          Send(Module);
-          break;
-       }
-       // print the type and size of the first FAT-type volume
-       uint32_t volumesize;
-       volumesize = volume.blocksPerCluster();    // clusters are collections of blocks
-       volumesize *= volume.clusterCount();       // we'll have a lot of clusters
-       volumesize /= 2; // SD card blocks are always 512 bytes / 1024 => kb
-       volumesize /= 1024; // => Mb
-       txCmd = txCmd + WordToString((word)volumesize);
+       txCmd = txCmd + "LS" + SD.type() + "V" + WordToString((word)SD.size());
        Send(Module);
        break;
-       }
-       else {
-          CmdError("LS SD ini faild");
-          break;
-       }
     case 'A' : case 'a' :
        //Message reçu: <(Lecture)(Actif)>
        //Message envoyé: <(Lecture)(Actif)(On/Off)>
        //Format ""
        //Format "B"
-       txCmd = txCmd + (actif)?"1":"0";
+       txCmd = txCmd + "LA";
+       if (actif)
+          txCmd = txCmd + "1";
+       else
+          txCmd = txCmd + "0";
        Send(Module);
        break;
     default:   
@@ -789,7 +758,7 @@ void loop(){
       /* Déclare l'itérateur et le compteur de lignes */
       byte i, buffer_lenght;
       // Noméro de ligne
-      word ligne_test, line_counter = 0;
+      word ligne_test;
       /* Ouvre le  fichier de configuration */
       char *Execre = "Exe_00.cre";
       Execre[4] = (IndiceFile >> 8) & 0x00FF;
@@ -812,8 +781,6 @@ void loop(){
             buffer_lenght = i;
             /* Finalise la chaine de caractéres ASCIIZ en supprimant le \n au passage */
             buffer[--i] = '\0';
-            /* Incrémente le compteur de lignes */
-            ++line_counter;
             /* Ignore les lignes vides ou les lignes de commentaires */
             if(buffer[0] == '\0' || buffer[0] == '#') continue;
             // On teste le numéro de ligne avec celui qui doit etre executé
@@ -828,6 +795,7 @@ void loop(){
                   i++;
                }
                NumLigne++;
+               break;
             }
             //Quand on à dépassé la ligne qui doit etre executé, on incrémente le compteur et on quitter la boucle
             else if ((ligne_test > NumLigne)) {

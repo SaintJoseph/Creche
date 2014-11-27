@@ -613,4 +613,34 @@ void File::rewindDirectory(void) {
     _file->rewind();
 }
 
+  // Return properties of the SD card: type and size
+String SDClass::type() {
+       String txt;
+       switch(card.type()) {
+          case SD_CARD_TYPE_SD1:
+             txt = " SD1";
+             break;
+          case SD_CARD_TYPE_SD2:
+             txt = " SD2";
+             break;
+          case SD_CARD_TYPE_SDHC:
+             txt = "SDHC";
+             break;
+          default:
+             txt = "Unkw";
+       }
+       return txt;
+}
+
+int SDClass::size() {
+       // print the type and size of the first FAT-type volume
+       uint32_t volumesize;
+       volumesize = volume.blocksPerCluster();    // clusters are collections of blocks
+       volumesize *= volume.clusterCount();       // we'll have a lot of clusters
+       volumesize /= 2; // SD card blocks are always 512 bytes / 1024 => kb
+       volumesize /= 1024; // => Mb
+       return (int) volumesize;
+}
+
+
 SDClass SD;

@@ -85,6 +85,9 @@ public:
   
   boolean rmdir(char *filepath);
 
+  // Return properties of the SD card: type and size
+  String type();
+  int size();
 private:
 
   // This is used to determine the mode used to open a file

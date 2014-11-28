@@ -317,46 +317,84 @@ void EcritureVariable () {
 void LectureVariable() {
   Date date;
   // set up variables using the SD utility library functions:
+  /*
+  Le message de lecture variable ne renvois plus de message au demandeur.
+  -Il envois un message pour la RAM de M1 avec la valeur a y inscrire
+     *pas de risque de message en boucle
+  -M1 renvois automatiquement un message vers M0 avec le contenu recopié
+     *seul l'utilisateur et l'executant sont suceptible de connaitre la valeur
+     *Permet d'introduire des conditions sur les varibles de tous le système
+  */
   word address = 0;
-  byte wValue0, wValue1;
   switch (rxCmd[1])
   {
     case 'M' : case 'm' :
-       //Message reçu: <(Lecture)(Memoire)>
-       saveRAM("M01LMA0002V" + WordToString(freeMemory());
+       //Message reçu: <(Lecture)(Memoire)(Adresse)>
+       //Format reçu: "HHHH"
+       //Format envoyé à la RAM: "MHHAA\AHHHHVHHHH"
+       saveRAM("M01LMA" + rxCmd.substring(2,6) + "V" + WordToString(freeMemory()));
        break ;
     case 'U' : case 'u' :
-       //Message reçu: <(Lecture)(battrie)>
+       //Message reçu: <(Lecture)(battrie)(Adresse)>
        //Message envoyé: <(Lecture)(battrie)(tension battrie..)>
-       txCmd = txCmd + "LU" + WordToString(Tbatterie());
-       Send(Module);
+       //Format reçu: "HHHH"
+       //Format envoyé à la RAM: "MHHAA\AHHHHVHHHH"
+       saveRAM("M01LUA" + rxCmd.substring(2,6) + "V" + WordToString(Tbatterie()));
        break ;
     case 'D' : case 'd' :
-       //Message reçu: <(Lecture)(Date)>
+       //Message reçu: <(Lecture)(Date)(Adresse)>
        //Message envoyé: <(Lecture)(Date)(jj/mm/aaRjjHhh:mm:ss)>
+       //Format "AHHHH"
+       //Format envoyé à la RAM: "MHHAA\AHHHHVHHHH"
        lire(&date);
-       txCmd = txCmd + "LD" + ByteToString(date.jour) + "/" + ByteToString(date.mois) + "/" + ByteToString(date.annee) + "R" + ByteToString(date.jourDeLaSemaine) + "H" + ByteToString(date.heures) + ":" + ByteToString(date.minutes) + ":" + ByteToString(date.secondes);
-       Send(Module);
+       switch (rxCmd[2]) {
+          case 'D': case 'd' : //Jour du mois
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "D00" + ByteToString(date.jour));
+             break;
+          case 'M': case 'm' : //Mois
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "M00" + ByteToString(date.mois));
+             break;
+          case 'Y': case 'y' : //Année
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "Y00" + ByteToString(date.annee));
+             break;
+          case 'W': case 'w' : //Jour de le semaine
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "W00" + ByteToString(date.jourDeLaSemaine));
+             break;
+          case 'H': case 'h' : //Heure
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "H00" + ByteToString(date.heures));
+             break;
+          case 'N': case 'n' : //Minute
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "N00" + ByteToString(date.minutes));
+             break;
+          case 'S': case 's' : //Seconde
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "S00" + ByteToString(date.secondes));
+             break;
+          default :
+             CmdError("L Date erroné (D.M.Y.W.H.N.S)");
+       }
        break ;
     case 'O' : case 'o' :
        //Message reçu: <(Lecture)(On/Off)>
        //Message envoyé: <(Lecture)(On/Off)(StateAlim1240..)>
-       txCmd = txCmd + "LO";
-       if (StateAlim1240) txCmd = txCmd + "1";
-       else txCmd = txCmd + "0";
-       Send(Module);
+       //Format "HHHH"
+       //Format "B"
+       if (actif)
+          saveRAM("M01LOA" + rxCmd.substring(2,6) + "V0001");
+       else
+          saveRAM("M01LOA" + rxCmd.substring(2,6) + "V0000");
        break;
     case 'R' : case 'r' :
        //Message reçu: <(Lecture)(RAM)(adresse)>
        //Message envoyé: <(Lecture)(Ram)(valeur)>
        //Format "HHHH"
-       //Format "HHHHVHHHH"
+       //Format "MHHAA\AHHHHVHHHH"
        StringToWord(address, rxCmd, 2);
-       address *= 2; //Caque variable est stokée sur 2 bytes
-       wValue0 = (byte)spiRam.read_byte((int)address);
-       wValue1 = (byte)spiRam.read_byte((int)address + 1);
-       txCmd = txCmd + "LR" + WordToString(address/2) + "V" + ByteToString(wValue0) + ByteToString(wValue1);
-       Send(Module);
+       address *= 5; //Caque variable est stokée sur 2 bytes
+       address += 3;
+       if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+          txCmd = txCmd + "LRM" + ByteToString((byte)spiRam.read_byte((int)address)) + (char)spiRam.read_byte((int)address + 1) + (char)spiRam.read_byte((int)address + 2) + "A" + rxCmd.substring(2,6) + "V" + ByteToString((byte)spiRam.read_byte((int)address + 3)) + ByteToString((byte)spiRam.read_byte((int)address + 4));
+          Send(Module);
+       }
        break;
     case 'S' : case 's' :
        //Message reçu: <(Lecture)(SD)>
@@ -369,14 +407,12 @@ void LectureVariable() {
     case 'A' : case 'a' :
        //Message reçu: <(Lecture)(Actif)>
        //Message envoyé: <(Lecture)(Actif)(On/Off)>
-       //Format ""
+       //Format "HHHH"
        //Format "B"
-       txCmd = txCmd + "LA";
        if (actif)
-          txCmd = txCmd + "1";
+          saveRAM("M01LAA" + rxCmd.substring(2,6) + "V0001");
        else
-          txCmd = txCmd + "0";
-       Send(Module);
+          saveRAM("M01LAA" + rxCmd.substring(2,6) + "V0000");
        break;
     default:   
       CmdError("L Type de lecture (M.U.D.O.S.R.A)");
@@ -567,7 +603,7 @@ void logFile(String mesg, String type, Mode canal) {
 //Fonction pour l'enregistrement dans la RAM des messages de lectures
 void saveRAM(String mesg) {
    //Message reçu: <(Ecriture)(RAM)(Module)(TypeCmd)(Cmd)(Adresse)(Valeur)>
-   //Format "MHHNN\AHHHHVHHHH"
+   //Format "MHHAA\AHHHHVHHHH"
    word address = 0;
    byte wValue0, wValue1,module, typeCmd, Cmd;
    StringToWord(address, mesg, 6);
@@ -587,14 +623,14 @@ void saveRAM(String mesg) {
       spiRam.write_byte((int)address + 3, wValue0);
       spiRam.write_byte((int)address + 4, wValue1);
    }
-   txCmd = "M00M01ER" + mesg);
+   txCmd = "M00M01ER" + mesg;
    Send(Module);
 }
 
 
 //Fonction qui réagit au commande pour modifier le bloc executable
 void modifExecutable () {
-  word time;
+  word time, address, value;
   switch (rxCmd[1])
   {
     case 'A' : case 'a' :
@@ -653,8 +689,37 @@ void modifExecutable () {
        break;
     case 'F' : case 'f' :
        //(Run executable)(File)(Condition ouverture fichier)
-       //Format : "HHHHCAFNN"
+       //Format : "HHHHCAVHHHHFNN"
        //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D) et le code du fichier
+       StringToWord(address, rxCmd, 2);
+       StringToWord(value, rxCmd, 9);
+       address *= 5; //Chaque variable est stokée sur 5 bytes
+       address += 3;
+       if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+          time = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
+          switch(rxCmd[7]) {
+             case 'E':
+                if (time == value) {
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                }
+                break;
+             case 'S':
+                if (time > value) {
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                }
+                break;
+             case 'I':
+                if (time < value) {
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                }
+                break;
+             case 'D':
+                if (time != value) {
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                }
+                break;
+          }
+       }
        break;
     case 'G' : case 'g' :
        //(Run executable)(Goto)(Condition pour goto)

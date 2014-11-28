@@ -288,8 +288,6 @@ void TreatCommand(String cmd) {
 //Fonction qui permet l'ecriture de certaine variable
 void EcritureVariable () {
   Date date;
-  word address = 0;
-  byte wValue0, wValue1;
   switch (rxCmd[1])
   {
     case 'D' : case 'd' :
@@ -308,14 +306,7 @@ void EcritureVariable () {
     case 'R' : case 'r' :
        //Message reçu: <(Ecriture)(RAM)(adresse)(valeur)>
        //Format "HHHHVHHHH"
-       StringToWord(address, rxCmd, 2);
-       StringToByte(wValue0, rxCmd, 7);
-       StringToByte(wValue1, rxCmd, 9);
-       address *= 2; //Caque variable est stokée sur 2 bytes
-       if (address > 7) {
-          spiRam.write_byte((int)address, wValue0);
-          spiRam.write_byte((int)address + 1, wValue1);
-       }
+       saveRAM(rxCmd.substring(2));
        break;
     default:
       CmdError("E Type d'ecriture (D.R)");
@@ -332,9 +323,7 @@ void LectureVariable() {
   {
     case 'M' : case 'm' :
        //Message reçu: <(Lecture)(Memoire)>
-       //Message envoyé: <(Lecture)(Memoire)(memoire..)>
-       txCmd = txCmd + "LM" + WordToString(freeMemory());
-       Send(Module);
+       saveRAM("M01LMA0002V" + WordToString(freeMemory());
        break ;
     case 'U' : case 'u' :
        //Message reçu: <(Lecture)(battrie)>
@@ -574,6 +563,34 @@ void logFile(String mesg, String type, Mode canal) {
       dataFile.close();
    }  
 }
+
+//Fonction pour l'enregistrement dans la RAM des messages de lectures
+void saveRAM(String mesg) {
+   //Message reçu: <(Ecriture)(RAM)(Module)(TypeCmd)(Cmd)(Adresse)(Valeur)>
+   //Format "MHHNN\AHHHHVHHHH"
+   word address = 0;
+   byte wValue0, wValue1,module, typeCmd, Cmd;
+   StringToWord(address, mesg, 6);
+   StringToByte(wValue0, mesg, 11);
+   StringToByte(wValue1, mesg, 13);
+   StringToByte(module, mesg, 1);
+   typeCmd = mesg[3];
+   Cmd = mesg[4];
+   //Sauvegarde dans la RAM
+   //Chaque variable comprend 1 byte pour identifier le module + typeCmd + Cmd + variable sur 2 bytes => 5B
+   address *= 5;
+   address += 3;
+   if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+      spiRam.write_byte((int)address, module);
+      spiRam.write_byte((int)address + 1, typeCmd);
+      spiRam.write_byte((int)address + 2, Cmd);
+      spiRam.write_byte((int)address + 3, wValue0);
+      spiRam.write_byte((int)address + 4, wValue1);
+   }
+   txCmd = "M00M01ER" + mesg);
+   Send(Module);
+}
+
 
 //Fonction qui réagit au commande pour modifier le bloc executable
 void modifExecutable () {

@@ -110,7 +110,7 @@ boolean actif = false, validation = false, synchronisation = false;
 int pause = 1;
 File ExeFile;
 int NumLigne = 0;
-word IndiceFile = word('2', '1'); //Nom des fichier programmes: Exe_00.cre
+word IndiceFile = word('0', '0'); //Nom des fichier programmes: Exe_00.cre
 //avec le 00 qui est remplacer par deux char qui identifient le fichier
 
 //Donnée pour le fichier de config
@@ -304,8 +304,8 @@ void EcritureVariable () {
        ecrire(&date);
        break;
     case 'R' : case 'r' :
-       //Message reçu: <(Ecriture)(RAM)(adresse)(valeur)>
-       //Format "HHHHVHHHH"
+       //Message reçu: <(Ecriture)(RAM)(Module)(TypeCmd)(Cmd)(Adresse)(Valeur)>
+       //Format "MHHAA\AHHHHVHHHH"
        saveRAM(rxCmd.substring(2));
        break;
     default:
@@ -384,15 +384,15 @@ void LectureVariable() {
           saveRAM("M01LOA" + rxCmd.substring(2,6) + "V0000");
        break;
     case 'R' : case 'r' :
-       //Message reçu: <(Lecture)(RAM)(adresse)>
-       //Message envoyé: <(Lecture)(Ram)(valeur)>
+       //Message reçu: <(Lecture (L))(RAM)(adresse)>
+       //Message envoyé: <(Lecture (T))(Ram)(valeur)>
        //Format "HHHH"
        //Format "MHHAA\AHHHHVHHHH"
        StringToWord(address, rxCmd, 2);
        address *= 5; //Caque variable est stokée sur 2 bytes
        address += 3;
        if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
-          txCmd = txCmd + "LRM" + ByteToString((byte)spiRam.read_byte((int)address)) + (char)spiRam.read_byte((int)address + 1) + (char)spiRam.read_byte((int)address + 2) + "A" + rxCmd.substring(2,6) + "V" + ByteToString((byte)spiRam.read_byte((int)address + 3)) + ByteToString((byte)spiRam.read_byte((int)address + 4));
+          txCmd = txCmd + "TRM" + ByteToString((byte)spiRam.read_byte((int)address)) + (char)spiRam.read_byte((int)address + 1) + (char)spiRam.read_byte((int)address + 2) + "A" + rxCmd.substring(2,6) + "V" + ByteToString((byte)spiRam.read_byte((int)address + 3)) + ByteToString((byte)spiRam.read_byte((int)address + 4));
           Send(Module);
        }
        break;
@@ -701,21 +701,25 @@ void modifExecutable () {
              case 'E':
                 if (time == value) {
                    IndiceFile = word(rxCmd[13], rxCmd[14]);
+                   NumLigne = 0xFFFF;
                 }
                 break;
              case 'S':
                 if (time > value) {
                    IndiceFile = word(rxCmd[13], rxCmd[14]);
+                   NumLigne = 0xFFFF;
                 }
                 break;
              case 'I':
                 if (time < value) {
                    IndiceFile = word(rxCmd[13], rxCmd[14]);
+                   NumLigne = 0xFFFF;
                 }
                 break;
              case 'D':
                 if (time != value) {
                    IndiceFile = word(rxCmd[13], rxCmd[14]);
+                   NumLigne = 0xFFFF;
                 }
                 break;
           }

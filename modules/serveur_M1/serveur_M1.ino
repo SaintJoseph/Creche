@@ -16,10 +16,8 @@
  *       A UTILISER UNIQUEMENT AVEC LA PROTOSHIELD ADAPTE A CE PROGRAMME        *
  *                                  MODULE 1                                    *
  *                      Cette carte est composée:                               *
- *          -3 LED jaune                                                        *
- *          -3 Boutons poussoir                                                 *
- *          -1 LED rouge témoin des communication radio                         *
- *          -1 Bornier 4 plots (en parallèle avec les boutons poussoir)         *
+ *          -Lecteur de carte micro SD                                          *
+ *          -De la mémoire RAM                                                  *
  *          -Module NRf24l01+                                                   *
  *          -WatchDog Harware avec un 555, avec une tempos de 9s                *
  *          -Module mémoire eeprom qui utilise le bus I²C                       *
@@ -75,6 +73,13 @@ boolean LastStateAlim1240;
 String rxCmd ; // Commande reçue (sans délimiteurs)
 String txCmd ; // Commande à transmettre
 
+String fCmd[4]; //Message reçu par les cannaux de communication
+
+#define RAM_SS_PIN 47
+#define SD_SS_PIN 49
+
+SpiRAM spiRam(0, RAM_SS_PIN);
+
 /* Hardware SPI on arduino mega 2560 (arduino uno):
  * MISO -> 50 (12)
  * MOSI -> 51 (11)
@@ -99,14 +104,17 @@ String txCmd ; // Commande à transmettre
  * 'ping_server_interupt' on the server.
  */
 
-unsigned long pause = 0; //Temps d'attente avant la prochaine action
+//Variable pour le block executable
+unsigned long ExeTime = 0; //Heure de l'action
+boolean actif = false, validation = false, synchronisation = false;
+int pause = 1;
+File ExeFile;
+int NumLigne = 0;
+word IndiceFile = word('0', '0'); //Nom des fichier programmes: Exe_00.cre
+//avec le 00 qui est remplacer par deux char qui identifient le fichier
 
-String fCmd[3]; //Message reçu par les cannaux de communication
-
-#define RAM_SS_PIN 47
-#define SD_SS_PIN 49
-
-SpiRAM spiRam(0, RAM_SS_PIN);
+//Donnée pour le fichier de config
+#define BUFFER_SIZE 40
 
 //---------------------------------FONCTIONS------------------------------------
 
@@ -119,7 +127,7 @@ void TreatChar(char car, Mode canal)
     fCmd[canal] = "";
     break ;
   case '>' :
-    logFile(fCmd[canal]);
+    logFile(fCmd[canal], "Recep", canal);
     AdressageMessage(canal);
     break;
   default:
@@ -197,7 +205,7 @@ void Send(Mode canal) {
     StringToByte(desti,txCmd, 1);
     StringToByte(envoyeur,txCmd, 4);
     String cmd = '<' + txCmd + ">@";
-    logFile(txCmd);
+    logFile(txCmd, "Send", canal);
     if (canal != Radio) {
        //Message a destination de M2
        if (desti == Pwm_m2 || desti == Dbc_m3 || ((cmd[1] == 'A' || cmd[1] == 'a') && envoyeur != Pwm_m2 && envoyeur != Dbc_m3)) {
@@ -280,8 +288,6 @@ void TreatCommand(String cmd) {
 //Fonction qui permet l'ecriture de certaine variable
 void EcritureVariable () {
   Date date;
-  word address = 0;
-  byte wValue0, wValue1;
   switch (rxCmd[1])
   {
     case 'D' : case 'd' :
@@ -298,15 +304,11 @@ void EcritureVariable () {
        ecrire(&date);
        break;
     case 'R' : case 'r' :
-       //Message reçu: <(Ecriture)(RAM)(adresse)(valeur)>
-       //Format "HHHHVHHHH"
-       StringToWord(address, rxCmd, 2);
-       StringToByte(wValue0, rxCmd, 7);
-       StringToByte(wValue1, rxCmd, 9);
-       spiRam.write_byte((int)address, wValue0);
-       spiRam.write_byte((int)address + 1, wValue1);
+       //Message reçu: <(Ecriture)(RAM)(Module)(TypeCmd)(Cmd)(Adresse)(Valeur)>
+       //Format "MHHAA\AHHHHVHHHH"
+       saveRAM(rxCmd.substring(2));
        break;
-    default:   
+    default:
       CmdError("E Type d'ecriture (D.R)");
   }
 }
@@ -315,93 +317,105 @@ void EcritureVariable () {
 void LectureVariable() {
   Date date;
   // set up variables using the SD utility library functions:
-  Sd2Card card;
-  SdVolume volume;
+  /*
+  Le message de lecture variable ne renvois plus de message au demandeur.
+  -Il envois un message pour la RAM de M1 avec la valeur a y inscrire
+     *pas de risque de message en boucle
+  -M1 renvois automatiquement un message vers M0 avec le contenu recopié
+     *seul l'utilisateur et l'executant sont suceptible de connaitre la valeur
+     *Permet d'introduire des conditions sur les varibles de tous le système
+  */
   word address = 0;
-  byte wValue0, wValue1;
   switch (rxCmd[1])
   {
     case 'M' : case 'm' :
-       //Message reçu: <(Lecture)(Memoire)>
-       //Message envoyé: <(Lecture)(Memoire)(memoire..)>
-       txCmd = txCmd + "LM" + WordToString(freeMemory());
-       Send(Module);
+       //Message reçu: <(Lecture)(Memoire)(Adresse)>
+       //Format reçu: "HHHH"
+       //Format envoyé à la RAM: "MHHAA\AHHHHVHHHH"
+       saveRAM("M01LMA" + rxCmd.substring(2,6) + "V" + WordToString(freeMemory()));
        break ;
     case 'U' : case 'u' :
-       //Message reçu: <(Lecture)(battrie)>
+       //Message reçu: <(Lecture)(battrie)(Adresse)>
        //Message envoyé: <(Lecture)(battrie)(tension battrie..)>
-       txCmd = txCmd + "LU" + WordToString(Tbatterie());
-       Send(Module);
+       //Format reçu: "HHHH"
+       //Format envoyé à la RAM: "MHHAA\AHHHHVHHHH"
+       saveRAM("M01LUA" + rxCmd.substring(2,6) + "V" + WordToString(Tbatterie()));
        break ;
     case 'D' : case 'd' :
-       //Message reçu: <(Lecture)(Date)>
+       //Message reçu: <(Lecture)(Date)(Adresse)>
        //Message envoyé: <(Lecture)(Date)(jj/mm/aaRjjHhh:mm:ss)>
+       //Format "AHHHH"
+       //Format envoyé à la RAM: "MHHAA\AHHHHVHHHH"
        lire(&date);
-       txCmd = txCmd + "LD" + ByteToString(date.jour) + "/" + ByteToString(date.mois) + "/" + ByteToString(date.annee) + "R" + ByteToString(date.jourDeLaSemaine) + "H" + ByteToString(date.heures) + ":" + ByteToString(date.minutes) + ":" + ByteToString(date.secondes);
-       Send(Module);
+       switch (rxCmd[2]) {
+          case 'D': case 'd' : //Jour du mois
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "D00" + ByteToString(date.jour));
+             break;
+          case 'M': case 'm' : //Mois
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "M00" + ByteToString(date.mois));
+             break;
+          case 'Y': case 'y' : //Année
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "Y00" + ByteToString(date.annee));
+             break;
+          case 'W': case 'w' : //Jour de le semaine
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "W00" + ByteToString(date.jourDeLaSemaine));
+             break;
+          case 'H': case 'h' : //Heure
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "H00" + ByteToString(date.heures));
+             break;
+          case 'N': case 'n' : //Minute
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "N00" + ByteToString(date.minutes));
+             break;
+          case 'S': case 's' : //Seconde
+             saveRAM("M01LDA" + rxCmd.substring(3,7) + "S00" + ByteToString(date.secondes));
+             break;
+          default :
+             CmdError("L Date erroné (D.M.Y.W.H.N.S)");
+       }
        break ;
     case 'O' : case 'o' :
        //Message reçu: <(Lecture)(On/Off)>
        //Message envoyé: <(Lecture)(On/Off)(StateAlim1240..)>
-       txCmd = txCmd + "LO";
-       if (StateAlim1240) txCmd = txCmd + "1";
-       else txCmd = txCmd + "0";
-       Send(Module);
+       //Format "HHHH"
+       //Format "B"
+       if (actif)
+          saveRAM("M01LOA" + rxCmd.substring(2,6) + "V0001");
+       else
+          saveRAM("M01LOA" + rxCmd.substring(2,6) + "V0000");
        break;
     case 'R' : case 'r' :
-       //Message reçu: <(Lecture)(RAM)(adresse)>
-       //Message envoyé: <(Lecture)(Ram)(valeur)>
+       //Message reçu: <(Lecture (L))(RAM)(adresse)>
+       //Message envoyé: <(Lecture (T))(Ram)(valeur)>
        //Format "HHHH"
-       //Format "HHHHVHHHH"
+       //Format "MHHAA\AHHHHVHHHH"
        StringToWord(address, rxCmd, 2);
-       wValue0 = (byte)spiRam.read_byte((int)address);
-       wValue1 = (byte)spiRam.read_byte((int)address + 1);
-       txCmd = txCmd + "LR" + WordToString(address) + "V" + ByteToString(wValue0) + ByteToString(wValue1);
-       Send(Module);
+       address *= 5; //Caque variable est stokée sur 2 bytes
+       address += 3;
+       if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+          txCmd = txCmd + "TRM" + ByteToString((byte)spiRam.read_byte((int)address)) + (char)spiRam.read_byte((int)address + 1) + (char)spiRam.read_byte((int)address + 2) + "A" + rxCmd.substring(2,6) + "V" + ByteToString((byte)spiRam.read_byte((int)address + 3)) + ByteToString((byte)spiRam.read_byte((int)address + 4));
+          Send(Module);
+       }
        break;
     case 'S' : case 's' :
        //Message reçu: <(Lecture)(SD)>
        //Message envoyé: <(Lecture)(SD)(type)(espace mémoire)>
        //Format ""
        //Format "NNNNVHHHH"
-       txCmd = txCmd + "LS";
-       if (!card.init(SPI_HALF_SPEED, SD_SS_PIN)) {
-       switch(card.type()) {
-          case SD_CARD_TYPE_SD1:
-             txCmd = txCmd + " SD1";
-             break;
-          case SD_CARD_TYPE_SD2:
-             txCmd = txCmd + " SD2";
-             break;
-          case SD_CARD_TYPE_SDHC:
-             txCmd = txCmd + "SDHC";
-             break;
-          default:
-             txCmd = txCmd + "Unkw";
-       }
-       txCmd = txCmd + "V";
-       // Now we will try to open the 'volume'/'partition' - it should be FAT16 or FAT32
-       if (!volume.init(card)) {
-          txCmd = txCmd + "0000";
-          Send(Module);
-          break;
-       }
-       // print the type and size of the first FAT-type volume
-       uint32_t volumesize;
-       volumesize = volume.blocksPerCluster();    // clusters are collections of blocks
-       volumesize *= volume.clusterCount();       // we'll have a lot of clusters
-       volumesize /= 2; // SD card blocks are always 512 bytes / 1024 => kb
-       volumesize /= 1024; // => Mb
-       txCmd = txCmd + WordToString((word)volumesize);
+       txCmd = txCmd + "LS" + SD.type() + "V" + WordToString((word)SD.size());
        Send(Module);
        break;
-       }
-       else {
-          CmdError("LS SD ini faild");
-          break;
-       }
+    case 'A' : case 'a' :
+       //Message reçu: <(Lecture)(Actif)>
+       //Message envoyé: <(Lecture)(Actif)(On/Off)>
+       //Format "HHHH"
+       //Format "B"
+       if (actif)
+          saveRAM("M01LAA" + rxCmd.substring(2,6) + "V0001");
+       else
+          saveRAM("M01LAA" + rxCmd.substring(2,6) + "V0000");
+       break;
     default:   
-      CmdError("L Type de lecture (M.U.D.O.S.R)");
+      CmdError("L Type de lecture (M.U.D.O.S.R.A)");
   } 
 }
 
@@ -438,7 +452,6 @@ void DonneSpeciaux() {
       CmdError("X action speciale (R.B.P)");           
   } 
 }
-
 
 //Ecriture d'un byte dans la mémoire eeprom a l'adresse indiquée
 boolean eepromWrite( unsigned int *eeaddress, byte data, int deviceadd)
@@ -478,19 +491,18 @@ byte dec2bcd(byte dec) {
   return ((dec / 10 * 16) + (dec % 10));
 }
 
-
 //Fonction qui ecrit dans la ram de la RTC les variables necessaire pour le prog serveur
 //sauf la startdate qui ne doit pas changer
-void writeram(byte *states, byte *mode, byte *priorite) {
+void writeram(word *pause, boolean *actif, boolean *validation, boolean *synchronisation) {
   Wire.beginTransmission(DS1307_ADDRESS);
   //ecriture a partir de la position 0x08
   Wire.write(0x08);
   //ecriture du states (position dans la séquence  d'éclairage)
-  Wire.write(*states);
+  Wire.write(*actif);
   //ecriture du mode (normal J/N, messe (sans effet), séquence1, autres)
-  Wire.write(*mode);
+  Wire.write(*validation);
   //ecriture de la priorité du mode dans la ram
-  Wire.write(*priorite);
+  Wire.write(*synchronisation);
   Wire.endTransmission();
 }
 
@@ -522,9 +534,9 @@ void ecrire(Date *date) {
 
 //Retourne la tension de la pile 
 int Tbatterie() {
-    const int potar = 0; // le potentiomètre, branché sur la broche analogique 0
+    const int potar = 0; // la pin de mesure analogique 0
     int valeurLue; //variable pour stocker la valeur lue après conversion
-    float tension; //on convertit cette valeur en une tension
+    //float tension; //on convertit cette valeur en une tension
     //on convertit en nombre binaire la tension lue en sortie du potentiomètre
     valeurLue = analogRead(potar);
     //on traduit la valeur brute en tension (produit en croix)
@@ -556,20 +568,181 @@ void lire(Date *date) {
 }
 
 //Fonction qui rempli le fichier log sur la carte micro SD
-void logFile(String mesg) {
+void logFile(String mesg, String type, Mode canal) {
    File dataFile = SD.open("datalog.txt", FILE_WRITE);
    Date date;
    lire(&date);
    // if the file is available, write to it:
    if (dataFile) {
       dataFile.print(ByteToString(date.jour) + "/" + ByteToString(date.mois) + "/" + ByteToString(date.annee) + "R" + ByteToString(date.jourDeLaSemaine) + "H" + ByteToString(date.heures) + ":" + ByteToString(date.minutes) + ":" + ByteToString(date.secondes) + "\t");
+      dataFile.print(type + "\t");
+      switch(canal) {
+         case Seria:
+            dataFile.print("Seria\t");
+            break;
+         case Radio:
+            dataFile.print("Radio\t");
+            break;
+         case Seria2:
+            dataFile.print("Seria2\t");
+            break;
+         case Executant:
+            dataFile.print("Execut\t");
+            break;
+         case Module:
+            dataFile.print("Module\t");
+            break;
+         default :
+            dataFile.print("No canal\t");
+      }
       dataFile.println(mesg);
       dataFile.close();
    }  
 }
 
+//Fonction pour l'enregistrement dans la RAM des messages de lectures
+void saveRAM(String mesg) {
+   //Message reçu: <(Ecriture)(RAM)(Module)(TypeCmd)(Cmd)(Adresse)(Valeur)>
+   //Format "MHHAA\AHHHHVHHHH"
+   word address = 0;
+   byte wValue0, wValue1,module, typeCmd, Cmd;
+   StringToWord(address, mesg, 6);
+   StringToByte(wValue0, mesg, 11);
+   StringToByte(wValue1, mesg, 13);
+   StringToByte(module, mesg, 1);
+   typeCmd = mesg[3];
+   Cmd = mesg[4];
+   //Sauvegarde dans la RAM
+   //Chaque variable comprend 1 byte pour identifier le module + typeCmd + Cmd + variable sur 2 bytes => 5B
+   address *= 5;
+   address += 3;
+   if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+      spiRam.write_byte((int)address, module);
+      spiRam.write_byte((int)address + 1, typeCmd);
+      spiRam.write_byte((int)address + 2, Cmd);
+      spiRam.write_byte((int)address + 3, wValue0);
+      spiRam.write_byte((int)address + 4, wValue1);
+   }
+   txCmd = "M00M01ER" + mesg;
+   Send(Module);
+}
+
+
 //Fonction qui réagit au commande pour modifier le bloc executable
 void modifExecutable () {
+  word time, address, value;
+  switch (rxCmd[1])
+  {
+    case 'A' : case 'a' :
+       //(Run executable)(Actif)(On/Off)
+       //Format : "B"
+       switch (rxCmd[2])
+       {
+          case '1' :
+             //On écrit dans la RAM l'état actif
+             actif = true;
+             //On allume la Led témoin rouge de M4
+             txCmd = "M04M01KR01T03E8";
+             Send(Module);
+             break;
+          case '0' :
+             //On écrit dans la RAM l'état actif
+             actif = false;
+             txCmd = "M04M01KT01O0";
+             Send(Module);
+             break;
+       }
+       break;
+    case 'V' : case 'v' :
+       //(Run executable)(Validation)
+       //Format : "B"
+       switch (rxCmd[2])
+       {
+          case '1' :
+             validation = true;
+             break;
+          case '0' :
+             validation = false;
+             break;
+       }
+       break;
+    case 'S' : case 's' :
+       //(Run executable)(Synchronisation)
+       //Format : "B"
+       synchronisation = false;
+       switch (rxCmd[2])
+       {
+          case '1' :
+             synchronisation = true;
+             break;
+          case '0' :
+             synchronisation = false;
+             break;
+       }
+       break;
+    case 'D' : case 'd' :
+       //(Run executable)(Delais)(delais)
+       //Format : "HHHH"
+       word time;
+       StringToWord(time, rxCmd, 2);
+       pause = (int)time;
+       break;
+    case 'F' : case 'f' :
+       //(Run executable)(File)(Condition ouverture fichier)
+       //Format : "HHHHCAVHHHHFNN"
+       //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D) et le code du fichier
+       StringToWord(address, rxCmd, 2);
+       StringToWord(value, rxCmd, 9);
+       address *= 5; //Chaque variable est stokée sur 5 bytes
+       address += 3;
+       if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+          time = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
+          switch(rxCmd[7]) {
+             case 'E':
+                if (time == value) {
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                   NumLigne = 0xFFFF;
+                }
+                break;
+             case 'S':
+                if (time > value) {
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                   NumLigne = 0xFFFF;
+                }
+                break;
+             case 'I':
+                if (time < value) {
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                   NumLigne = 0xFFFF;
+                }
+                break;
+             case 'D':
+                if (time != value) {
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                   NumLigne = 0xFFFF;
+                }
+                break;
+          }
+       }
+       break;
+    case 'G' : case 'g' :
+       //(Run executable)(Goto)(Condition pour goto)
+       //Format : "HHHHCALHHHH"
+       //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D) et la ligne à laquelle sauter
+       break;
+    case 'P' : case 'p' :
+       //(Run executable)(Passe)(Condition de poursuivre sur réception de message)
+       //Format : "MHHAA"
+       //provenance du message, type de Cmd et Cmd du message
+       break;
+    case 'H' : case 'h' :
+       //(Run executable)(Horaire)(Condition on Date and Time)
+       //Format : "A\DHHFHHLHHHH"
+       //Type (mois, jour, minute), Valeur début et fin, Si false on fait un goto
+       break;
+    default:   
+      CmdError("R Run executable (A.V.S.D.F.G.P.H)");           
+  } 
 }
 
 void setup(){
@@ -585,6 +758,7 @@ void setup(){
   fCmd[Seria] = "";
   fCmd[Radio] = "";
   fCmd[Seria2] = "";
+  fCmd[Executant] = "";
   
   //Initialisation de la librairie Mirf
   Mirf.cePin = 48; // CE sur D8
@@ -595,10 +769,6 @@ void setup(){
   Mirf.payload = sizeof(byte); // = 4, ici il faut déclarer la taille du "payload" soit du message qu'on va transmettre, au max 32 octets
   Mirf.config(); // Tout est bon ? Ok let's go !
   Mirf.setRADDR((byte *)"nrf01"); // On définit ici l'adresse du module en question
-
-  //Commande demmarrage du module (attenttion réécrire le numéro du module après type démarage)
-  txCmd = "A00M01D01";
-  Send(Module);
 
   //Teste la présence de la RTC sur le bus I²C, si c'est negatif, il y a une boucle infini,
   //qui va faire travailler le watchdog
@@ -624,13 +794,29 @@ void setup(){
   if (!SD.begin(SD_SS_PIN)) while (mode != 0){
     txCmd = "A00M01No SD card";
     Send(Module);
+    txCmd = "M04M01KC01T00FA";
+    Send(Module);
     delay(2000);
+  }
+
+  if (!SD.exists("Exe_00.cre")) {
+    txCmd = "A00M01No Exe_00.cre File";
+    actif = false;
+    Send(Module);
+    txCmd = "M04M01KC01T00FA";
+    Send(Module);
   }
 
   //Au démarrage on considère que le système est allumé
   LastStateAlim1240 = true;
   StateAlim1240 = true;
-  
+
+  //Commande demmarrage du module (attenttion réécrire le numéro du module après type démarage)
+  txCmd = "A00M01D01";
+  Send(Module);
+  txCmd = "M04M01KT01O0";
+  Send(Module);
+
 }
 
 void loop(){
@@ -648,7 +834,81 @@ void loop(){
   while (Serial2.available())
       TreatChar(Serial2.read(), Seria2);
 
-  //Bloc executant le programme lumineux
+  //Bloc executant le programme lumineu
+  if (actif && !Serial.available() && StateAlim1240) {
+    if (CR.currentMillis - ExeTime > pause && !validation) {
+      pause = 20;
+      ExeTime = CR.currentMillis;
+      /* Déclare le buffer qui stockera une ligne du fichier, ainsi que les deux pointeurs key et value */
+      char buffer[BUFFER_SIZE];
+      /* Déclare l'itérateur et le compteur de lignes */
+      byte i, buffer_lenght;
+      // Noméro de ligne
+      word ligne_test;
+      /* Ouvre le  fichier de configuration */
+      char *Execre = "Exe_00.cre";
+      Execre[4] = (IndiceFile >> 8) & 0x00FF;
+      Execre[5] = IndiceFile & 0x00FF;
+      ExeFile = SD.open(Execre, FILE_READ);
+      if(ExeFile) { // Gère les erreurs
+         /* Tant que non fin de fichier */
+         while(ExeFile.available() > 0 ){
+            /* Récupère une ligne entière dans le buffer */
+            i = 0;
+            while((buffer[i++] = ExeFile.read()) != '\n') {
+               /* Si la ligne dépasse la taille du buffer */
+               if(i == BUFFER_SIZE) {
+                  /* On finit de lire la ligne mais sans stocker les données */
+                  while(ExeFile.read() != '\n');
+                  break; // Et on arrête la lecture de cette ligne
+               }
+            }
+            /* On garde de côté le nombre de char stocké dans le buffer */
+            buffer_lenght = i;
+            /* Finalise la chaine de caractéres ASCIIZ en supprimant le \n au passage */
+            buffer[--i] = '\0';
+            /* Ignore les lignes vides ou les lignes de commentaires */
+            if(buffer[0] == '\0' || buffer[0] == '#') continue;
+            // On teste le numéro de ligne avec celui qui doit etre executé
+            StringToWord(ligne_test, buffer, 0);
+            if (ligne_test == NumLigne) {
+               //Comme ont est à la bonne ligne, on execute l'instruction
+               i = 4; //Les 4 premier char correspondent au numéro de la ligne en Hexa
+               boolean msg = false;
+               while (buffer[i] != '\0') {
+                  //A la fin du msg on l'envois, meme pour les msg a destination de serveur M1
+                  TreatChar(buffer[i], Executant);
+                  i++;
+               }
+               NumLigne++;
+               break;
+            }
+            //Quand on à dépassé la ligne qui doit etre executé, on incrémente le compteur et on quitter la boucle
+            else if ((ligne_test > NumLigne)) {
+               NumLigne++;
+               break;
+            }
+         }
+      }
+      
+      ExeFile.close();
+      //Toutes les variables sont recopiée dans la RAM pour sauvegarde
+      spiRam.write_byte(0x0001, pause & 0x00FF);
+      spiRam.write_byte(0x0000, (pause >> 8) & 0x00FF);
+      int ValBool = (actif)?0x0001:0x0000;
+      ValBool = ValBool << 8;
+      ValBool = ValBool | (validation)?0x0001:0x0000;
+      ValBool = ValBool << 8;
+      ValBool = ValBool | (synchronisation)?0x0001:0x0000;
+      ValBool = ValBool << 8;
+      spiRam.write_byte(0x0003, ValBool & 0x00FF);
+      spiRam.write_byte(0x0005, NumLigne & 0x00FF);
+      spiRam.write_byte(0x0007, IndiceFile & 0x00FF);
+      spiRam.write_byte(0x0002, (ValBool >> 8) & 0x00FF);
+      spiRam.write_byte(0x0004, (NumLigne >> 8) & 0x00FF);
+      spiRam.write_byte(0x0006, (IndiceFile >> 8) & 0x00FF);
+    }
+  }
   
 }
 

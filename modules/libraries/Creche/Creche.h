@@ -138,7 +138,7 @@ typedef struct{
 //Liste des modules du système (pour gérer l'envois et la réception)
 enum ArduinoModel{ Pwm_m2 = 2, Serveur_m1 = 1, Pc_m0 = 0, Dbc_m3 = 3, BoutonServeur_m4 = 4, Lanterne_m5 = 5};
 //Liste de canaux de communication
-enum Mode{Seria = 0, Radio = 1, Seria2 = 2, Module = 3};
+enum Mode{Seria = 0, Radio = 1, Seria2 = 2, Module = 4, Executant = 3};
 
 // Binaire à String
 char NibbleToChar(byte data) ;

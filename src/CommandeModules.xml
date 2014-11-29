@@ -62,9 +62,12 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       <Commande Nom="Donnée dans la RAM" Cmd="R">
          <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
       </Commande>
+      <Commande Nom="Executant actif" Cmd="A"/>
    </TypeCmd>
    <TypeCmd Nom="Executable" Cmd="R">
-      <Commande Nom="" Cmd=""/>
+      <Commande Nom="Actif" Cmd="A">
+         <Parametre Aide="1=>On 0=>Off " Hexa="false" Format="B"/>
+      </Commande>
    </TypeCmd>
       <TypeCmd Nom="Ecriture données" Cmd="E">
       <Commande Nom="Date et Heure" Cmd="D">

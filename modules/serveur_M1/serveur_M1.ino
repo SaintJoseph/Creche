@@ -642,7 +642,7 @@ void modifExecutable () {
              //On écrit dans la RAM l'état actif
              actif = true;
              //On allume la Led témoin rouge de M4
-             txCmd = "M04M01KR01T03E8";
+             txCmd = "M04M01KR01T1388";
              Send(Module);
              break;
           case '0' :
@@ -700,26 +700,26 @@ void modifExecutable () {
           switch(rxCmd[7]) {
              case 'E':
                 if (time == value) {
-                   IndiceFile = word(rxCmd[13], rxCmd[14]);
-                   NumLigne = 0xFFFF;
+                   IndiceFile = word(rxCmd[14], rxCmd[15]);
+                   NumLigne = 0x0000;
                 }
                 break;
              case 'S':
                 if (time > value) {
                    IndiceFile = word(rxCmd[13], rxCmd[14]);
-                   NumLigne = 0xFFFF;
+                   NumLigne = 0x0000;
                 }
                 break;
              case 'I':
                 if (time < value) {
                    IndiceFile = word(rxCmd[13], rxCmd[14]);
-                   NumLigne = 0xFFFF;
+                   NumLigne = 0x0000;
                 }
                 break;
              case 'D':
                 if (time != value) {
                    IndiceFile = word(rxCmd[13], rxCmd[14]);
-                   NumLigne = 0xFFFF;
+                   NumLigne = 0x0000;
                 }
                 break;
           }
@@ -909,6 +909,6 @@ void loop(){
       spiRam.write_byte(0x0006, (IndiceFile >> 8) & 0x00FF);
     }
   }
-  
+
 }
 

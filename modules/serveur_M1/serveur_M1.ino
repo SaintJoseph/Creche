@@ -167,14 +167,9 @@ void AdressageMessage(Mode canal)
            txCmd = fCmd[canal];
            Send(canal);
         break ;
-      case 'E' : case 'e' :
-        //Module répond "ErrMessage" (normalement programmer le renvois du même message)
-        txCmd = "Message non recu, a faire";
-        Send(Module);
-        break;
       default:
         //Le message ne correspond a rien
-        txCmd = "ErrMessageM1";
+        txCmd = "M00M01ErrMessageM1";
         Send(Module);
         break;
     }
@@ -243,7 +238,7 @@ void Send(Mode canal) {
 void CmdError(String type)
 // Doit être appelé quand il y a une erreur dans rxCmd
 {
-  txCmd = txCmd + "ERR " + type;
+  txCmd = txCmd + "Z ERR " + type;
   Send(Module);
 }
 
@@ -272,15 +267,24 @@ void TreatCommand(String cmd) {
     case 'D' : case 'd' : 
       //Message reçu : <(Demarrage)...>
       //Un module x vient de redémrrer peut-etre quil faut lui envoyer une commande de mise a jour
-      StringToByte(desti,rxCmd,1);
+      //Format "\DHH"
+      //On enregistre dans la mémoire la présence du module depuis l'adresse 0101 pour M1, 0102 pour M2 etc
+      saveRAM("M" + rxCmd.substring(1,3) + "XDA01" + rxCmd.substring(1,3) + "V0001");
       break ;
     case 'P' : case 'p' : 
       //Message reçu : <(Présent)...>
       //Un module x vient de répondre présent suite a une requete
-      StringToByte(desti,rxCmd,1);
+      //Format "PHH"
+      //On enregistre dans la mémoire la présence du module depuis l'adresse 0101 pour M1, 0102 pour M2 etc
+      saveRAM("M" + rxCmd.substring(1,3) + "XPA01" + rxCmd.substring(1,3) + "V0001");
+      break ;
+    case 'Z' : case 'z' : 
+      //Message reçu : <(Message sans effet)...>
+      //Rien a faire ici
+      //Permet de faire passer une indication a l'utilisateur
       break ;
     default:   
-      CmdError("type d'operation (X.L.E.D.P)");
+      CmdError("type d'operation (X.L.E.D.P.Z)");
       break ;      
   }
 }
@@ -290,7 +294,7 @@ void EcritureVariable () {
   Date date;
   switch (rxCmd[1])
   {
-    case 'D' : case 'd' :
+    case 'D' : case 'd' : //Mise a jour de l'heure système
        //Message reçu: <(Ecriture)(Date)>
        //Message envoyé: <(Ecriture)(Date)(jj/mm/aaRjjHhh:mm:ss)>
        //Format "HH/HH/HHRHH\HHH:HH:HH"
@@ -303,7 +307,7 @@ void EcritureVariable () {
        StringToByte(date.secondes, rxCmd, 20);
        ecrire(&date);
        break;
-    case 'R' : case 'r' :
+    case 'R' : case 'r' : //Réception d'une varible pour la RAM
        //Message reçu: <(Ecriture)(RAM)(Module)(TypeCmd)(Cmd)(Adresse)(Valeur)>
        //Format "MHHAA\AHHHHVHHHH"
        saveRAM(rxCmd.substring(2));
@@ -396,7 +400,7 @@ void LectureVariable() {
           Send(Module);
        }
        break;
-    case 'S' : case 's' :
+    case 'S' : case 's' : //Message d'information
        //Message reçu: <(Lecture)(SD)>
        //Message envoyé: <(Lecture)(SD)(type)(espace mémoire)>
        //Format ""
@@ -415,7 +419,7 @@ void LectureVariable() {
           saveRAM("M01LAA" + rxCmd.substring(2,6) + "V0000");
        break;
     default:   
-      CmdError("L Type de lecture (M.U.D.O.S.R.A)");
+      CmdError("L Type lecture (M.U.D.O.S.R.A)");
   } 
 }
 
@@ -426,9 +430,11 @@ void DonneSpeciaux() {
   {
     case 'R' : case 'r' :
        //Message reçu: <(X opération)(Reboot)>
+       //Format ""
        while ( rxCmd[1] < 't');
     case 'B' : case 'b' :
        //Message reçu: <(X opération)(Boutton)>
+       //Format "B"
        switch (rxCmd[2]) {
           case '1':
              //Message reçu: <(X opération)(Boutton)(on)>
@@ -445,8 +451,10 @@ void DonneSpeciaux() {
     case 'P' : case 'p' :
        //Message reçu: <(X opération)(Présence)>
        //Message envoyé: <(Présent)>
+       //Format "B"
        txCmd = txCmd + "P01";
        Send(Module);
+       saveRAM("M01XPA0101V0001");
        break;
     default:   
       CmdError("X action speciale (R.B.P)");           
@@ -630,7 +638,7 @@ void saveRAM(String mesg) {
 
 //Fonction qui réagit au commande pour modifier le bloc executable
 void modifExecutable () {
-  word time, address, value;
+  word time, address, value, ligne;
   switch (rxCmd[1])
   {
     case 'A' : case 'a' :
@@ -689,18 +697,25 @@ void modifExecutable () {
        break;
     case 'F' : case 'f' :
        //(Run executable)(File)(Condition ouverture fichier)
-       //Format : "HHHHCAVHHHHFNN"
-       //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D) et le code du fichier
+       //Format : "HHHHAAHHHHFNN"
+       //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D), adresse ou valeur a comparer et le code du fichier
        StringToWord(address, rxCmd, 2);
-       StringToWord(value, rxCmd, 9);
+       StringToWord(value, rxCmd, 8);
+       //On compare normalement une valeur a une adresse mémoire par défaut : rxCmd[7] == 'V'
+       if (rxCmd[7] == 'A') { //On compare des valeurs entre 2 adresses mémoire
+          value *= 5; //Chaque variable est stokée sur 5 bytes
+          value += 3;
+          if (value > 7 && value < 0x7FFA)
+             value = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
+       }
        address *= 5; //Chaque variable est stokée sur 5 bytes
        address += 3;
        if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
           time = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
-          switch(rxCmd[7]) {
+          switch(rxCmd[6]) {
              case 'E':
                 if (time == value) {
-                   IndiceFile = word(rxCmd[14], rxCmd[15]);
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
                    NumLigne = 0x0000;
                 }
                 break;
@@ -727,8 +742,46 @@ void modifExecutable () {
        break;
     case 'G' : case 'g' :
        //(Run executable)(Goto)(Condition pour goto)
-       //Format : "HHHHCALHHHH"
-       //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D) et la ligne à laquelle sauter
+       //Format : "HHHHAAHHHHLHHHH"
+       //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D),
+       //Adresse ou Valeur a comparer et la ligne à laquelle sauter
+       StringToWord(address, rxCmd, 2);
+       StringToWord(value, rxCmd, 8);
+       StringToWord(ligne, rxCmd, 13);
+       //On compare normalement une valeur a une adresse mémoire par défaut : rxCmd[7] == 'V'
+       if (rxCmd[7] == 'A') { //On compare des valeurs entre 2 adresses mémoire
+          value *= 5; //Chaque variable est stokée sur 5 bytes
+          value += 3;
+          if (value > 7 && value < 0x7FFA)
+             value = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
+       }
+       address *= 5; //Chaque variable est stokée sur 5 bytes
+       address += 3;
+       if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+          time = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
+          switch(rxCmd[6]) {
+             case 'E':
+                if (time == value) {
+                   NumLigne = ligne;
+                }
+                break;
+             case 'S':
+                if (time > value) {
+                   NumLigne = ligne;
+                }
+                break;
+             case 'I':
+                if (time < value) {
+                   NumLigne = ligne;
+                }
+                break;
+             case 'D':
+                if (time != value) {
+                   NumLigne = ligne;
+                }
+                break;
+          }
+       }
        break;
     case 'P' : case 'p' :
        //(Run executable)(Passe)(Condition de poursuivre sur réception de message)
@@ -740,8 +793,13 @@ void modifExecutable () {
        //Format : "A\DHHFHHLHHHH"
        //Type (mois, jour, minute), Valeur début et fin, Si false on fait un goto
        break;
+    case 'O' : case 'o' :
+       //(Run executable)(Opération)(valeurs et type d'opération)
+       //Format : "AHHHHAAHHHH"
+       //Adresse ou valeur 1, type d'opération, adresse ou valeur 2
+       break;
     default:   
-      CmdError("R Run executable (A.V.S.D.F.G.P.H)");           
+      CmdError("R executable (A.V.S.D.F.G.P.H.O)");           
   } 
 }
 
@@ -776,7 +834,7 @@ void setup(){
   byte mode = 3;
   Wire.beginTransmission(DS1307_ADDRESS);
   if (Wire.endTransmission() != 0) while (mode != 0) {
-    txCmd = "A00M01No RTC Connected";
+    txCmd = "A00M01ZNo RTC Connected";
     Send(Module);
     delay(2000);
   }
@@ -792,15 +850,18 @@ void setup(){
   // since we're just testing if the card is working!
   mode = 3;
   if (!SD.begin(SD_SS_PIN)) while (mode != 0){
-    txCmd = "A00M01No SD card";
+    txCmd = "A00M01ZNo SD card";
     Send(Module);
     txCmd = "M04M01KC01T00FA";
     Send(Module);
     delay(2000);
   }
 
+  //Le fichier Exe_oo.cre est le point d'entrée du programme exécutable
+  //pour les autres fichier executable, il faut changer le 00 par une autre combinaison
+  //de chiffre ou de lettre. La casse est prise en compte.
   if (!SD.exists("Exe_00.cre")) {
-    txCmd = "A00M01No Exe_00.cre File";
+    txCmd = "A00M01ZNo Exe_00.cre File";
     actif = false;
     Send(Module);
     txCmd = "M04M01KC01T00FA";

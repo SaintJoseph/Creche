@@ -353,28 +353,28 @@ void LectureVariable() {
        lire(&date);
        switch (rxCmd[2]) {
           case 'D': case 'd' : //Jour du mois
-             saveRAM("M01LDA" + rxCmd.substring(3,7) + "D00" + ByteToString(date.jour));
+             saveRAM("M01DDA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.jour));
              break;
           case 'M': case 'm' : //Mois
-             saveRAM("M01LDA" + rxCmd.substring(3,7) + "M00" + ByteToString(date.mois));
+             saveRAM("M01DMA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.mois));
              break;
           case 'Y': case 'y' : //Année
-             saveRAM("M01LDA" + rxCmd.substring(3,7) + "Y00" + ByteToString(date.annee));
+             saveRAM("M01DYA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.annee));
              break;
           case 'W': case 'w' : //Jour de le semaine
-             saveRAM("M01LDA" + rxCmd.substring(3,7) + "W00" + ByteToString(date.jourDeLaSemaine));
+             saveRAM("M01DWA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.jourDeLaSemaine));
              break;
           case 'H': case 'h' : //Heure
-             saveRAM("M01LDA" + rxCmd.substring(3,7) + "H00" + ByteToString(date.heures));
+             saveRAM("M01DHA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.heures));
              break;
           case 'N': case 'n' : //Minute
-             saveRAM("M01LDA" + rxCmd.substring(3,7) + "N00" + ByteToString(date.minutes));
+             saveRAM("M01DNA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.minutes));
              break;
           case 'S': case 's' : //Seconde
-             saveRAM("M01LDA" + rxCmd.substring(3,7) + "S00" + ByteToString(date.secondes));
+             saveRAM("M01DSA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.secondes));
              break;
           default :
-             CmdError("L Date erroné (D.M.Y.W.H.N.S)");
+             CmdError("Date erroné (D.M.Y.W.H.N.S)");
        }
        break ;
     case 'O' : case 'o' :
@@ -391,12 +391,13 @@ void LectureVariable() {
        //Message reçu: <(Lecture (L))(RAM)(adresse)>
        //Message envoyé: <(Lecture (T))(Ram)(valeur)>
        //Format "HHHH"
-       //Format "MHHAA\AHHHHVHHHH"
+       //Format renvoyé "\AHHHHVHHHH"
+       //ATTENTION le module d'envois le type et la commande sont celle enregistrer, pas les valeurs réelle
        StringToWord(address, rxCmd, 2);
        address *= 5; //Caque variable est stokée sur 2 bytes
        address += 3;
        if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
-          txCmd = txCmd + "TRM" + ByteToString((byte)spiRam.read_byte((int)address)) + (char)spiRam.read_byte((int)address + 1) + (char)spiRam.read_byte((int)address + 2) + "A" + rxCmd.substring(2,6) + "V" + ByteToString((byte)spiRam.read_byte((int)address + 3)) + ByteToString((byte)spiRam.read_byte((int)address + 4));
+          txCmd = "M00M" + ByteToString((byte)spiRam.read_byte((int)address)) + (char)spiRam.read_byte((int)address + 1) + (char)spiRam.read_byte((int)address + 2) + "A" + rxCmd.substring(2,6) + "V" + ByteToString((byte)spiRam.read_byte((int)address + 3)) + ByteToString((byte)spiRam.read_byte((int)address + 4));
           Send(Module);
        }
        break;
@@ -631,7 +632,7 @@ void saveRAM(String mesg) {
       spiRam.write_byte((int)address + 3, wValue0);
       spiRam.write_byte((int)address + 4, wValue1);
    }
-   txCmd = "M00M01ER" + mesg;
+   txCmd = "M00" + mesg;
    Send(Module);
 }
 
@@ -794,9 +795,48 @@ void modifExecutable () {
        //Type (mois, jour, minute), Valeur début et fin, Si false on fait un goto
        break;
     case 'O' : case 'o' :
-       //(Run executable)(Opération)(valeurs et type d'opération)
-       //Format : "AHHHHAAHHHH"
+       //(Run executable)(Opération)(valeurs et type d'opération(P +)(M -)(D /)(X *))
+       //Format : "\AHHHHAAHHHH"
        //Adresse ou valeur 1, type d'opération, adresse ou valeur 2
+       StringToWord(address, rxCmd, 3);
+       StringToWord(value, rxCmd, 9);
+       //On compare normalement une valeur a une adresse mémoire par défaut : rxCmd[2] == 'V'
+       if (rxCmd[2] == 'A') { //On compare des valeurs entre 2 adresses mémoire
+          address *= 5; //Chaque variable est stokée sur 5 bytes
+          address += 3;
+          if (address > 7 && address < 0x7FFA)
+             ligne = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
+       }
+       else {
+          CmdError("RO premiere val, add");
+          break;
+       }
+       //On compare normalement une valeur a une adresse mémoire par défaut : rxCmd[8] == 'V'
+       if (rxCmd[8] == 'A') { //On compare des valeurs entre 2 adresses mémoire
+          value *= 5; //Chaque variable est stokée sur 5 bytes
+          value += 3;
+          if (value > 7 && value < 0x7FFA)
+             value = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
+       }
+       switch(rxCmd[7]) {
+          case 'P':
+             ligne += value;
+             break;
+          case 'M':
+             ligne -= value;
+             break;
+          case 'D':
+             ligne /= value;
+             break;
+          case 'X':
+             ligne *= value;
+             break;
+       }
+       if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+          //On recopie le résultat dans la RAM
+          spiRam.write_byte((int)address + 4, ligne & 0x00FF);
+          spiRam.write_byte((int)address + 3, (ligne >> 8) & 0x00FF);
+       }
        break;
     default:   
       CmdError("R executable (A.V.S.D.F.G.P.H.O)");           

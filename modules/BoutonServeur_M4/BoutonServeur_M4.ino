@@ -119,14 +119,9 @@ void AdressageMessage()
            //On fait suivre le message vers les autres modules qui ne l'auraient pas encore reçu
            txCmd = fCmd;
         break ;
-      case 'E' : case 'e' :
-        //Module répond "ErrMessage" (normalement programmer le renvois du même message)
-        txCmd = "Message non recu, a faire";
-        Send();
-        break;
       default:
         //Le message ne correspond a rien
-        txCmd = "ErrMessageM4";
+        txCmd = "M00M04ErrMessageM4";
         Send();
         break;
     }
@@ -141,7 +136,7 @@ void Send() {
 void CmdError(String type)
 // Doit être appelé quand il y a une erreur dans rxCmd
 {
-  txCmd = txCmd + "ERR " + type;
+  txCmd = txCmd + "Z ERR " + type;
   Send();
 }
 
@@ -172,6 +167,11 @@ void TreatCommand(String cmd) {
       byte desti;
       StringToByte(desti,rxCmd,1);
       break ;
+    case 'Z' : case 'z' : 
+      //Message reçu : <(Message sans effet)...>
+      //Rien a faire ici
+      //Permet de faire passer une indication a l'utilisateur
+      break ;
     default:   
       CmdError("type d'operation (X.L.E.D.K)");
       break ;      
@@ -198,19 +198,31 @@ void EcritureVariable () {
 
 //Fonction qui renvoit la valeur des variables demandée
 void LectureVariable() {
+  /*
+  Le message de lecture variable ne renvois plus de message au demandeur.
+  -Il envois un message pour la RAM de M1 avec la valeur a y inscrire
+     *pas de risque de message en boucle
+  -M1 renvois automatiquement un message vers M0 avec le contenu recopié
+     *seul l'utilisateur et l'executant sont suceptible de connaitre la valeur
+     *Permet d'introduire des conditions sur les varibles de tous le système
+  */
   byte led;
   switch (rxCmd[1])
   {
     case 'M' : case 'm' :
        //Message reçu: <(Lecture)(Memoire)>
        //Message envoyé: <(Lecture)(Memoire)(memoire..)>
-       txCmd = txCmd + "LM" + WordToString(freeMemory());
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M04ERM04LMA" + rxCmd.substring(2,6) + "V" + WordToString(freeMemory());
        Send();
        break ;
     case 'V' : case 'v' :
        //Message reçu: <(Lecture)(Validation)>
        //Message envoyé: <(Lecture)(Validation)(validation..)>
-       txCmd = txCmd + "LV";
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M04ERM04LVA" + rxCmd.substring(2,6) + "V000";
        if (Bouton2.state) txCmd = txCmd + "1";
        else txCmd = txCmd + "0";
        Send();
@@ -218,7 +230,9 @@ void LectureVariable() {
     case 'S' : case 's' :
        //Message reçu: <(Lecture)(Synchronisation)>
        //Message envoyé: <(Lecture)(Synchronisation)(synchronisation..)>
-       txCmd = txCmd + "LS";
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M04ERM04LSA" + rxCmd.substring(2,6) + "V000";
        if (Bouton3.state) txCmd = txCmd + "1";
        else txCmd = txCmd + "0";
        Send();
@@ -241,7 +255,9 @@ void LectureVariable() {
     case 'O' : case 'o' :
        //Message reçu: <(Lecture)(On/Off)>
        //Message envoyé: <(Lecture)(On/Off)(StateAlim1240..)>
-       txCmd = txCmd + "LO";
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M04ERM04OMA" + rxCmd.substring(2,6) + "V000";
        if (StateAlim1240) txCmd = txCmd + "1";
        else txCmd = txCmd + "0";
        Send();
@@ -258,9 +274,11 @@ void DonneSpeciaux() {
   {
     case 'R' : case 'r' :
        //Message reçu: <(X opération)(Reboot)>
+       //Format ""
        while ( rxCmd[1] < 'T');
     case 'B' : case 'b' :
        //Message reçu: <(X opération)(Boutton)>
+       //Format "B"
        switch (rxCmd[2]) {
           case '1':
              //Message reçu: <(X opération)(Boutton)(on)>
@@ -277,6 +295,9 @@ void DonneSpeciaux() {
        }
        break;
     case 'P' : case 'p' :
+       //Message reçu: <(X opération)(Présence)>
+       //Message envoyé: <(Présent)>
+       //Format "B"
        txCmd = txCmd + "P04";
        Send();
        break;

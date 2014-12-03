@@ -151,7 +151,7 @@ void AdressageMessage(Mode canal)
         if (desti == Serveur_m1) {
            txCmd = fCmd[canal][3] + ByteToString(envoyeur) + "M01";
            //Les 6 premier carractère du message concerne l'adressage, le module prend cette information séparement pour un éventuel retour de message
-           TreatCommand(fCmd[canal].substring(6)) ;
+           TreatCommand(fCmd[canal].substring(6));
         }
         else {
             //Si le message n'est pas a destination de ce module, c'est qu'il est attendu sur un autre module, donc on le fait suivre
@@ -248,30 +248,30 @@ void TreatCommand(String cmd) {
   byte desti;
   switch (rxCmd[0])
   {
-    case 'X' : case 'x' : 
+    case 'X' : case 'x' :
       //Message reçu : <(X opération)...>
       DonneSpeciaux() ;
       break ;
-    case 'L' : case 'l' : 
+    case 'L' : case 'l' :
       //Message reçu : <(Lecture)...>
       LectureVariable() ;
       break ;
-    case 'E' : case 'e' : 
+    case 'E' : case 'e' :
       //Message reçu : <(Ecriture)...>
       EcritureVariable() ;
       break ;
-    case 'R' : case 'r' : 
+    case 'R' : case 'r' :
       //Message reçu : <(RUN exécutable)...>
       modifExecutable() ;
       break ;
-    case 'D' : case 'd' : 
+    case 'D' : case 'd' :
       //Message reçu : <(Demarrage)...>
       //Un module x vient de redémrrer peut-etre quil faut lui envoyer une commande de mise a jour
       //Format "\DHH"
       //On enregistre dans la mémoire la présence du module depuis l'adresse 0101 pour M1, 0102 pour M2 etc
       saveRAM("M" + rxCmd.substring(1,3) + "XDA01" + rxCmd.substring(1,3) + "V0001");
       break ;
-    case 'P' : case 'p' : 
+    case 'P' : case 'p' :
       //Message reçu : <(Présent)...>
       //Un module x vient de répondre présent suite a une requete
       //Format "PHH"
@@ -796,29 +796,23 @@ void modifExecutable () {
        break;
     case 'O' : case 'o' :
        //(Run executable)(Opération)(valeurs et type d'opération(P +)(M -)(D /)(X *))
-       //Format : "\AHHHHAAHHHH"
+       //Format : "HHHHAAHHHH"
        //Adresse ou valeur 1, type d'opération, adresse ou valeur 2
-       StringToWord(address, rxCmd, 3);
-       StringToWord(value, rxCmd, 9);
+       StringToWord(address, rxCmd, 2);
+       StringToWord(value, rxCmd, 8);
        //On compare normalement une valeur a une adresse mémoire par défaut : rxCmd[2] == 'V'
-       if (rxCmd[2] == 'A') { //On compare des valeurs entre 2 adresses mémoire
-          address *= 5; //Chaque variable est stokée sur 5 bytes
-          address += 3;
-          if (address > 7 && address < 0x7FFA)
-             ligne = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
-       }
-       else {
-          CmdError("RO premiere val, add");
-          break;
-       }
+       address *= 5; //Chaque variable est stokée sur 5 bytes
+       address += 3;
+       if (address > 7 && address < 0x7FFA)
+          ligne = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
        //On compare normalement une valeur a une adresse mémoire par défaut : rxCmd[8] == 'V'
-       if (rxCmd[8] == 'A') { //On compare des valeurs entre 2 adresses mémoire
+       if (rxCmd[7] == 'A') { //On compare des valeurs entre 2 adresses mémoire
           value *= 5; //Chaque variable est stokée sur 5 bytes
           value += 3;
           if (value > 7 && value < 0x7FFA)
              value = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
        }
-       switch(rxCmd[7]) {
+       switch(rxCmd[6]) {
           case 'P':
              ligne += value;
              break;

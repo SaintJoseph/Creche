@@ -61,7 +61,7 @@
 
 #define DS1307_ADDRESS 0x68 // Adresse I2C du module DS1307
 
-PROGMEM const String devise = "Mon Dieu faite que je serve uniquement a votre plus grande gloire";
+//PROGMEM const String devise = "Mon Dieu faite que je serve uniquement a votre plus grande gloire";
 
 //---------------------------VARIABLES--------------------------------
 
@@ -743,9 +743,9 @@ void modifExecutable () {
        break;
     case 'G' : case 'g' :
        //(Run executable)(Goto)(Condition pour goto)
-       //Format : "HHHHAAHHHHLHHHH"
+       //Format : "HHHHAAHHHHAHHHH"
        //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D),
-       //Adresse ou Valeur a comparer et la ligne à laquelle sauter
+       //Adresse ou Valeur a comparer et la ligne à laquelle sauter, ou adresse avec la ligne où aller
        StringToWord(address, rxCmd, 2);
        StringToWord(value, rxCmd, 8);
        StringToWord(ligne, rxCmd, 13);
@@ -755,6 +755,13 @@ void modifExecutable () {
           value += 3;
           if (value > 7 && value < 0x7FFA)
              value = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
+       }
+       //On accède normalement à la ligne, sauf si le num de ligne est a une adresse mémoire : rxCmd[12] == 'L'
+       if (rxCmd[7] == 'A') { //On compare des valeurs entre 2 adresses mémoire
+          ligne *= 5; //Chaque variable est stokée sur 5 bytes
+          ligne += 3;
+          if (ligne > 7 && ligne < 0x7FFA)
+             ligne = word((byte)spiRam.read_byte((int)ligne + 3), (byte)spiRam.read_byte((int)ligne + 4));
        }
        address *= 5; //Chaque variable est stokée sur 5 bytes
        address += 3;

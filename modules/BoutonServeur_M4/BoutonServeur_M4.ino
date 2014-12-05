@@ -252,12 +252,13 @@ void LectureVariable() {
        else {
           CmdError("LL adresse led 01");
        }
+       break;
     case 'O' : case 'o' :
        //Message reçu: <(Lecture)(On/Off)>
        //Message envoyé: <(Lecture)(On/Off)(StateAlim1240..)>
        //Format reçu: "HHHH"
        //Format envoyé : "ERMHHAA\AHHHHVHHHH"
-       txCmd = "M01M04ERM04OMA" + rxCmd.substring(2,6) + "V000";
+       txCmd = "M01M04ERM04LOA" + rxCmd.substring(2,6) + "V000";
        if (StateAlim1240) txCmd = txCmd + "1";
        else txCmd = txCmd + "0";
        Send();

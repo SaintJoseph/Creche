@@ -187,16 +187,16 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
    </Module>
    <Module Nom="BoutonServeur M4" Cmd="M04">
       <TypeCmd Nom="Lecture données" Cmd="L">
-         <Commande Nom="Etat On/Off" Cmd="O">
+         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="HHHH">
             <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Ram disponible" Cmd="M">
+         <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
             <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Synchronisation" Cmd="S">
+         <Commande Nom="Synchronisation" Cmd="S" Hexa="true" Format="HHHH">
             <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Validation" Cmd="V">
+         <Commande Nom="Validation" Cmd="V" Hexa="true" Format="HHHH">
             <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
          </Commande>
          <Commande Nom="Etat de la Led Rouge" Cmd="L">
@@ -304,8 +304,8 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom="Propriétés carte SD" Cmd="S" Hexa="true" Format="NNNNVHHHH" Prov="M01">
             <Parametre Aide="Mb"/>
          </Commande>
-         <Commande Nom="Synchronisation" Cmd="S" Hexa="true" Format="B" Prov="M04"/>
-         <Commande Nom="Validation" Cmd="V" Hexa="true" Format="B"/>
+         <Commande Nom="Synchronisation" Cmd="S" Hexa="true" Format="HHHB" Prov="M04"/>
+         <Commande Nom="Validation" Cmd="V" Hexa="true" Format="HHHB" Prov="M04"/>
       </TypeCmd>
       <TypeCmd Nom="Date et Heure" Cmd="A">
          <Commande Nom="Jour" Cmd="D" Hexa="true"  Format="HHHH">

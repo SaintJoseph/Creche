@@ -163,11 +163,6 @@ void AdressageMessage()
            //On fait suivre le message vers les autres modules qui ne l'auraient pas encore reçu
            txCmd = fCmd;
         break ;
-      case 'E' : case 'e' :
-        //Module répond "ErrMessage" (normalement programmer le renvois du même message)
-        txCmd = "Message non recu, a faire";
-        Send();
-        break;
       default:
         //Le message ne correspond a rien
         txCmd = "ErrMessageM1";
@@ -191,7 +186,7 @@ void Send() {
 void CmdError(String type)
 // Doit être appelé quand il y a une erreur dans rxCmd
 {
-  txCmd = txCmd + "ERR " + type;
+  txCmd = txCmd + "Z ERR " + type;
   Send();
 }
 
@@ -254,7 +249,7 @@ void EcritureVariable() {
       }
       break ;
     default:   
-      CmdError("ecriture variable impreci (P.T.A)");
+      CmdError("ecriture variable (P.T.A)");
       break ;      
   }
 }
@@ -266,10 +261,12 @@ void DonneSpeciaux() {
   {
     case 'R' : case 'r' :
        //Message reçu: <(X opération)(Reboot)>
+       //Format ""
        while ( rxCmd[1] < 't');
        break;
     case 'A' : case 'a' :
        //Message reçu: <(X opération)(All)(...)>
+       //Format "B"
        switch (rxCmd[2]) {
           case '1':
              //Message reçu: <(X opération)(All)(on)>
@@ -284,11 +281,12 @@ void DonneSpeciaux() {
              }
              break;
           default:
-             CmdError("All preciser on ou off (1.0)");
+             CmdError("All preciser OnOff (1.0)");
        }
        break ;
     case 'B' : case 'b' :
        //Message reçu: <(X opération)(Boutton)>
+       //Format "B"
        switch (rxCmd[2]) {
           case '1':
              //Message reçu: <(X opération)(Boutton)(on)>
@@ -301,12 +299,13 @@ void DonneSpeciaux() {
              Bouton2.state = false;
              break;
           default:
-             CmdError("boutton OnOff preciser (1.0)");
+             CmdError("boutton OnOff (1.0)");
        }
        break;
     case 'P' : case 'p' :
        //Message reçu: <(X opération)(Présence)>
        //Message envoyé: <(Présent)>
+       //Format "PHH"
        txCmd = txCmd + "P03";
        Send();
        break;
@@ -322,31 +321,46 @@ void LectureVariable() {
     case 'T' : case 't' :
        //Message reçu: <(Lecture)(Température)>
        //Message envoyé: <(Lecture)(Température)(température..)>
-       txCmd = txCmd + "LT" + ByteToString(temp);
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M03ERM03LTA" + rxCmd.substring(2,6) + "V00" + ByteToString(temp);
        Send();
        break ;
     case 'P' : case 'p' :
        //Message reçu: <(Lecture)(Puissance)>
        //Message envoyé: <(Lecture)(Puissance)(puissance..)>
-       txCmd = txCmd + "LP" + ByteToString(puis);
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M03ERM03LPA" + rxCmd.substring(2,6) + "V00" + ByteToString(puis);
        Send();
        break ;
     case 'M' : case 'm' :
        //Message reçu: <(Lecture)(Puissance)>
        //Message envoyé: <(Lecture)(Puissance)(puissance..)>
-       txCmd = txCmd + "LM" + WordToString(freeMemory());
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M03ERM03LMA" + rxCmd.substring(2,6) + "V" + WordToString(freeMemory());
        Send();
        break ;
     case 'N' : case 'n' :
        //Message reçu: <(Lecture)(doNnées)>
        //Message envoyé: <(Lecture)(doNnées)(données..)>
-       txCmd = txCmd + "LN" + WordToString(change) + "A" + ((Bouton1.state)?"1":"0") + ((stateaff == 1)?"Puis":"Temp");
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M03ERM03N";
+       if (Bouton1.state)
+          txCmd = txCmd + "A";
+       else
+          txCmd = txCmd + "F";
+       txCmd = txCmd + "A" + rxCmd.substring(2,6) + "V" + WordToString(change);
        Send();
        break ;
     case 'O' : case 'o' :
        //Message reçu: <(Lecture)(On/Off)>
        //Message envoyé: <(Lecture)(On/Off)(StateAlim1240..)>
-       txCmd = txCmd + "LO";
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M03ERM03LOA" + rxCmd.substring(2,6) + "V000";
        if (StateAlim1240) txCmd = txCmd + "1";
        else txCmd = txCmd + "0";
        Send();

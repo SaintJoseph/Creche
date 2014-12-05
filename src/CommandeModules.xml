@@ -156,11 +156,21 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
    </Module>
    <Module Nom="BCD M3" Cmd="M03">
       <TypeCmd Nom="Lecture données" Cmd="L">
-         <Commande Nom="Valeur Puissance affichée" Cmd="P"/>
-         <Commande Nom="Valeur Température affichée" Cmd="T"/>
-         <Commande Nom="Données" Cmd="N"/>
-         <Commande Nom="Etat On/Off" Cmd="O"/>
-         <Commande Nom="Ram disponible" Cmd="M"/>
+         <Commande Nom="Valeur Puissance affichée" Cmd="P" Hexa="true" Format="HHHH">
+            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+         </Commande>
+         <Commande Nom="Valeur Température affichée" Cmd="T" Hexa="true" Format="HHHH">
+            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+         </Commande>
+         <Commande Nom="Données" Cmd="N" Hexa="true" Format="HHHH">
+            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+         </Commande>
+         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="HHHH">
+            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+         </Commande>
+         <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
+            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+         </Commande>
       </TypeCmd>
       <TypeCmd Nom="Ecriture données" Cmd="E">
          <Commande Nom="Valeur Puissance affichée" Cmd="P">
@@ -242,8 +252,12 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
    </Module>
    <Module Nom="Lanterne M5" Cmd="M05">
       <TypeCmd Nom="Lecture données" Cmd="L">
-         <Commande Nom="Etat On/Off" Cmd="O" Hexa="false"/>
-         <Commande Nom="Ram disponible" Cmd="M" Hexa="false"/>
+         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="HHHH">
+            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+         </Commande>
+         <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
+            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+         </Commande>
          <Commande Nom="Etat de l'éclairage" Cmd="L" Hexa="false">
             <Parametre Aide="Led 01" Hexa="false" Format="HH"/>
          </Commande>
@@ -292,20 +306,25 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom="Tension Batterie" Cmd="U" Hexa="true"  Format="HHHH">
             <Parametre Aide="mV"/>
          </Commande>
-         <Commande Nom="Valeur Puissance" Cmd="P" Hexa="true"  Format="HH">
+         <Commande Nom="Valeur Puissance" Cmd="P" Hexa="true"  Format="HHHH">
             <Parametre Aide="%"/>
          </Commande>
-         <Commande Nom="Valeur Température" Cmd="T" Hexa="true"  Format="HH">
+         <Commande Nom="Valeur Température" Cmd="T" Hexa="true"  Format="HHHH">
             <Parametre Aide="°C"/>
          </Commande>
-         <Commande Nom="Données" Cmd="N" Hexa="true"  Format="HHHHABNNNN">
-            <Parametre Aide="Période, Alternance, Donnée affichée"/>
-         </Commande>
          <Commande Nom="Propriétés carte SD" Cmd="S" Hexa="true" Format="NNNNVHHHH" Prov="M01">
-            <Parametre Aide="Mb"/>
+            <Parametre Aide="Mb"/>Valeur en Hexa
          </Commande>
          <Commande Nom="Synchronisation" Cmd="S" Hexa="true" Format="HHHB" Prov="M04"/>
          <Commande Nom="Validation" Cmd="V" Hexa="true" Format="HHHB" Prov="M04"/>
+      </TypeCmd>
+      <TypeCmd Nom="Donnée affichage " Cmd="N">
+         <Commande Nom="Alternant " Cmd="A" Hexa="true" Format="HHHH">
+            <Parametre Aide="ms"/>
+         </Commande>
+         <Commande Nom="Fixe" Cmd="F" Hexa="true" Format="HHHH">
+            <Parametre Aide="ms"/>
+         </Commande>
       </TypeCmd>
       <TypeCmd Nom="Date et Heure" Cmd="A">
          <Commande Nom="Jour" Cmd="D" Hexa="true"  Format="HHHH">

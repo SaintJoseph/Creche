@@ -298,7 +298,7 @@ void DonneSpeciaux() {
     case 'P' : case 'p' :
        //Message reçu: <(X opération)(Présence)>
        //Message envoyé: <(Présent)>
-       //Format "B"
+       //Format "PHH"
        txCmd = txCmd + "P04";
        Send();
        break;

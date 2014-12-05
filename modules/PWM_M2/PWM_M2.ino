@@ -322,7 +322,7 @@ void TreatChar(char car, Mode canal)
   }
 }
 
-//Traitement d'un message valid reçu
+//Traitement d'un message valide reçu
 void AdressageMessage(Mode canal)
 {
     txCmd = "";
@@ -354,14 +354,9 @@ void AdressageMessage(Mode canal)
            txCmd = fCmd[canal];
            Send(canal);
         break ;
-      case 'E' : case 'e' :
-        //Module répond "ErrMessage" (normalement programmer le renvois du même message)
-        txCmd = "Message non recu, a faire";
-        Send(Module);
-        break;
       default:
         //Le message ne correspond a rien
-        txCmd = "ErrMessageM2";
+        txCmd = "M00M02ErrMessageM2";
         Send(Module);
         break;
     }
@@ -429,7 +424,7 @@ void Send(Mode canal) {
 void CmdError(String type)
 // Doit être appelé quand il y a une erreur dans rxCmd
 {
-  txCmd = txCmd + "ERR " + type;
+  txCmd = txCmd + "Z ERR " + type;
   Send(Module);
 }
 
@@ -465,8 +460,13 @@ void TreatCommand(String cmd) {
       //Un module x vient de répondre présent suite a une requete
       StringToByte(desti,rxCmd,1);
       break;
+    case 'Z' : case 'z' : 
+      //Message reçu : <(Message sans effet)...>
+      //Rien a faire ici
+      //Permet de faire passer une indication a l'utilisateur
+      break ;
     default:   
-      CmdError("type d'operation (S.X.L.K.D.P)");
+      CmdError("type d'operation (X.L.K.D.P.Z)");
       break ;      
   }
 }
@@ -520,7 +520,7 @@ void LectureVariable() {
        Send(Module);
        break;
     default:   
-      CmdError("L Type de lecture (T.P.L.O)");
+      CmdError("L Type de lecture (T.P.M.L.O)");
   } 
 }
 

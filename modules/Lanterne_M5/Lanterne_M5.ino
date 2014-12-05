@@ -151,14 +151,9 @@ void AdressageMessage(Mode canal)
            txCmd = fCmd[canal];
            Send(canal);
         break ;
-      case 'E' : case 'e' :
-        //Module répond "ErrMessage" (normalement programmer le renvois du même message)
-        txCmd = "Message non recu, a faire";
-        Send(Module);
-        break;
       default:
         //Le message ne correspond a rien
-        txCmd = "ErrMessageM5";
+        txCmd = "M00M01ErrMessageM5";
         Send(Module);
         break;
     }
@@ -220,7 +215,7 @@ void Send(Mode canal) {
 void CmdError(String type)
 // Doit être appelé quand il y a une erreur dans rxCmd
 {
-  txCmd = txCmd + "ERR " + type;
+  txCmd = txCmd + "Z ERR " + type;
   Send(Module);
 }
 
@@ -274,20 +269,30 @@ void EcritureVariable () {
 //Fonction qui renvoit la valeur des variables demandée
 void LectureVariable() {
   byte led;
+  /*
+  Le message de lecture variable ne renvois plus de message au demandeur.
+  -Il envois un message pour la RAM de M1 avec la valeur a y inscrire
+     *pas de risque de message en boucle
+  -M1 renvois automatiquement un message vers M0 avec le contenu recopié
+     *seul l'utilisateur et l'executant sont suceptible de connaitre la valeur
+     *Permet d'introduire des conditions sur les varibles de tous le système
+  */
   switch (rxCmd[1])
   {
     case 'M' : case 'm' :
        //Message reçu: <(Lecture)(Memoire)>
        //Message envoyé: <(Lecture)(Memoire)(memoire..)>
        //Format "HHHH"
-       txCmd = txCmd + "LM" + WordToString(freeMemory());
+       //Format envoyé: "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M05ERM05LMA" + rxCmd.substring(2,6) + "V" + WordToString(freeMemory());
        Send(Module);
        break ;
     case 'O' : case 'o' :
        //Message reçu: <(Lecture)(On/Off)>
        //Message envoyé: <(Lecture)(On/Off)(StateAlim1240..)>
        //Format "B"
-       txCmd = txCmd + "LO";
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M05ERM05LOA" + rxCmd.substring(2,6) + "V000";
        if (StateAlim1240) txCmd = txCmd + "1";
        else txCmd = txCmd + "0";
        Send(Module);
@@ -319,6 +324,7 @@ void DonneSpeciaux() {
   {
     case 'R' : case 'r' :
        //Message reçu: <(X opération)(Reboot)>
+       //Format ""
        while ( rxCmd[1] < 'z');
     case 'B' : case 'b' :
        //Message reçu: <(X opération)(Boutton)>

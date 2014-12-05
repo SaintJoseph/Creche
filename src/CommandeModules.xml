@@ -45,7 +45,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       <TypeCmd Nom="Opération Spéciales" Cmd="X">
          <Commande Nom="Redémarrer" Cmd="R"/>
          <Commande Nom="Tester la présence" Cmd="P"/>
-         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="B"/>
+         <Commande Nom="Etat On/Off" Cmd="B" Hexa="true" Format="B"/>
       </TypeCmd>
       <Recetion Nom="Lecture données" Cmd="L">
          <Commande Nom="Valeur Température" Cmd="T" Hexa="false"/>
@@ -58,20 +58,20 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       <Commande Nom="Etat On/Off" Cmd="O">
          <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
       </Commande>
-      <Commande Nom="Date et Heure" Cmd="D">
+      <Commande Nom="Date et Heure" Cmd="D" Hexa="true" Format="AHHHH">
+         <Parametre Aide="Day Month Year Week Hour miNute Second, adresse " Hexa="true" Format="AHHHH"/>
+      </Commande>
+      <Commande Nom="Tension Batterie" Cmd="U" Hexa="true" Format="HHHH">
          <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
       </Commande>
-      <Commande Nom="Tension Batterie" Cmd="U">
+      <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
          <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
       </Commande>
-      <Commande Nom="Ram disponible" Cmd="M">
-         <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
-      </Commande>
-      <Commande Nom="Donnée dans la RAM" Cmd="R">
+      <Commande Nom="Donnée dans la RAM" Cmd="R" Hexa="true" Format="HHHH">
          <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
       </Commande>
       <Commande Nom="Propriétés carte SD" Cmd="S"/>
-      <Commande Nom="Executant actif" Cmd="A">
+      <Commande Nom="Executant actif" Cmd="A" Hexa="true" Format="HHHH">
          <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
       </Commande>
    </TypeCmd>
@@ -89,21 +89,21 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Parametre Aide="Delais en ms " Hexa="true" Format="HHHH"/>
       </Commande>
       <Commande Nom="Condition ouverture fichier" Cmd="F">
-         <Parametre Aide="Adresse 1er val, type condition (=E >S &#60;I !D),\nAdresse ou Valeur a comparer, Nom Fichier" Hexa="true" Format="HHHHAAHHHHFNN"/>
+         <Parametre Aide="Add 1er val, type cond. (=E >S &#60;I !D),Add ou Val a comparer, Nom Fichier" Hexa="true" Format="HHHHAAHHHHFNN"/>
       </Commande>
       <Commande Nom="Condition saut de ligne" Cmd="G">
-         <Parametre Aide="Adresse 1er val, type condition (=E >S &#60;I !D),\nAdresse ou Valeur a comparer, Num ligne" Hexa="true" Format="HHHH"/>
+         <Parametre Aide="Add 1er val, type cond. (=E >S &#60;I !D),Add ou Val a comparer, Num ligne" Hexa="true" Format="HHHH"/>
       </Commande>
-      <Commande Nom="Opération sur variable" Cmd="D">
-         <Parametre Aide="Adresse val 1, opération (P+ M- D/ X*), Adresse ou Valeur 2" Hexa="true" Format="HHHHAAHHHH"/>
+      <Commande Nom="Opération sur variable" Cmd="O">
+         <Parametre Aide="Adresse val 1, opération (P+ M- D/ X*), Adresse ou Val 2" Hexa="true" Format="HHHHAAHHHH"/>
       </Commande>
    </TypeCmd>
       <TypeCmd Nom="Ecriture données" Cmd="E">
-      <Commande Nom="Date et Heure" Cmd="D">
+      <Commande Nom="Date et Heure" Cmd="D" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH">
          <Parametre Aide="jj/mm/aaRjjHhh:mm:ss" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH"/>
       </Commande>
-      <Commande Nom="Donnée dans la RAM" Cmd="R">
-         <Parametre Aide="adresse V valeur" Hexa="true" Format="HHHHVHHHH"/>
+      <Commande Nom="Donnée dans la RAM" Cmd="R" Hexa="true" Format="MHHAA\AHHHHVHHHH">
+         <Parametre Aide="Modules, Type, Cmd, Adresse, Valeur" Hexa="true" Format="MHHAA\AHHHHVHHHH"/>
       </Commande>
       </TypeCmd>
       <TypeCmd Nom="Opération Spéciales" Cmd="X">
@@ -280,7 +280,9 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
    </Module>
    <ProgrammePC Nom="Programme PC" Cmd="M00">
       <TypeCmd Nom="Lecture données" Cmd="L">
-         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="B"/>
+         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="NNNB">
+            <Parametre Aide="1=>On 0=>Off"/>
+         </Commande>
          <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
             <Parametre Aide="octet"/>
          </Commande>
@@ -299,34 +301,45 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom="Données" Cmd="N" Hexa="true"  Format="HHHHABNNNN">
             <Parametre Aide="Période, Alternance, Donnée affichée"/>
          </Commande>
-         <Commande Nom="Synchronisation" Cmd="S" Hexa="true" Format="B"/>
+         <Commande Nom="Propriétés carte SD" Cmd="S" Hexa="true" Format="NNNNVHHHH" Prov="M01">
+            <Parametre Aide="Mb"/>
+         </Commande>
+         <Commande Nom="Synchronisation" Cmd="S" Hexa="true" Format="B" Prov="M04"/>
          <Commande Nom="Validation" Cmd="V" Hexa="true" Format="B"/>
       </TypeCmd>
-      <TypeCmd Nom="Date et Heure" Cmd="D">
-         <Commande Nom="Adresse, Jour" Cmd="D" Hexa="true"  Format="\AHHHHVHHHH">
+      <TypeCmd Nom="Date et Heure" Cmd="A">
+         <Commande Nom="Jour" Cmd="D" Hexa="true"  Format="HHHH">
             <Parametre Aide="Jour du mois"/>
          </Commande>
-         <Commande Nom="Mois" Cmd="M" Hexa="true"  Format="\AHHHHVHHHH">
-            <Parametre Aide="Adresse, Mois"/>
+         <Commande Nom="Mois" Cmd="M" Hexa="true"  Format="HHHH">
+            <Parametre Aide="Mois"/>
          </Commande>
-         <Commande Nom="Année" Cmd="Y" Hexa="true"  Format="\AHHHHVHHHH">
-            <Parametre Aide="Adresse, Année"/>
+         <Commande Nom="Année" Cmd="Y" Hexa="true"  Format="HHHH">
+            <Parametre Aide="Année"/>
          </Commande>
-         <Commande Nom="Jour de le semaine" Cmd="W" Hexa="true"  Format="\AHHHHVHHHH">
-            <Parametre Aide="Adresse, Jour de le semaine"/>
+         <Commande Nom="Jour de le semaine" Cmd="W" Hexa="true"  Format="HHHH">
+            <Parametre Aide="Jour de le semaine"/>
          </Commande>
-         <Commande Nom="Heure" Cmd="H" Hexa="true"  Format="\AHHHHVHHHH">
-            <Parametre Aide="Adresse, Heure"/>
+         <Commande Nom="Heure" Cmd="H" Hexa="true"  Format="HHHH">
+            <Parametre Aide="Heure"/>
          </Commande>
-         <Commande Nom="Minute" Cmd="N" Hexa="true"  Format="\AHHHHVHHHH">
+         <Commande Nom="Minute" Cmd="N" Hexa="true"  Format="HHHH">
             <Parametre Aide="Minute, "/>
          </Commande>
-         <Commande Nom="Seconde" Cmd="S" Hexa="true"  Format="\AHHHHVHHHH">
+         <Commande Nom="Seconde" Cmd="S" Hexa="true"  Format="HHHH">
             <Parametre Aide="Seconde, "/>
          </Commande>
       </TypeCmd>
       <TypeCmd Nom="Démarre" Cmd="D"/>
       <TypeCmd Nom="Variable utilisateur" Cmd="V">
+         <Commande Nom="Présence" Cmd="P" Hexa="true"  Format="HHHH">
+            <Parametre Aide="Adresse, Valeur"/>
+         </Commande>
+      </TypeCmd>
+      <TypeCmd Nom="Opération Spéciales" Cmd="X">
+         <Commande Nom="Variable Présence" Cmd="P" Hexa="true"  Format="HHHH">
+            <Parametre Aide="Test de Présence, "/>
+         </Commande>
       </TypeCmd>
       <TypeCmd Nom="Présent" Cmd="P"/>
       <Recetion Nom="ERREUR COMMANDE" Cmd="E"/>

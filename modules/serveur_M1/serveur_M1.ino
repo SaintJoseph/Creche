@@ -353,25 +353,25 @@ void LectureVariable() {
        lire(&date);
        switch (rxCmd[2]) {
           case 'D': case 'd' : //Jour du mois
-             saveRAM("M01DDA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.jour));
+             saveRAM("M01ADA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.jour));
              break;
           case 'M': case 'm' : //Mois
-             saveRAM("M01DMA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.mois));
+             saveRAM("M01AMA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.mois));
              break;
           case 'Y': case 'y' : //Année
-             saveRAM("M01DYA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.annee));
+             saveRAM("M01AYA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.annee));
              break;
           case 'W': case 'w' : //Jour de le semaine
-             saveRAM("M01DWA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.jourDeLaSemaine));
+             saveRAM("M01AWA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.jourDeLaSemaine));
              break;
           case 'H': case 'h' : //Heure
-             saveRAM("M01DHA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.heures));
+             saveRAM("M01AHA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.heures));
              break;
           case 'N': case 'n' : //Minute
-             saveRAM("M01DNA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.minutes));
+             saveRAM("M01ANA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.minutes));
              break;
           case 'S': case 's' : //Seconde
-             saveRAM("M01DSA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.secondes));
+             saveRAM("M01ASA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.secondes));
              break;
           default :
              CmdError("Date erroné (D.M.Y.W.H.N.S)");
@@ -381,8 +381,8 @@ void LectureVariable() {
        //Message reçu: <(Lecture)(On/Off)>
        //Message envoyé: <(Lecture)(On/Off)(StateAlim1240..)>
        //Format "HHHH"
-       //Format "B"
-       if (actif)
+       //Format "MHHAA\AHHHHVHHHH"
+       if (StateAlim1240)
           saveRAM("M01LOA" + rxCmd.substring(2,6) + "V0001");
        else
           saveRAM("M01LOA" + rxCmd.substring(2,6) + "V0000");
@@ -397,7 +397,7 @@ void LectureVariable() {
        address *= 5; //Caque variable est stokée sur 2 bytes
        address += 3;
        if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
-          txCmd = "M00M" + ByteToString((byte)spiRam.read_byte((int)address)) + (char)spiRam.read_byte((int)address + 1) + (char)spiRam.read_byte((int)address + 2) + "A" + rxCmd.substring(2,6) + "V" + ByteToString((byte)spiRam.read_byte((int)address + 3)) + ByteToString((byte)spiRam.read_byte((int)address + 4));
+          txCmd = "M00M" + ByteToString((byte)spiRam.read_byte((int)address)) + (char)spiRam.read_byte((int)address + 1) + (char)spiRam.read_byte((int)address + 2) + ByteToString((byte)spiRam.read_byte((int)address + 3)) + ByteToString((byte)spiRam.read_byte((int)address + 4));
           Send(Module);
        }
        break;
@@ -415,9 +415,10 @@ void LectureVariable() {
        //Format "HHHH"
        //Format "B"
        if (actif)
-          saveRAM("M01LAA" + rxCmd.substring(2,6) + "V0001");
+          txCmd = txCmd + "RA1";
        else
-          saveRAM("M01LAA" + rxCmd.substring(2,6) + "V0000");
+          txCmd = txCmd + "RA0";
+       Send(Module);
        break;
     default:   
       CmdError("L Type lecture (M.U.D.O.S.R.A)");
@@ -632,7 +633,7 @@ void saveRAM(String mesg) {
       spiRam.write_byte((int)address + 3, wValue0);
       spiRam.write_byte((int)address + 4, wValue1);
    }
-   txCmd = "M00" + mesg;
+   txCmd = "M00M" + ByteToString(module) + (char)mesg[3] + (char)mesg[4] + ByteToString((byte)spiRam.read_byte((int)address + 3)) + ByteToString((byte)spiRam.read_byte((int)address + 4));
    Send(Module);
 }
 
@@ -657,6 +658,11 @@ void modifExecutable () {
           case '0' :
              //On écrit dans la RAM l'état actif
              actif = false;
+             //On reprendra le programme au début
+             NumLigne = 0x0000;
+             IndiceFile = word('0', '0');
+             //Permet a l'utilisateur de modifier ces valeur av de reprendre l'état actif
+             //I.E. : pour executer un programme secondaire de test
              txCmd = "M04M01KT01O0";
              Send(Module);
              break;
@@ -939,7 +945,7 @@ void loop(){
   //Bloc executant le programme lumineu
   if (actif && !Serial.available() && StateAlim1240) {
     if (CR.currentMillis - ExeTime > pause && !validation) {
-      pause = 20;
+      pause = 10;
       ExeTime = CR.currentMillis;
       /* Déclare le buffer qui stockera une ligne du fichier, ainsi que les deux pointeurs key et value */
       char buffer[BUFFER_SIZE];

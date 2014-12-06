@@ -156,7 +156,7 @@ void AdressageMessage(Mode canal)
         else {
             //Si le message n'est pas a destination de ce module, c'est qu'il est attendu sur un autre module, donc on le fait suivre
             txCmd = fCmd[canal];
-            if (desti < 10 && envoyeur < 10) //On fait suivre uniquement si l'adressage est correcte
+            if (desti < 0x10 && envoyeur < 0x10  && fCmd[canal][3] == 'M') //On fait suivre uniquement si l'adressage est correcte
                Send(canal);
             else {
                txCmd = "M00M01ErrMessageM1";
@@ -170,7 +170,7 @@ void AdressageMessage(Mode canal)
            TreatCommand(fCmd[canal].substring(6));
            //On fait suivre le message vers les autres modules qui ne l'auraient pas encore reçu
            txCmd = fCmd[canal];
-            if (desti < 10 && envoyeur < 10) //On fait suivre uniquement si l'adressage est correcte
+            if (desti < 0x10 && envoyeur < 0x10 && fCmd[canal][3] == 'M') //On fait suivre uniquement si l'adressage est correcte
                Send(canal);
             else {
                txCmd = "M00M01ErrMessageM1";
@@ -754,6 +754,23 @@ void modifExecutable () {
                    IndiceFile = word(rxCmd[13], rxCmd[14]);
                    NumLigne = 0x0000;
                 }
+             case 'M':
+                if (rxCmd[7] == 'A' && spiRam.read_byte((int)address) == spiRam.read_byte((int)value)) {
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                   NumLigne = 0x0000;
+                }
+                break;
+             case 'T':
+                if (rxCmd[7] == 'A' && spiRam.read_byte((int)address + 1) == spiRam.read_byte((int)value + 1)) {
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                   NumLigne = 0x0000;
+                }
+                break;
+             case 'C':
+                if (rxCmd[7] == 'A' && spiRam.read_byte((int)address + 2) == spiRam.read_byte((int)value + 2)) {
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                   NumLigne = 0x0000;
+                }
                 break;
           }
        }
@@ -761,7 +778,7 @@ void modifExecutable () {
     case 'G' : case 'g' :
        //(Run executable)(Goto)(Condition pour goto)
        //Format : "HHHHAAHHHHAHHHH"
-       //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D),
+       //adresse memoire de la condition, type de condition : =(E) >(S) <(I) !(D), Module Type Commande
        //Adresse ou Valeur a comparer et la ligne à laquelle sauter, ou adresse avec la ligne où aller
        StringToWord(address, rxCmd, 2);
        StringToWord(value, rxCmd, 8);
@@ -774,7 +791,7 @@ void modifExecutable () {
              value = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
        }
        //On accède normalement à la ligne, sauf si le num de ligne est a une adresse mémoire : rxCmd[12] == 'L'
-       if (rxCmd[7] == 'A') { //On compare des valeurs entre 2 adresses mémoire
+       if (rxCmd[12] == 'A') { //On compare des valeurs entre 2 adresses mémoire
           ligne *= 5; //Chaque variable est stokée sur 5 bytes
           ligne += 3;
           if (ligne > 7 && ligne < 0x7FFA)
@@ -802,6 +819,21 @@ void modifExecutable () {
                 break;
              case 'D':
                 if (time != value) {
+                   NumLigne = ligne - 1;
+                }
+                break;
+             case 'M':
+                if (rxCmd[7] == 'A' && spiRam.read_byte((int)address) == spiRam.read_byte((int)value)) {
+                   NumLigne = ligne - 1;
+                }
+                break;
+             case 'T':
+                if (rxCmd[7] == 'A' && spiRam.read_byte((int)address + 1) == spiRam.read_byte((int)value + 1)) {
+                   NumLigne = ligne - 1;
+                }
+                break;
+             case 'C':
+                if (rxCmd[7] == 'A' && spiRam.read_byte((int)address + 2) == spiRam.read_byte((int)value + 2)) {
                    NumLigne = ligne - 1;
                 }
                 break;
@@ -956,7 +988,9 @@ void loop(){
   //Bloc executant le programme lumineu
   if (actif && !Serial.available() && StateAlim1240) {
     if (CR.currentMillis - ExeTime > pause && !validation) {
-      pause = 10;
+      pause = 50; //Temps entre 2 instructions consécutive
+      //Doit etre assez long pour permettre a tout le système de suivre
+      //Assez court Pour qu'il ne faille pas attendre tout le temps la lecture de l'instruction
       ExeTime = CR.currentMillis;
       /* Déclare le buffer qui stockera une ligne du fichier, ainsi que les deux pointeurs key et value */
       char buffer[BUFFER_SIZE];

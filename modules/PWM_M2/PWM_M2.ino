@@ -343,7 +343,7 @@ void AdressageMessage(Mode canal)
         else {
             //Si le message n'est pas a destination de ce module, c'est qu'il est attendu sur un autre module, donc on le fait suivre
             txCmd = fCmd[canal];
-            if (desti < 10 && envoyeur < 10) //On fait suivre uniquement si l'adressage est correcte
+            if (desti < 0x10 && envoyeur < 0x10  && fCmd[canal][3] == 'M') //On fait suivre uniquement si l'adressage est correcte
                Send(canal);
             else {
                txCmd = "M00M02ErrMessageM2";
@@ -357,7 +357,7 @@ void AdressageMessage(Mode canal)
            TreatCommand(fCmd[canal].substring(6));
            //On fait suivre le message vers les autres modules qui ne l'auraient pas encore reçu
            txCmd = fCmd[canal];
-            if (desti < 10 && envoyeur < 10) //On fait suivre uniquement si l'adressage est correcte
+            if (desti < 0x10 && envoyeur < 0x10  && fCmd[canal][3] == 'M') //On fait suivre uniquement si l'adressage est correcte
                Send(canal);
             else {
                txCmd = "M00M02ErrMessageM2";

@@ -89,10 +89,10 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Parametre Aide="Delais en ms " Hexa="true" Format="HHHH"/>
       </Commande>
       <Commande Nom="Condition ouverture fichier" Cmd="F">
-         <Parametre Aide="Add 1er val, type cond. (=E >S &#60;I !D),Add ou Val a comparer, Nom Fichier" Hexa="true" Format="HHHHAAHHHHFNN"/>
+         <Parametre Aide="Add 1er val, type cond. (=E >S &#60;I !D M T C),Add ou Val a comparer, Nom Fichier" Hexa="true" Format="HHHHAAHHHHFNN"/>
       </Commande>
       <Commande Nom="Condition saut de ligne" Cmd="G">
-         <Parametre Aide="Add 1er val, type cond. (=E >S &#60;I !D),Add ou Val a comparer, Num ligne" Hexa="true" Format="HHHH"/>
+         <Parametre Aide="Add 1er val, type cond. (=E >S &#60;I !D M T C),Add ou Val a comparer, Num ligne" Hexa="true" Format="HHHH"/>
       </Commande>
       <Commande Nom="Opération sur variable" Cmd="O">
          <Parametre Aide="Adresse val 1, opération (P+ M- D/ X*), Adresse ou Val 2" Hexa="true" Format="HHHHAAHHHH"/>

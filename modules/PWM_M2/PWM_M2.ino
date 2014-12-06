@@ -92,7 +92,7 @@
 
 #include <Creche.h>
 
-PROGMEM const String devise = "Mon Dieu faite que je serve uniquement a votre plus grande gloire";
+//PROGMEM const String devise = "Mon Dieu faite que je serve uniquement a votre plus grande gloire";
 
 //---------------------------VARIABLES--------------------------------
 
@@ -343,7 +343,12 @@ void AdressageMessage(Mode canal)
         else {
             //Si le message n'est pas a destination de ce module, c'est qu'il est attendu sur un autre module, donc on le fait suivre
             txCmd = fCmd[canal];
-            Send(canal);
+            if (desti < 10 && envoyeur < 10) //On fait suivre uniquement si l'adressage est correcte
+               Send(canal);
+            else {
+               txCmd = "M00M02ErrMessageM2";
+               Send(Module);
+            }
         }
         break ;
       case 'A' : case 'a' :
@@ -352,7 +357,12 @@ void AdressageMessage(Mode canal)
            TreatCommand(fCmd[canal].substring(6));
            //On fait suivre le message vers les autres modules qui ne l'auraient pas encore reçu
            txCmd = fCmd[canal];
-           Send(canal);
+            if (desti < 10 && envoyeur < 10) //On fait suivre uniquement si l'adressage est correcte
+               Send(canal);
+            else {
+               txCmd = "M00M02ErrMessageM2";
+               Send(Module);
+            }
         break ;
       default:
         //Le message ne correspond a rien
@@ -426,6 +436,7 @@ void CmdError(String type)
 {
   txCmd = txCmd + "Z ERR " + type;
   Send(Module);
+  txCmd = "";
 }
 
 //Traitement des commandes propre pour ce module
@@ -473,6 +484,14 @@ void TreatCommand(String cmd) {
 
 //Fonction qui renvoit la valeur des variables demandée
 void LectureVariable() {
+  /*
+  Le message de lecture variable ne renvois plus de message au demandeur.
+  -Il envois un message pour la RAM de M1 avec la valeur a y inscrire
+     *pas de risque de message en boucle
+  -M1 renvois automatiquement un message vers M0 avec le contenu recopié
+     *seul l'utilisateur et l'executant sont suceptible de connaitre la valeur
+     *Permet d'introduire des conditions sur les varibles de tous le système
+  */
   String mes = " ";
   byte led;
   switch (rxCmd[1])
@@ -480,19 +499,35 @@ void LectureVariable() {
     case 'T' : case 't' :
        //Message reçu: <(Lecture)(Température)>
        //Message envoyé: <(Lecture)(Température)(température..)>
-       txCmd = txCmd + "LT" + ((sonde)?("AL" + ByteToString(tempalu) + "AMB" + ByteToString(tempamb)):"NoDevice");
+       //Format reçu: "AHHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M02ERM02T";
+       if (sonde) {
+          if (rxCmd[2] == 'L') //T° aLuminium
+             txCmd = txCmd + "LA" + rxCmd.substring(2,6) + "V00" + ByteToString(tempalu);
+          else if (rxCmd[2] == 'M') //T° aMbiante
+             txCmd = txCmd + "MA" + rxCmd.substring(2,6) + "V00" + ByteToString(tempamb);
+          else
+             txCmd = txCmd + "NA" + rxCmd.substring(2,6) + "VFFFF";
+       }
+       else
+          txCmd = txCmd + "N" + rxCmd.substring(2,6) + "VFFFF";
        Send(Module);
        break ;
     case 'P' : case 'p' :
        //Message reçu: <(Lecture)(Puissance)>
        //Message envoyé: <(Lecture)(Puissance)(puissance..)>
-       txCmd = txCmd + "LP" + ByteToString(puissance);
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M02ERM02LPA" + rxCmd.substring(2,6) + "V00" + ByteToString(puissance);
        Send(Module);
        break ;
     case 'M' : case 'm' :
        //Message reçu: <(Lecture)(Memoire)>
        //Message envoyé: <(Lecture)(Memoire)(memoire..)>
-       txCmd = txCmd + "LM" + WordToString(freeMemory());
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M02ERM02LMA" + rxCmd.substring(2,6) + "V" + WordToString(freeMemory());
        Send(Module);
        break ;
     case 'L' : case 'l' :
@@ -514,7 +549,9 @@ void LectureVariable() {
     case 'O' : case 'o' :
        //Message reçu: <(Lecture)(On/Off)>
        //Message envoyé: <(Lecture)(On/Off)(StateAlim1240..)>
-       txCmd = txCmd + "LO";
+       //Format reçu: "HHHH"
+       //Format envoyé : "ERMHHAA\AHHHHVHHHH"
+       txCmd = "M01M02ERM02LOA" + rxCmd.substring(2,6) + "V000";
        if (StateAlim1240) txCmd = txCmd + "1";
        else txCmd = txCmd + "0";
        Send(Module);
@@ -820,9 +857,11 @@ void DonneSpeciaux() {
   {
     case 'R' : case 'r' :
        //Message reçu: <(X opération)(Reboot)>
+       //Format ""
        while ( rxCmd[1] < 'T');
     case 'B' : case 'b' :
        //Message reçu: <(X opération)(Boutton)>
+       //Format "B"
        switch (rxCmd[2]) {
           case '1':
              //Message reçu: <(X opération)(Boutton)(on)>
@@ -841,6 +880,7 @@ void DonneSpeciaux() {
     case 'P' : case 'p' :
        //Message reçu: <(X opération)(Présence)>
        //Message envoyé: <(Présent)>
+       //Format "PHH"
        txCmd = txCmd + "P02";
        Send(Module);
        break;
@@ -870,10 +910,6 @@ void setup() {
   Mirf.config(); // Tout est bon ? Ok let's go !
   Mirf.setRADDR((byte *)"nrf02"); // On définit ici l'adresse du module en question
 
-  //Commande demmarrage du module (attenttion réécrire le numéro du module après type démarage)
-  txCmd = "A00M02D02";
-  Send(Module);
-
   //Initialisation de la Led témoin rouge
   pinMode(LedRouge, OUTPUT);
   //Initialisation de la Led témoin vert
@@ -899,7 +935,9 @@ void setup() {
       //La température ambianté de départ est aussi celle de l'aluminium
       tempalu = tempamb;
       //On envois un signal sonde connectée + val T
-      txCmd = "A00M02LTAL" + ByteToString(tempalu) + "AMB" + ByteToString(tempamb);
+      txCmd = "M01M02ERM02TLA0300V00" + ByteToString(tempalu);
+      Send(Module);
+      txCmd = "M01M02ERM02TMA0301V00" + ByteToString(tempamb);
       Send(Module);
     }
   }
@@ -907,9 +945,14 @@ void setup() {
     tempamb = 20;
     tempalu = 20;
    //On envois un signal sonde déconnectée
-   txCmd = "A00M02LTNoDevice";
+      txCmd = "M01M02ERM02TNA0300VFFFF";
    Send(Module);
   }
+
+  //Commande demmarrage du module (attenttion réécrire le numéro du module après type démarage)
+  txCmd = "A00M02D02";
+  Send(Module);
+
 }
 
 //Fonction LOOP

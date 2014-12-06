@@ -160,12 +160,10 @@ void AdressageMessage()
            txCmd = fCmd[3] + ByteToString(envoyeur) + "M03";
            //Les 6 premier carractère du message concer l'adressage, le module prend cette information séparement pour un éventuel retour de message
            TreatCommand(fCmd.substring(6));
-           //On fait suivre le message vers les autres modules qui ne l'auraient pas encore reçu
-           txCmd = fCmd;
         break ;
       default:
         //Le message ne correspond a rien
-        txCmd = "ErrMessageM1";
+        txCmd = "M00M03ErrMessageM3";
         Send();
         break;
     }
@@ -188,6 +186,7 @@ void CmdError(String type)
 {
   txCmd = txCmd + "Z ERR " + type;
   Send();
+  txCmd = "";
 }
 
 //Traitement des commandes propre pour ce module

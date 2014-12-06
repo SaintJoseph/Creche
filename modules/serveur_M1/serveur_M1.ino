@@ -156,7 +156,12 @@ void AdressageMessage(Mode canal)
         else {
             //Si le message n'est pas a destination de ce module, c'est qu'il est attendu sur un autre module, donc on le fait suivre
             txCmd = fCmd[canal];
-            Send(canal);
+            if (desti < 10 && envoyeur < 10) //On fait suivre uniquement si l'adressage est correcte
+               Send(canal);
+            else {
+               txCmd = "M00M01ErrMessageM1";
+               Send(Module);
+            }
         }
         break ;
       case 'A' : case 'a' :
@@ -165,7 +170,12 @@ void AdressageMessage(Mode canal)
            TreatCommand(fCmd[canal].substring(6));
            //On fait suivre le message vers les autres modules qui ne l'auraient pas encore reçu
            txCmd = fCmd[canal];
-           Send(canal);
+            if (desti < 10 && envoyeur < 10) //On fait suivre uniquement si l'adressage est correcte
+               Send(canal);
+            else {
+               txCmd = "M00M01ErrMessageM1";
+               Send(Module);
+            }
         break ;
       default:
         //Le message ne correspond a rien
@@ -240,6 +250,7 @@ void CmdError(String type)
 {
   txCmd = txCmd + "Z ERR " + type;
   Send(Module);
+  txCmd = "";
 }
 
 //Traitement des commandes propre pour ce module
@@ -776,22 +787,22 @@ void modifExecutable () {
           switch(rxCmd[6]) {
              case 'E':
                 if (time == value) {
-                   NumLigne = ligne;
+                   NumLigne = ligne - 1;
                 }
                 break;
              case 'S':
                 if (time > value) {
-                   NumLigne = ligne;
+                   NumLigne = ligne - 1;
                 }
                 break;
              case 'I':
                 if (time < value) {
-                   NumLigne = ligne;
+                   NumLigne = ligne - 1;
                 }
                 break;
              case 'D':
                 if (time != value) {
-                   NumLigne = ligne;
+                   NumLigne = ligne - 1;
                 }
                 break;
           }

@@ -55,7 +55,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
    </Module>
    <Module Nom="Serveur M1" Cmd="M01">
       <TypeCmd Nom="Lecture données" Cmd="L">
-      <Commande Nom="Etat On/Off" Cmd="O">
+      <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="HHHH">
          <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
       </Commande>
       <Commande Nom="Date et Heure" Cmd="D" Hexa="true" Format="AHHHH">
@@ -117,10 +117,18 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
    </Module>
    <Module Nom="PWM M2" Cmd="M02">
       <TypeCmd Nom="Lecture données" Cmd="L">
-         <Commande Nom="Etat On/Off" Cmd="O"/>
-         <Commande Nom="Valeur Température" Cmd="T" Hexa="false"/>
-         <Commande Nom="Ram disponible" Cmd="M" Hexa="false"/>
-         <Commande Nom="Valeur Puissance" Cmd="P" Hexa="false"/>
+         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="HHHH">
+            <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+         </Commande>
+         <Commande Nom="Valeur Température" Cmd="T" Hexa="true" Format="AHHHH">
+            <Parametre Aide="Alu ou Ambiante(L.M), adresse " Hexa="true" Format="AHHHH"/>
+         </Commande>
+         <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
+            <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+         </Commande>
+         <Commande Nom="Valeur Puissance" Cmd="P" Hexa="true" Format="HHHH">
+            <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+         </Commande>
          <Commande Nom="Etat de l'éclairage" Cmd="L" Hexa="false">
             <Parametre Aide="Led uniquement" Hexa="false" Format="HH"/>
          </Commande>
@@ -306,10 +314,10 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom="Tension Batterie" Cmd="U" Hexa="true"  Format="HHHH">
             <Parametre Aide="mV"/>
          </Commande>
-         <Commande Nom="Valeur Puissance" Cmd="P" Hexa="true"  Format="HHHH">
+         <Commande Nom="Puissance" Cmd="P" Hexa="true"  Format="HHHH">
             <Parametre Aide="%"/>
          </Commande>
-         <Commande Nom="Valeur Température" Cmd="T" Hexa="true"  Format="HHHH">
+         <Commande Nom="Température" Cmd="T" Hexa="true"  Format="HHHH">
             <Parametre Aide="°C"/>
          </Commande>
          <Commande Nom="Propriétés carte SD" Cmd="S" Hexa="true" Format="NNNNVHHHH" Prov="M01">
@@ -324,6 +332,17 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          </Commande>
          <Commande Nom="Fixe" Cmd="F" Hexa="true" Format="HHHH">
             <Parametre Aide="ms"/>
+         </Commande>
+      </TypeCmd>
+      <TypeCmd Nom="Lecture Température " Cmd="T">
+         <Commande Nom="Radiateur Aluminium " Cmd="L" Hexa="true" Format="HHHH">
+            <Parametre Aide="°C"/>
+         </Commande>
+         <Commande Nom="Ambiante" Cmd="M" Hexa="true" Format="HHHH">
+            <Parametre Aide="°C"/>
+         </Commande>
+         <Commande Nom="No device" Cmd="N" Hexa="true" Format="HHHH">
+            <Parametre Aide="Sonde de T° déconnectée, ou erreur entre aLu et aMbiant"/>
          </Commande>
       </TypeCmd>
       <TypeCmd Nom="Date et Heure" Cmd="A">

@@ -96,3 +96,12 @@ void Application::setLanguage(const QString& locale)
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
 }
+
+const QString Application::currentLanguage()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << "/" << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //récupère la langue courrante
+    return QString(translators.key(current));
+}

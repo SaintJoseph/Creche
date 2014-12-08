@@ -56,25 +56,6 @@ ComArduino::ComArduino(const QString & title, QWidget *parent , Qt::WindowFlags 
     //Label time out
     LabelTimeOut = new QLabel(tr("Time Out"));
     LabelTimeOut->setFont(font);
-    //Label Module
-    LabelModule = new QLabel(tr("Module destinataire"));
-    LabelModule->setFont(font);
-    //Label type de commande
-    LabelTypeCmd = new QLabel(tr("Type d'instruction"));
-    LabelTypeCmd->setFont(font);
-    LabelTypeCmd->setHidden(true);
-    //Label Commande
-    LabelCmd = new QLabel(tr("Instruction"));
-    LabelCmd->setFont(font);
-    LabelCmd->setHidden(true);
-    //Label instruction
-    LabelInstruction = new QLabel(tr("Paramètre complémentaire"));
-    LabelInstruction->setFont(font);
-    LabelInstruction->setHidden(true);
-    //Label aide pour le parametre
-    LabelAideParametre = new QLabel;
-    LabelAideParametre->setFont(font);
-    LabelAideParametre->setHidden(true);
     //Insertion de l'icone déco dans le layout IconeElectronique via un label
     label_img = new QLabel;
     QPixmap Icone(":Arduino");
@@ -88,11 +69,6 @@ ComArduino::ComArduino(const QString & title, QWidget *parent , Qt::WindowFlags 
     EspaceDockLiaison = new QHBoxLayout;
     EspaceDockLiaison->setContentsMargins(1,1,1,1);
     EspaceDockLiaison->setSpacing(1);
-    //Layout V pour placer les boutons de communication
-    LayoutEnvoisRecep = new QVBoxLayout;
-    LayoutEnvoisRecep->setSpacing(1);
-    LayoutEnvoisRecep->setContentsMargins(1,1,1,1);
-    LayoutEnvoisRecep->setAlignment(Qt::AlignTop);
     //Layout Horizontale pour l'affichage de la date, l'heure
     DateTimeConnect = new QVBoxLayout;
     DateTimeConnect->setAlignment(Qt::AlignVCenter);
@@ -136,11 +112,6 @@ ComArduino::ComArduino(const QString & title, QWidget *parent , Qt::WindowFlags 
     InstructionManuel = new QLineEdit;
     InstructionManuel->setFixedHeight(22);
     InstructionManuel->setFont(font);
-    //Ligne d'édition pour instroduire les paramètres complémentaires
-    LineEditInstruction = new QLineEdit;
-    LineEditInstruction->setFont(font);
-    LineEditInstruction->setFixedHeight(22);
-    LineEditInstruction->setHidden(true);
     //ComboBox Baude Rate
     BaudeRate = new QComboBox;
     BaudeRate->setFont(font);
@@ -181,26 +152,12 @@ ComArduino::ComArduino(const QString & title, QWidget *parent , Qt::WindowFlags 
     TimeOutBox->setMinimum(0);
     TimeOutBox->setValue(10);
     TimeOutBox->setSingleStep(10);
-    //ComboBox selection Module
-    QComboModul = new QComboBox;
-    QComboModul->setFont(font);
-    QComboModul->addItem("");
-    //ComboBox selection Type de commande
-    QComboTypeCmd = new QComboBox;
-    QComboTypeCmd->setFont(font);
-    QComboTypeCmd->setHidden(true);
-    QComboTypeCmd->addItem("");
-    //ComboBox selection de commande
-    QComboCmd = new QComboBox;
-    QComboCmd->setFont(font);
-    QComboCmd->setHidden(true);
-    QComboCmd->addItem("");
     //ComboBox Port Box list
     PortBox = new QComboBox;
     PortBox->setFont(font);
-    //Fenetre convertisseur Décimal vers Hexadécimal
-    Convert = new ConvertisseurDecHexa;
-    Convert->setHidden(true);
+    //Widget avec l'éditeur de commande
+    WidgetEnvoisRecep = new LECommandeModules;
+    WidgetEnvoisRecep->setProvModifiable(false,1);
 
     //Dessin du dock en attribuant les références de parents enfants
              //Ajout du Label avec la date et l'heure
@@ -212,28 +169,8 @@ ComArduino::ComArduino(const QString & title, QWidget *parent , Qt::WindowFlags 
              DateTimeConnect->addWidget(PortBox);
           //Ajout de la zone Date et Heure
           EspaceDockLiaison->addLayout(DateTimeConnect);
-             //Ajout du labal module
-             LayoutEnvoisRecep->addWidget(LabelModule);
-             //Ajout du combobox module
-             LayoutEnvoisRecep->addWidget(QComboModul);
-             //Ajout du label type de commande
-             LayoutEnvoisRecep->addWidget(LabelTypeCmd);
-             //Ajout du combobox type de commande
-             LayoutEnvoisRecep->addWidget(QComboTypeCmd);
-             //Ajout du label commande
-             LayoutEnvoisRecep->addWidget(LabelCmd);
-             //ajout du combobox commande
-             LayoutEnvoisRecep->addWidget(QComboCmd);
-             //Ajout du label Instruction
-             LayoutEnvoisRecep->addWidget(LabelInstruction);
-             //Ajout du QligneEdit pour les paramètre
-             LayoutEnvoisRecep->addWidget(LineEditInstruction);
-             //Ajout du Label d'aide pour les paramètre
-             LayoutEnvoisRecep->addWidget(LabelAideParametre);
-             //Ajout du convertisseur hexa -> decimal
-             LayoutEnvoisRecep->addWidget(Convert);
           //Ajout de la zone envois recep Dans l'espace DockLiaison
-          EspaceDockLiaison->addLayout(LayoutEnvoisRecep);
+          EspaceDockLiaison->addWidget(WidgetEnvoisRecep);
        //Application du layout au widget liaison Arduino
        LiaisonArduino->setLayout(EspaceDockLiaison);
     //Création d'un ongle avec le widget Liaison Arduino
@@ -309,33 +246,6 @@ ComArduino::ComArduino(const QString & title, QWidget *parent , Qt::WindowFlags 
     enumerator = new QextSerialEnumerator(this);
     enumerator->setUpNotifications();
 
-    //Création l'arbre Xml avec la liste des commandes que l'on peut envoyer aux modules
-    docCommandeModule = new QDomDocument();
-    QFile *file = new QFile(":cmd.xml");
-#ifdef DEBUG_COMANDSAVE
-    if (!file->open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::critical(this, tr("Erreur a l'ouverture du fichier"),tr("Une erreur à l'ouverture du fichier \"CommandeModule.xml\"."),QMessageBox::Ok);
-    }
-    if (!docCommandeModule->setContent(file)) {
-        QMessageBox::critical(this, tr("Erreur a la lecture du fichier"),tr("Une erreur à la lecture du fichier \"CommandeModule.xml\"."),QMessageBox::Ok);
-    }
-#else
-    file->open(QIODevice::ReadOnly | QIODevice::Text);
-    docCommandeModule->setContent(file);
-#endif /* DEBUG_COMANDSAVE */
-    file->close();
-    delete file;
-    //On peuple directement la comboboxModule
-    QDomElement element = docCommandeModule->documentElement();
-    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-    {
-        //Prend le nom et vérifie l'initialisation du mode
-        if (qde.tagName() == "Module")
-        {
-            QComboModul->addItem(qde.attribute("Nom"), qde.attribute("Cmd"));
-        }
-    }
-
     //Aplication d'un style au dock
     setStyleSheet("QDockWidget::title {text-align: centre; background: rgb(0,189,138); color: rgb(0,0,138); border-style: inset; border-width: 2px; border-radius: 2px; border-color: rgb(0,0,138); font: 8pt; padding: 0px; height: 20px} QDockWidget::float-button { border: 1px solid; background: rgb(0,189,138); padding: 0px} QDockWidget::float-button:hover { background: rgb(0,0,138) } QDockWidget {border-style: outset; border-width: 2px; border-radius: 4px; border-color: rgb(0,0,138)}");
     setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -360,14 +270,8 @@ ComArduino::ComArduino(const QString & title, QWidget *parent , Qt::WindowFlags 
     //Il est possible de mettre un bouton qui agit sur le meme slot.
     //Inutile ici, car le signal est générer automatiquement au branchement du cable USB
     connect(this, SIGNAL(genereOpenCloseEvent()), SLOT(onOpenCloseButtonClicked()));
-    //Signaux pour la gestion des combobox pour envoyer des messages système vers les modules arduino
-    connect(QComboModul, SIGNAL(currentIndexChanged(int)), SLOT(onModuleChanged(int)));
-    connect(QComboTypeCmd, SIGNAL(currentIndexChanged(int)), SLOT(onTypeCmdChanged(int)));
-    connect(QComboCmd, SIGNAL(currentIndexChanged(int)), SLOT(onCmdChanged(int)));
-    connect(Convert, SIGNAL(HexaVal(QString)), SLOT(onHexaCame(QString)));
     //Signal return pressed des zones d'édition
     connect(InstructionManuel, SIGNAL(returnPressed()), SLOT(onSendButtonClicked()));
-    connect(LineEditInstruction, SIGNAL(returnPressed()), SLOT(onSendButtonClicked()));
 
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
@@ -379,17 +283,8 @@ ComArduino::~ComArduino()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    Convert->close();
+    delete WidgetEnvoisRecep;
     delete port;
-    delete Convert;
-    delete LabelModule;
-    delete LabelTypeCmd;
-    delete LabelCmd;
-    delete LabelInstruction;
-    delete QComboModul;
-    delete QComboCmd;
-    delete QComboTypeCmd;
-    delete LineEditInstruction;
     delete LedVerte;
     delete LabelDateEtHeure;
     delete LabelBaudeRate;
@@ -415,7 +310,6 @@ ComArduino::~ComArduino()
     delete EspaceParam;
     delete Parametre;
     delete LayoutCommandeMan;
-    delete LayoutEnvoisRecep;
     delete DateTimeConnect;
     delete EspaceDockLiaison;
     delete LiaisonArduino;
@@ -595,17 +489,9 @@ void ComArduino::onSendButtonClicked(QByteArray commandeToSend)
     //1er cas on envois le message introduit par l'utilisateur
     if (port->isOpen() && commandeToSend == "")
     {
-        //Si il n'y a pas d'instruction manuel et pas de commandeToSend alors on regarde les messages système
+/*        //Si il n'y a pas d'instruction manuel et pas de commandeToSend alors on regarde les messages système
         //Le message doit être composé a partir des différentes sélection faite par l'utilisateur
-        if (InstructionManuel->text().isEmpty() && QComboModul->currentIndex() != 0) {
-            QString Message = "<";
-            Message.append(QComboModul->currentData().toString());
-            Message.append("M00");
-            Message.append(QComboTypeCmd->currentData().toString());
-            if (QComboCmd->currentIndex() != 0) Message.append(QComboCmd->currentData().toString());
-            if (!LineEditInstruction->text().isEmpty()) Message.append(LineEditInstruction->text().toUpper());
-            Message.append(">");
-            LineEditInstruction->clear();
+        if (InstructionManuel->text().isEmpty()) {
             InstructionManuel->setText(Message);
         }
         port->write(InstructionManuel->text().toLatin1());
@@ -616,7 +502,7 @@ void ComArduino::onSendButtonClicked(QByteArray commandeToSend)
         TerminalUSBSerial->moveCursor(QTextCursor::End);
         TerminalUSBSerial->insertPlainText(Interpretation(InstructionManuel->text()));
         InstructionManuel->clear();
-        QComboCmd->setCurrentIndex(0);
+*/
     }
     //2ieme cas on envois une commande venant d'une autre fonction
     else port->write(commandeToSend.data());
@@ -647,7 +533,7 @@ void ComArduino::onReadyRead()
                 CommandeRecu.append(texteRecu.at(i));
             if (CommandeEnCours && texteRecu.at(i) == '>') {
                 CommandeEnCours = false;
-                TerminalUSBSerial->insertPlainText(Interpretation(CommandeRecu));
+                TerminalUSBSerial->insertPlainText(WidgetEnvoisRecep->Interpretation(CommandeRecu));
             }
             if (!CommandeEnCours && texteRecu.at(i) == '<') {
                 CommandeEnCours = true;
@@ -717,17 +603,13 @@ QString ComArduino::Const_QString(int type)
 }
 
 //Fonction pour appliquer et réappliquer tous les labels en fonction des demande de traduction
-void ComArduino::retranslate()
+void ComArduino::retranslate(QString lang)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     QueryModeBox->setItemText(0,tr("Polling","Méthode utilisée"));
     QueryModeBox->setItemText(1,tr("EventDriven","Méthode Utilisée"));
-    ButtonEffLumineux->setText(tr("Envoyer\nEffets Lumineux"));
-    ButtonConditionsArduino->setText(tr("Envoyer\nConditions horaire"));
-    ButtonHeurPCArduino->setText(tr("Heure PC -> Arduino"));
-    ButtonRAZRAMArduino->setText(tr("RAZ RAM Arduino"));
     ButtonSend->setText(tr("Envoyer"));
     LabelBaudeRate->setText(tr("Baude Rate"));
     LabelParity->setText(tr("Parity"));
@@ -740,392 +622,8 @@ void ComArduino::retranslate()
     TabDock->setTabToolTip(0, tr("Envois et réception de donnée avec le module Arduino"));
     TabDock->setTabText(1, tr("Paramètres"));
     TabDock->setTabToolTip(1, tr("Outil pour s'assurer que le PC communique bien avec l'Arduino"));
+    WidgetEnvoisRecep->retranslate(lang);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-}
-
-//Slot sur un changement de module pour envoyer un message système vers un module
-void ComArduino::onModuleChanged(int index)
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    if (index == 0) {
-        QComboTypeCmd->setHidden(true);
-        QComboCmd->setHidden(true);
-        LineEditInstruction->setHidden(true);
-        LabelTypeCmd->setHidden(true);
-        LabelCmd->setHidden(true);
-        LabelInstruction->setHidden(true);
-        LabelAideParametre->setHidden(true);
-        Convert->setHidden(true);
-    }
-    else {
-        QComboTypeCmd->setHidden(true);
-        QComboCmd->setHidden(true);
-        LineEditInstruction->setHidden(true);
-        LabelTypeCmd->setHidden(true);
-        LabelCmd->setHidden(true);
-        LabelInstruction->setHidden(true);
-        LabelAideParametre->setHidden(true);
-        Convert->setHidden(true);
-        QComboTypeCmd->clear();
-        QComboTypeCmd->addItem("");
-        //On peuple la comboboxTypeCmd
-        QDomElement element = docCommandeModule->documentElement();
-        for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-        {
-            //Prend le nom et vérifie l'initialisation du mode
-            if (qde.attribute("Nom") == QComboModul->currentText())
-            {
-                for(QDomElement qdea = qde.firstChildElement(); !qdea.isNull(); qdea = qdea.nextSiblingElement())
-                {
-                    if (qdea.tagName() == "TypeCmd")
-                    {
-                        QComboTypeCmd->setHidden(false);
-                        LabelTypeCmd->setHidden(false);
-                        QComboTypeCmd->addItem(qdea.attribute("Nom"), qdea.attribute("Cmd"));
-                    }
-                }
-            }
-        }
-    }
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-}
-
-//Slot sur un changement de type de commande pour envoyer un message système vers un module
-void ComArduino::onTypeCmdChanged(int index)
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    if (index == 0) {
-        QComboCmd->setHidden(true);
-        LineEditInstruction->setHidden(true);
-        LabelCmd->setHidden(true);
-        LabelInstruction->setHidden(true);
-        LabelAideParametre->setHidden(true);
-        Convert->setHidden(true);
-    }
-    else {
-        QComboCmd->setHidden(true);
-        LineEditInstruction->setHidden(true);
-        LabelCmd->setHidden(true);
-        LabelInstruction->setHidden(true);
-        LabelAideParametre->setHidden(true);
-        Convert->setHidden(true);
-        QComboCmd->clear();
-        QComboCmd->addItem("");
-        //On peuple la comboboxTypeCmd
-        QDomElement element = docCommandeModule->documentElement();
-        for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-        {
-            //Prend le nom et vérifie l'initialisation du mode
-            if (qde.attribute("Nom") == QComboModul->currentText())
-            {
-                for(QDomElement qdea = qde.firstChildElement(); !qdea.isNull(); qdea = qdea.nextSiblingElement())
-                {
-                    if (qdea.attribute("Nom") == QComboTypeCmd->currentText())
-                    {
-                        for(QDomElement qdeab = qdea.firstChildElement(); !qdeab.isNull(); qdeab = qdeab.nextSiblingElement())
-                        {
-                            if (qdeab.tagName() == "Commande") {
-                                QComboCmd->setHidden(false);
-                                LabelCmd->setHidden(false);
-                                QComboCmd->addItem(qdeab.attribute("Nom"), qdeab.attribute("Cmd"));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-}
-
-//Slot sur un changement de commande pour envoyer un message système vers un module
-void ComArduino::onCmdChanged(int index)
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    if (index == 0) {
-        LineEditInstruction->setHidden(true);
-        LineEditInstruction->setInputMask("");
-        LabelInstruction->setHidden(true);
-        LabelAideParametre->setHidden(true);
-        Convert->setHidden(true);
-    }
-    else {
-        LineEditInstruction->setHidden(true);
-        LineEditInstruction->setInputMask("");
-        LabelInstruction->setHidden(true);
-        LabelAideParametre->setHidden(true);
-        Convert->setHidden(true);
-        //On peuple la comboboxTypeCmd
-        QDomElement element = docCommandeModule->documentElement();
-        for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-        {
-            //Prend le nom et vérifie l'initialisation du mode
-            if (qde.attribute("Nom") == QComboModul->currentText())
-            {
-                for(QDomElement qdea = qde.firstChildElement(); !qdea.isNull(); qdea = qdea.nextSiblingElement())
-                {
-                    if (qdea.attribute("Nom") == QComboTypeCmd->currentText())
-                    {
-                        for(QDomElement qdeab = qdea.firstChildElement(); !qdeab.isNull(); qdeab = qdeab.nextSiblingElement())
-                        {
-                            if (qdeab.attribute("Nom") == QComboCmd->currentText())
-                            {
-                                for(QDomElement qdeabc = qdeab.firstChildElement(); !qdeabc.isNull(); qdeabc = qdeabc.nextSiblingElement())
-                                {
-                                    if (qdeabc.tagName() == "Parametre") {
-                                        LineEditInstruction->setHidden(false);
-                                        LineEditInstruction->clear();
-                                        if (qdeabc.hasAttribute("Format")) {
-                                           QString Format = qdeabc.attribute("Format");
-                                           LineEditInstruction->setInputMask(Format);
-                                        }
-                                        LabelInstruction->setHidden(false);
-                                        LabelAideParametre->setHidden(false);
-                                        LabelAideParametre->setText(qdeabc.attribute("Aide"));
-                                        if (qdeabc.attribute("Hexa") == "true") {
-                                            Convert->setHidden(false);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-}
-
-//Reception d'une valeur hexadécimal
-void ComArduino::onHexaCame(QString Val)
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    QString Laligne = LineEditInstruction->text();
-    QString Format = LineEditInstruction->inputMask();
-    if (Format != "") {
-       //Application du format à LaLigne avec la nouvelle Val Valeur
-        if (Val.length() == 1 || Val.length() == 3)
-            Val.prepend("0");
-        int index = Laligne.indexOf(' ');
-        Laligne.prepend(Val);
-    }
-    else {
-        if (Val.length() == 1 || Val.length() == 3)
-            Laligne.append("0");
-        Laligne.append(Val);
-    }
-    LineEditInstruction->setText(Laligne.toUpper());
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-}
-
-//Fonction qui traduit un message reçu pour le rendre plus lisible à l'utilisateur
-QString ComArduino::Interpretation(QString Message)
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    QString Destination = "Pour ", ValeurAcomparer = "", Provenance = "", TextComplet = "";
-    //On recherche le destinataire du message
-    ValeurAcomparer = Message.mid(1,3);
-    QDomElement element = docCommandeModule->documentElement();
-    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-    {
-        //On compare les commandes
-        if (qde.attribute("Cmd") == ValeurAcomparer)
-        {
-            Destination.append(qde.attribute("Nom"));
-            for(QDomElement qdea = qde.firstChildElement(); !qdea.isNull(); qdea = qdea.nextSiblingElement())
-            {
-                //On compare les type de commandes
-                if (qdea.attribute("Cmd") == Message.mid(7,1))
-                {
-                    TextComplet.append(qdea.attribute("Nom"));
-                    TextComplet.append(", ");
-                    for(QDomElement qdeab = qdea.firstChildElement(); !qdeab.isNull(); qdeab = qdeab.nextSiblingElement())
-                    {
-                        //On compare les type de commandes
-                        bool test = false;
-                        //Si Cmd correspond on procéde à l'affichage des données
-                        if (qdeab.attribute("Cmd") == Message.mid(8,1)) test = true;
-                        //Si il y a un attribu de type Provenance, on le vérifie et éventuellement annule l'affichage
-                        //C'est pour les cas où la commande est identique pour des choses différentes sur des modules différent
-                        if (qdeab.hasAttribute("Prov"))
-                            if (qdeab.attribute("Prov") != Message.mid(4,3))
-                                if (test) test = false;
-                        if (test)
-                        {
-                            TextComplet.append(qdeab.attribute("Nom"));
-                            TextComplet.append(": ");
-                            //Ajouter si possible le convertisseur Hexa vers décimal
-                            if (qdeab.attribute("Hexa") == "true")
-                                TextComplet.append(ConvertHexaDec(qdeab.attribute("Format"), Message.mid(9)));
-                            //En XML l'attribu "Hexa" si la chaine contient du binaire ou de l'Hexa
-                            else {
-                                TextComplet.append(Message.mid(9));
-                                TextComplet.chop(1);
-                            }
-                            TextComplet.append(" ( ");
-                            TextComplet.append(qdeab.firstChildElement().attribute("Aide"));
-                            TextComplet.append(" )");
-                        }
-                    }
-                }
-            }
-        }
-    }
-    //On recherche l'envoyeur
-    ValeurAcomparer = Message.mid(4,3);
-    Provenance.append(", provenant de ");
-    if (ValeurAcomparer == "M00")
-        Provenance.append("Programme PC");
-    else {
-        QDomElement element = docCommandeModule->documentElement();
-        for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-        {
-            //On compare les commandes
-            if (qde.attribute("Cmd") == ValeurAcomparer)
-            {
-                Provenance.append(qde.attribute("Nom"));
-            }
-        }
-    }
-    Provenance.append(", "),
-    Destination.append(Provenance);
-    Destination.append(TextComplet);
-    Destination.append("\n");
-    TextComplet = Destination;
-    return TextComplet;
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-}
-
-//Converti les valeurs hexa contenue dans Value en décimal
-QString ComArduino::ConvertHexaDec(QString Format, QString Value)
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    //On transforme la string format pour indiquer uniquement les booléen et les hexa
-    //FormatCorr => identifie les valeurs a remplacée, FormatCopy => Caractère de séparation
-    QString FormatCorr = "", FormatCopy = "", result = "";
-    //length longeur de la chaine, offset => lorsque l'on rencontre un \, il y a un décalage de 1 char dans le format
-    int length = Format.length(), offset = 0;
-    //La lettre 'C' est inscrite dans les cases vide pour les identifiers proprement
-    for (int i = 0; i < length; i++) {
-        switch (Format.at(i + offset).toLatin1()) {
-        case 'H':
-            FormatCorr.append(Format.at(i + offset));
-            FormatCopy.append('C');
-            break;
-        case 'B':
-            FormatCorr.append(Format.at(i + offset));
-            FormatCopy.append('C');
-            break;
-        case 'A':
-            FormatCorr.append(Format.at(i + offset));
-            FormatCopy.append('C');
-            break;
-        case 'N':
-            FormatCorr.append(Format.at(i + offset));
-            FormatCopy.append('C');
-            break;
-        case '\\':
-            //Ce carractère annule le carractère suivant
-            offset += 1;
-            length -= 1;
-            FormatCorr.append('C');
-            FormatCopy.append(Format.at(i + offset));
-            break;
-        default:
-            FormatCorr.append('C');
-            if (Value.at(i) == Format.at(i)) {
-               FormatCopy.append(Format.at(i + offset));
-            }
-            else {
-                FormatCopy.append('D');
-            }
-            break;
-        }
-    }
-    //result.append("<");
-    //result.append(Format);
-    //result.append("><");
-    //result.append(FormatCorr);
-    //result.append("><");
-    //result.append(FormatCopy);
-    //result.append(">");
-    //Traitement de la chaine
-    for (int i = 0; i < length; i++) {
-        if (FormatCorr.at(i).toLatin1() == 'H') {
-            result.append(" ");
-            if (i + 4 <= length) {
-                if (FormatCorr.at(i + 2).toLatin1() == 'H') {
-                    bool ok;
-                    result.append(QString::number(Value.mid(i,4).toInt(&ok, 16)));
-                    //result.append(Value.mid(i,4));
-                    i += 3;
-                }
-                else {
-                    bool ok;
-                    result.append(QString::number(Value.mid(i,2).toInt(&ok, 16)));
-                    //result.append(Value.mid(i,2));
-                    i += 1;
-                }
-            }
-            else {
-                bool ok;
-                result.append(QString::number(Value.mid(i,2).toInt(&ok, 16)));
-                //result.append(Value.mid(i,2));
-                i += 1;
-            }
-            result.append(" ");
-        }
-        else if (FormatCorr.at(i).toLatin1() == 'B') {
-            if (Value.at(i).toLatin1() == '1')
-                result.append(" On ");
-            else
-                result.append(" Off ");
-        }
-        else if (FormatCorr.at(i).toLatin1() == 'A' || FormatCorr.at(i).toLatin1() == 'N') {
-            result.append(" ");
-            result.append(Value.at(i).toLatin1());
-            while (FormatCorr.length() > i + 1) {
-               if (FormatCorr.at(i).toLatin1() == FormatCorr.at(i + 1).toLatin1()) {
-                   i++;
-                   result.append(Value.at(i).toLatin1());
-               }
-               else {
-                   result.append(" ");
-                   break;
-               }
-            }
-        }
-        else {
-            result.append(Value.at(i).toLatin1());
-        }
-    }
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    return result;
 }

@@ -2,7 +2,7 @@
 <!--
 Liste des balises et attributs reconnues:
 
-<Module Nom="Tous" Cmd="A00">
+<Module Nom:fr="Tous" Cmd="A00">
    Correspond a un module. Le messagepeut-être aussi bien destinataire
 que en provenance de ce module. Les balises insérer dedans concerne uniquement
 les messages a destination du module. Nous avons 2 attributs: Le Nom
@@ -10,20 +10,20 @@ qui est message qui sera affiché dans la console et Cmd qui contient
 Les carractères associées pour former le message suivant le protocole
 de communication prévu.
 
-<ProgrammePC Nom="Programme PC" Cmd="M00">
+<ProgrammePC Nom:fr="Programme PC" Cmd="M00">
    Balise qui à la même fonction que Module, mais les balises insérer dedans
 concerne uniquement les messages a destination du PC.
 
-<TypeCmd Nom="Opération Spéciales" Cmd="X">
+<TypeCmd Nom:fr="Opération Spéciales" Cmd="X">
    Catégotie de commande. Les balises insérer concerne uniquement des commandes
 spécifique à cette catégorie de commande.
 
-<Recetion Nom="Lecture données" Cmd="L">
+<Recetion Nom:fr="Lecture données" Cmd="L">
    Balise qui à la même fonction que TypeCmd, mais les balises insérer dedans
 concerne uniquement les messages a destination du PC. Cette balise peut-aussi
 remplacer la balise Cmd avec toutes les propriétés de celle-ci.
 
-<Commande Nom="Tout ou rien" Cmd="T" Hexa="true" Format="HHOB">
+<Commande Nom:fr="Tout ou rien" Cmd="T" Hexa="true" Format="HHOB">
    Ici vient une commande proprement dite. Elle est toujours classée dans un TypeCmd
 Lui-même classé dans un Module. Les attributs Hexa et Format servent uniquement
 pour les messages a destination du PC. "Hexa" qui peut valoir uniquement "true" ou "false"
@@ -32,7 +32,7 @@ contient le format du message. L'attribut "Prov" utiliser pour les messages
 a destination du PC, permet de distinguer l'envoyeur quand une commande identique
 correspond à des choses différentes en fonction du Module qui l'envois.
 
-<Parametre Aide="jj/mm/aaRjjHhh:mm:ss" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH"/>
+<Parametre Aide:en="" Aide:nl="" Aide:fr="jj/mm/aaRjjHhh:mm:ss" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH"/>
    Cette balise unique pour une commande, indique que la commande nécessite des
 paramètres supplémentaire. L'attribut "Aide" est un message pour guider l'utilisateur
 et l'attribut "Format" limite strictement l'utilisateur aux paramètres attendus.
@@ -41,345 +41,347 @@ affiché, ceci pour aider l'utilisateur à inscrire les bonnes valeurs de param�
 Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
 -->
 <Body>
-   <Module Nom="Tous" Cmd="A00">
-      <TypeCmd Nom="Opération Spéciales" Cmd="X">
-         <Commande Nom="Redémarrer" Cmd="R"/>
-         <Commande Nom="Tester la présence" Cmd="P"/>
-         <Commande Nom="Etat On/Off" Cmd="B" Hexa="true" Format="B"/>
+   <Module Nom:fr="Tous" Nom:en="All" Nom:nl="Alle" Cmd="A00">
+      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+         <Commande Nom:fr="Redémarrer" Nom:en="" Nom:nl="" Cmd="R"/>
+         <Commande Nom:fr="Tester la présence" Nom:en="" Nom:nl="" Cmd="P"/>
+         <Commande Nom:fr="Etat On/Off" Nom:en="" Nom:nl="" Cmd="B" Hexa="true" Format="B"/>
       </TypeCmd>
-      <Recetion Nom="Lecture données" Cmd="L">
-         <Commande Nom="Valeur Température" Cmd="T" Hexa="false"/>
+      <Recetion Nom:fr="Lecture données" Nom:en="" Nom:nl="" Cmd="L">
+         <Commande Nom:fr="Valeur Température" Nom:en="" Nom:nl="" Cmd="T" Hexa="false"/>
       </Recetion >
-      <Recetion Nom="Démarre" Cmd="D"/>
-      <Recetion Nom="ERREUR COMMANDE" Cmd="Z"/>
+      <Recetion Nom:fr="Démarre" Nom:en="" Nom:nl="" Cmd="D"/>
+      <Recetion Nom:fr="ERREUR COMMANDE" Nom:en="" Nom:nl="" Cmd="Z"/>
    </Module>
-   <Module Nom="Serveur M1" Cmd="M01">
-      <TypeCmd Nom="Lecture données" Cmd="L">
-      <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="HHHH">
-         <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+   <Module Nom:fr="Serveur M1" Nom:en="" Nom:nl="" Cmd="M01">
+      <TypeCmd Nom:fr="Lecture données" Nom:en="" Nom:nl="" Cmd="L">
+      <Commande Nom:fr="Etat On/Off" Nom:en="" Nom:nl="" Cmd="O" Hexa="true" Format="HHHH">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
       </Commande>
-      <Commande Nom="Date et Heure" Cmd="D" Hexa="true" Format="AHHHH">
-         <Parametre Aide="Day Month Year Week Hour miNute Second, adresse " Hexa="true" Format="AHHHH"/>
+      <Commande Nom:fr="Date et Heure" Nom:en="" Nom:nl="" Cmd="D" Hexa="true" Format="AHHHH">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="Day Month Year Week Hour miNute Second, adresse" Hexa="true" Format="AHHHH"/>
       </Commande>
-      <Commande Nom="Tension Batterie" Cmd="U" Hexa="true" Format="HHHH">
-         <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+      <Commande Nom:fr="Tension Batterie" Nom:en="" Nom:nl="" Cmd="U" Hexa="true" Format="HHHH">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
       </Commande>
-      <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
-         <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+      <Commande Nom:fr="Ram disponible" Nom:en="" Nom:nl="" Cmd="M" Hexa="true" Format="HHHH">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
       </Commande>
-      <Commande Nom="Donnée dans la RAM" Cmd="R" Hexa="true" Format="HHHH">
-         <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+      <Commande Nom:fr="Donnée dans la RAM" Nom:en="" Nom:nl="" Cmd="R" Hexa="true" Format="HHHH">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
       </Commande>
-      <Commande Nom="Propriétés carte SD" Cmd="S"/>
-      <Commande Nom="Executant actif" Cmd="A" Hexa="true" Format="HHHH">
-         <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+      <Commande Nom:fr="Propriétés carte SD" Nom:en="" Nom:nl="" Cmd="S"/>
+      <Commande Nom:fr="Executant actif" Nom:en="" Nom:nl="" Cmd="A" Hexa="true" Format="HHHH">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
       </Commande>
    </TypeCmd>
-      <TypeCmd Nom="Executable" Cmd="R">
-      <Commande Nom="Actif" Cmd="A">
-         <Parametre Aide="1=>On 0=>Off " Hexa="false" Format="B"/>
+      <TypeCmd Nom:fr="Executable" Nom:en="" Nom:nl="" Cmd="R">
+      <Commande Nom:fr="Actif" Nom:en="" Nom:nl="" Cmd="A">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
       </Commande>
-      <Commande Nom="Validation" Cmd="V">
-         <Parametre Aide="1=>On 0=>Off " Hexa="false" Format="B"/>
+      <Commande Nom:fr="Validation" Nom:en="" Nom:nl="" Cmd="V">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
       </Commande>
-      <Commande Nom="Synchronisation" Cmd="S">
-         <Parametre Aide="1=>On 0=>Off " Hexa="false" Format="B"/>
+      <Commande Nom:fr="Synchronisation" Nom:en="" Nom:nl="" Cmd="S">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
       </Commande>
-      <Commande Nom="Delais" Cmd="D">
-         <Parametre Aide="Delais en ms " Hexa="true" Format="HHHH"/>
+      <Commande Nom:fr="Delais" Nom:en="" Nom:nl="" Cmd="D">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="Delais en ms" Hexa="true" Format="HHHH"/>
       </Commande>
-      <Commande Nom="Condition ouverture fichier" Cmd="F">
-         <Parametre Aide="Add 1er val, type cond. (=E >S &#60;I !D M T C),Add ou Val a comparer, Nom Fichier" Hexa="true" Format="HHHHAAHHHHFNN"/>
+      <Commande Nom:fr="Condition ouverture fichier" Nom:en="" Nom:nl="" Cmd="F">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="Add 1er val, type cond. (=E >S &#60;I !D M T C),Add ou Val a comparer, Nom Fichier" Hexa="true" Format="HHHHAAHHHHFNN"/>
       </Commande>
-      <Commande Nom="Condition saut de ligne" Cmd="G">
-         <Parametre Aide="Add 1er val, type cond. (=E >S &#60;I !D M T C),Add ou Val a comparer, Num ligne" Hexa="true" Format="HHHH"/>
+      <Commande Nom:fr="Condition saut de ligne" Nom:en="" Nom:nl="" Cmd="G">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="Add 1er val, type cond. (=E >S &#60;I !D M T C),Add ou Val a comparer, Num ligne" Hexa="true" Format="HHHH"/>
       </Commande>
-      <Commande Nom="Opération sur variable" Cmd="O">
-         <Parametre Aide="Adresse val 1, opération (P+ M- D/ X*), Adresse ou Val 2" Hexa="true" Format="HHHHAAHHHH"/>
+      <Commande Nom:fr="Opération sur variable" Nom:en="" Nom:nl="" Cmd="O">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse val 1, opération (P+ M- D/ X*), Adresse ou Val 2" Hexa="true" Format="HHHHAAHHHH"/>
       </Commande>
    </TypeCmd>
-      <TypeCmd Nom="Ecriture données" Cmd="E">
-      <Commande Nom="Date et Heure" Cmd="D" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH">
-         <Parametre Aide="jj/mm/aaRjjHhh:mm:ss" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH"/>
+      <TypeCmd Nom:fr="Ecriture données" Nom:en="" Nom:nl="" Cmd="E">
+      <Commande Nom:fr="Date et Heure" Nom:en="" Nom:nl="" Cmd="D" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="jj/mm/aaRjjHhh:mm:ss" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH"/>
       </Commande>
-      <Commande Nom="Donnée dans la RAM" Cmd="R" Hexa="true" Format="MHHAA\AHHHHVHHHH">
-         <Parametre Aide="Modules, Type, Cmd, Adresse, Valeur" Hexa="true" Format="MHHAA\AHHHHVHHHH"/>
+      <Commande Nom:fr="Donnée dans la RAM" Nom:en="" Nom:nl="" Cmd="R" Hexa="true" Format="MHHAA\AHHHHVHHHH">
+         <Parametre Aide:en="" Aide:nl="" Aide:fr="Modules, Type, Cmd, Adresse, Valeur" Hexa="true" Format="MHHAA\AHHHHVHHHH"/>
       </Commande>
       </TypeCmd>
-      <TypeCmd Nom="Opération Spéciales" Cmd="X">
-         <Commande Nom="Allumer ou éteindre" Cmd="B">
-            <Parametre Aide="1=>On 0=>Off" Hexa="false" Format="B"/>
+      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+         <Commande Nom:fr="Allumer ou éteindre" Nom:en="" Nom:nl="" Cmd="B">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
          </Commande>
-         <Commande Nom="Redémarrer" Cmd="R"/>
-         <Commande Nom="Tester la présence" Cmd="P"/>
+         <Commande Nom:fr="Redémarrer" Nom:en="" Nom:nl="" Cmd="R"/>
+         <Commande Nom:fr="Tester la présence" Nom:en="" Nom:nl="" Cmd="P"/>
       </TypeCmd>
-      <Recetion Nom="Démarrage" Cmd="D00"/>
+      <Recetion Nom:fr="Démarrage" Nom:en="" Nom:nl="" Cmd="D00"/>
    </Module>
-   <Module Nom="PWM M2" Cmd="M02">
-      <TypeCmd Nom="Lecture données" Cmd="L">
-         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+   <Module Nom:fr="PWM M2" Nom:en="" Nom:nl="" Cmd="M02">
+      <TypeCmd Nom:fr="Lecture données" Nom:en="" Nom:nl="" Cmd="L">
+         <Commande Nom:fr="Etat On/Off" Nom:en="" Nom:nl="" Cmd="O" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Valeur Température" Cmd="T" Hexa="true" Format="AHHHH">
-            <Parametre Aide="Alu ou Ambiante(L.M), adresse " Hexa="true" Format="AHHHH"/>
+         <Commande Nom:fr="Valeur Température" Nom:en="" Nom:nl="" Cmd="T" Hexa="true" Format="AHHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Alu ou Ambiante(L.M), adresse" Hexa="true" Format="AHHHH"/>
          </Commande>
-         <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+         <Commande Nom:fr="Ram disponible" Nom:en="" Nom:nl="" Cmd="M" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Valeur Puissance" Cmd="P" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+         <Commande Nom:fr="Valeur Puissance" Nom:en="" Nom:nl="" Cmd="P" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Etat de l'éclairage" Cmd="L" Hexa="false">
-            <Parametre Aide="Led uniquement" Hexa="false" Format="HH"/>
-         </Commande>
-      </TypeCmd>
-      <TypeCmd Nom="Ecriture led" Cmd="K">
-         <Commande Nom="Tout ou rien" Cmd="T" Hexa="true" Format="HHOB">
-            <Parametre Aide="Led, 1=>On 0=>Off" Hexa="false" Format="HHOB"/>
-         </Commande>
-         <Commande Nom="Progressif à la suite" Cmd="P" Hexa="true" Format="HH\DHHHHLHH">
-            <Parametre Aide="Led, Delay (ms), Luminosité (0->255), " Hexa="true" Format="HH\DHHHHLHH"/>
-         </Commande>
-         <Commande Nom="Progressif initial" Cmd="D" Hexa="true" Format="HH\DHHHHLHHIHH">
-            <Parametre Aide="Led, Delay (ms), Luminosité (0->FF), Luminosité initiale(0->FF)" Hexa="true" Format="HH\DHHHHLHHIHH"/>
-         </Commande>
-         <Commande Nom="Clignotement franc" Cmd="C" Hexa="true" Format="HHTHHHH">
-            <Parametre Aide="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
-         </Commande>
-         <Commande Nom="Vacillement flamme" Cmd="V" Hexa="true" Format="HH">
-            <Parametre Aide="Led uniquement" Hexa="false" Format="HH"/>
-         </Commande>
-         <Commande Nom="Clignotement adoucis" Cmd="R" Hexa="true" Format="HHTHHHH">
-            <Parametre Aide="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
+         <Commande Nom:fr="Etat de l'éclairage" Nom:en="" Nom:nl="" Cmd="L" Hexa="false">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led uniquement" Hexa="false" Format="HH"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom="Opération Spéciales" Cmd="X">
-         <Commande Nom="Allumer ou éteindre" Cmd="B">
-            <Parametre Aide="1=>On 0=>Off" Hexa="true" Format="B"/>
+      <TypeCmd Nom:fr="Ecriture led" Nom:en="" Nom:nl="" Cmd="K">
+         <Commande Nom:fr="Tout ou rien" Nom:en="" Nom:nl="" Cmd="T" Hexa="true" Format="HHOB">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, 1=>On 0=>Off" Hexa="false" Format="HHOB"/>
          </Commande>
-         <Commande Nom="Redémarrer" Cmd="R"/>
-         <Commande Nom="Tester la présence" Cmd="P" Hexa="false"/>
+         <Commande Nom:fr="Progressif à la suite" Nom:en="" Nom:nl="" Cmd="P" Hexa="true" Format="HH\DHHHHLHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Delay (ms), Luminosité (0->255)," Hexa="true" Format="HH\DHHHHLHH"/>
+         </Commande>
+         <Commande Nom:fr="Progressif initial" Nom:en="" Nom:nl="" Cmd="D" Hexa="true" Format="HH\DHHHHLHHIHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Delay (ms), Luminosité (0->FF), Luminosité initiale(0->FF)" Hexa="true" Format="HH\DHHHHLHHIHH"/>
+         </Commande>
+         <Commande Nom:fr="Clignotement franc" Nom:en="" Nom:nl="" Cmd="C" Hexa="true" Format="HHTHHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
+         </Commande>
+         <Commande Nom:fr="Vacillement flamme" Nom:en="" Nom:nl="" Cmd="V" Hexa="true" Format="HH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led uniquement" Hexa="false" Format="HH"/>
+         </Commande>
+         <Commande Nom:fr="Clignotement adoucis" Nom:en="" Nom:nl="" Cmd="R" Hexa="true" Format="HHTHHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
+         </Commande>
       </TypeCmd>
-      <Recetion Nom="Démarrage" Cmd="D00"/>
+      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+         <Commande Nom:fr="Allumer ou éteindre" Nom:en="" Nom:nl="" Cmd="B">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="true" Format="B"/>
+         </Commande>
+         <Commande Nom:fr="Redémarrer" Nom:en="" Nom:nl="" Cmd="R"/>
+         <Commande Nom:fr="Tester la présence" Nom:en="" Nom:nl="" Cmd="P" Hexa="false"/>
+      </TypeCmd>
+      <Recetion Nom:fr="Démarrage" Nom:en="" Nom:nl="" Cmd="D00"/>
    </Module>
-   <Module Nom="BCD M3" Cmd="M03">
-      <TypeCmd Nom="Lecture données" Cmd="L">
-         <Commande Nom="Valeur Puissance affichée" Cmd="P" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+   <Module Nom:fr="BCD M3" Nom:en="" Nom:nl="" Cmd="M03">
+      <TypeCmd Nom:fr="Lecture données" Nom:en="" Nom:nl="" Cmd="L">
+         <Commande Nom:fr="Valeur Puissance affichée" Nom:en="" Nom:nl="" Cmd="P" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Valeur Température affichée" Cmd="T" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+         <Commande Nom:fr="Valeur Température affichée" Nom:en="" Nom:nl="" Cmd="T" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Données" Cmd="N" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+         <Commande Nom:fr="Données" Nom:en="" Nom:nl="" Cmd="N" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+         <Commande Nom:fr="Etat On/Off" Nom:en="" Nom:nl="" Cmd="O" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
-         </Commande>
-      </TypeCmd>
-      <TypeCmd Nom="Ecriture données" Cmd="E">
-         <Commande Nom="Valeur Puissance affichée" Cmd="P">
-            <Parametre Aide="Valeur en Hexa" Hexa="true" Format="HH"/>
-         </Commande>
-         <Commande Nom="Valeur Température affichée" Cmd="T">
-            <Parametre Aide="Valeur en Hexa" Hexa="true"  Format="HH"/>
-         </Commande>
-         <Commande Nom="Alterner les valeurs de P. et de T." Cmd="A" Hexa="true" Format="B">
-            <Parametre Aide="1=>On 0=>Off" Hexa="false" Format="B"/>
+         <Commande Nom:fr="Ram disponible" Nom:en="" Nom:nl="" Cmd="M" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom="Opération Spéciales" Cmd="X">
-         <Commande Nom="Allumer ou éteindre" Cmd="B">
-            <Parametre Aide="1=>On 0=>Off" Hexa="false"  Format="B"/>
+      <TypeCmd Nom:fr="Ecriture données" Nom:en="" Nom:nl="" Cmd="E">
+         <Commande Nom:fr="Valeur Puissance affichée" Nom:en="" Nom:nl="" Cmd="P">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Valeur en Hexa" Hexa="true" Format="HH"/>
          </Commande>
-         <Commande Nom="Test de tous les segments" Cmd="A">
-            <Parametre Aide="1=>On 0=>Off" Hexa="false" Format="B"/>
+         <Commande Nom:fr="Valeur Température affichée" Nom:en="" Nom:nl="" Cmd="T">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Valeur en Hexa" Hexa="true"  Format="HH"/>
          </Commande>
-         <Commande Nom="Redémarrer" Cmd="R"/>
-         <Commande Nom="Tester la présence" Cmd="P"/>
+         <Commande Nom:fr="Alterner les valeurs de P. et de T." Nom:en="" Nom:nl="" Cmd="A" Hexa="true" Format="B">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
+         </Commande>
       </TypeCmd>
-      <Recetion Nom="Démarrage" Cmd="D00"/>
+      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+         <Commande Nom:fr="Allumer ou éteindre" Nom:en="" Nom:nl="" Cmd="B">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="false"  Format="B"/>
+         </Commande>
+         <Commande Nom:fr="Test de tous les segments" Nom:en="" Nom:nl="" Cmd="A">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
+         </Commande>
+         <Commande Nom:fr="Redémarrer" Nom:en="" Nom:nl="" Cmd="R"/>
+         <Commande Nom:fr="Tester la présence" Nom:en="" Nom:nl="" Cmd="P"/>
+      </TypeCmd>
+      <Recetion Nom:fr="Démarrage" Nom:en="" Nom:nl="" Cmd="D00"/>
    </Module>
-   <Module Nom="BoutonServeur M4" Cmd="M04">
-      <TypeCmd Nom="Lecture données" Cmd="L">
-         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+   <Module Nom:fr="BoutonServeur M4" Nom:en="" Nom:nl="" Cmd="M04">
+      <TypeCmd Nom:fr="Lecture données" Nom:en="" Nom:nl="" Cmd="L">
+         <Commande Nom:fr="Etat On/Off" Nom:en="" Nom:nl="" Cmd="O" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+         <Commande Nom:fr="Ram disponible" Nom:en="" Nom:nl="" Cmd="M" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Synchronisation" Cmd="S" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+         <Commande Nom:fr="Synchronisation" Nom:en="" Nom:nl="" Cmd="S" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Validation" Cmd="V" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse " Hexa="true" Format="HHHH"/>
+         <Commande Nom:fr="Validation" Nom:en="" Nom:nl="" Cmd="V" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Etat de la Led Rouge" Cmd="L">
-            <Parametre Aide="Led uniquement" Hexa="false" Format="HH"/>
-         </Commande>
-      </TypeCmd>
-      <TypeCmd Nom="Ecriture données" Cmd="E">
-         <Commande Nom="Synchronisation" Cmd="S"  Hexa="true" Format="B">
-            <Parametre Aide="1=>On 0=>Off" Hexa="false" Format="B"/>
-         </Commande>
-         <Commande Nom="Validation" Cmd="V" Hexa="true" Format="B">
-            <Parametre Aide="1=>On 0=>Off" Hexa="false" Format="B"/>
+         <Commande Nom:fr="Etat de la Led Rouge" Nom:en="" Nom:nl="" Cmd="L">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led uniquement" Hexa="false" Format="HH"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom="Ecriture Led témoin rouge" Cmd="K">
-         <Commande Nom="Tout ou rien" Cmd="T" Hexa="true" Format="HHOB">
-            <Parametre Aide="Led, 1=>On 0=>Off" Hexa="false" Format="HHOB"/>
+      <TypeCmd Nom:fr="Ecriture données" Nom:en="" Nom:nl="" Cmd="E">
+         <Commande Nom:fr="Synchronisation" Nom:en="" Nom:nl="" Cmd="S"  Hexa="true" Format="B">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
          </Commande>
-         <Commande Nom="Progressif à la suite" Cmd="P" Hexa="true" Format="HH\DHHHHLHH">
-            <Parametre Aide="Led, Delay (ms), Luminosité (0->255), " Hexa="true" Format="HH\DHHHHLHH"/>
-         </Commande>
-         <Commande Nom="Progressif initial" Cmd="D" Hexa="true" Format="HH\DHHHHLHHIHH">
-            <Parametre Aide="Led, Delay (ms), Luminosité (0->FF), Luminosité initiale(0->FF)" Hexa="true" Format="HH\DHHHHLHHIHH"/>
-         </Commande>
-         <Commande Nom="Clignotement franc" Cmd="C" Hexa="true" Format="HHTHHHH">
-            <Parametre Aide="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
-         </Commande>
-         <Commande Nom="Vacillement flamme" Cmd="V" Hexa="true" Format="HH">
-            <Parametre Aide="Led uniquement" Hexa="false" Format="HH"/>
-         </Commande>
-         <Commande Nom="Clignotement adoucis" Cmd="R" Hexa="true" Format="HHTHHHH">
-            <Parametre Aide="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
+         <Commande Nom:fr="Validation" Nom:en="" Nom:nl="" Cmd="V" Hexa="true" Format="B">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom="Opération Spéciales" Cmd="X">
-         <Commande Nom="Allumer ou éteindre" Cmd="B"  Hexa="true" Format="B">
-            <Parametre Aide="1=>On 0=>Off" Hexa="false" Format="B"/>
+      <TypeCmd Nom:fr="Ecriture Led témoin rouge" Nom:en="" Nom:nl="" Cmd="K">
+         <Commande Nom:fr="Tout ou rien" Nom:en="" Nom:nl="" Cmd="T" Hexa="true" Format="HHOB">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, 1=>On 0=>Off" Hexa="false" Format="HHOB"/>
          </Commande>
-         <Commande Nom="Redémarrer" Cmd="R"/>
-         <Commande Nom="Tester la présence" Cmd="P"/>
+         <Commande Nom:fr="Progressif à la suite" Nom:en="" Nom:nl="" Cmd="P" Hexa="true" Format="HH\DHHHHLHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Delay (ms), Luminosité (0->255)," Hexa="true" Format="HH\DHHHHLHH"/>
+         </Commande>
+         <Commande Nom:fr="Progressif initial" Nom:en="" Nom:nl="" Cmd="D" Hexa="true" Format="HH\DHHHHLHHIHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Delay (ms), Luminosité (0->FF), Luminosité initiale(0->FF)" Hexa="true" Format="HH\DHHHHLHHIHH"/>
+         </Commande>
+         <Commande Nom:fr="Clignotement franc" Nom:en="" Nom:nl="" Cmd="C" Hexa="true" Format="HHTHHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
+         </Commande>
+         <Commande Nom:fr="Vacillement flamme" Nom:en="" Nom:nl="" Cmd="V" Hexa="true" Format="HH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led uniquement" Hexa="false" Format="HH"/>
+         </Commande>
+         <Commande Nom:fr="Clignotement adoucis" Nom:en="" Nom:nl="" Cmd="R" Hexa="true" Format="HHTHHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
+         </Commande>
       </TypeCmd>
-      <Recetion Nom="Démarrage" Cmd="D00"/>
+      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+         <Commande Nom:fr="Allumer ou éteindre" Nom:en="" Nom:nl="" Cmd="B"  Hexa="true" Format="B">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
+         </Commande>
+         <Commande Nom:fr="Redémarrer" Nom:en="" Nom:nl="" Cmd="R"/>
+         <Commande Nom:fr="Tester la présence" Nom:en="" Nom:nl="" Cmd="P"/>
+      </TypeCmd>
+      <Recetion Nom:fr="Démarrage" Nom:en="" Nom:nl="" Cmd="D00"/>
    </Module>
-   <Module Nom="Lanterne M5" Cmd="M05">
-      <TypeCmd Nom="Lecture données" Cmd="L">
-         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+   <Module Nom:fr="Lanterne M5" Nom:en="" Nom:nl="" Cmd="M05">
+      <TypeCmd Nom:fr="Lecture données" Nom:en="" Nom:nl="" Cmd="L">
+         <Commande Nom:fr="Etat On/Off" Nom:en="" Nom:nl="" Cmd="O" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
-            <Parametre Aide="adresse" Hexa="true" Format="HHHH"/>
+         <Commande Nom:fr="Ram disponible" Nom:en="" Nom:nl="" Cmd="M" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="adresse" Hexa="true" Format="HHHH"/>
          </Commande>
-         <Commande Nom="Etat de l'éclairage" Cmd="L" Hexa="false">
-            <Parametre Aide="Led 01" Hexa="false" Format="HH"/>
-         </Commande>
-      </TypeCmd>
-      <TypeCmd Nom="Ecriture données" Cmd="E">
-      </TypeCmd>
-      <TypeCmd Nom="Ecriture led" Cmd="K">
-         <Commande Nom="Tout ou rien" Cmd="T" Hexa="true" Format="HHOB">
-            <Parametre Aide="Led, 1=>On 0=>Off" Hexa="false" Format="HHOB"/>
-         </Commande>
-         <Commande Nom="Progressif à la suite" Cmd="P" Hexa="true" Format="HH\DHHHHLHH">
-            <Parametre Aide="Led, Delay (ms), Luminosité (0->255), " Hexa="true" Format="HH\DHHHHLHH"/>
-         </Commande>
-         <Commande Nom="Progressif initial" Cmd="D" Hexa="true" Format="HH\DHHHHLHHIHH">
-            <Parametre Aide="Led, Delay (ms), Luminosité (0->FF), Luminosité initiale(0->FF)" Hexa="true" Format="HH\DHHHHLHHIHH"/>
-         </Commande>
-         <Commande Nom="Clignotement franc" Cmd="C" Hexa="true" Format="HHTHHHH">
-            <Parametre Aide="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
-         </Commande>
-         <Commande Nom="Vacillement flamme" Cmd="V" Hexa="true" Format="HH">
-            <Parametre Aide="Led uniquement" Hexa="false" Format="HH"/>
-         </Commande>
-         <Commande Nom="Clignotement adoucis" Cmd="R" Hexa="true" Format="HHTHHHH">
-            <Parametre Aide="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
+         <Commande Nom:fr="Etat de l'éclairage" Nom:en="" Nom:nl="" Cmd="L" Hexa="false">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led 01" Hexa="false" Format="HH"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom="Opération Spéciales" Cmd="X">
-         <Commande Nom="Allumer ou éteindre" Cmd="B" Hexa="true" Format="B">
-            <Parametre Aide="1=>On 0=>Off" Hexa="false" Format="B"/>
+      <TypeCmd Nom:fr="Ecriture données" Nom:en="" Nom:nl="" Cmd="E">
+      </TypeCmd>
+      <TypeCmd Nom:fr="Ecriture led" Nom:en="" Nom:nl="" Cmd="K">
+         <Commande Nom:fr="Tout ou rien" Nom:en="" Nom:nl="" Cmd="T" Hexa="true" Format="HHOB">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, 1=>On 0=>Off" Hexa="false" Format="HHOB"/>
          </Commande>
-         <Commande Nom="Redémarrer" Cmd="R" Hexa="false"/>
-         <Commande Nom="Tester la présence" Cmd="P" Hexa="false"/>
+         <Commande Nom:fr="Progressif à la suite" Nom:en="" Nom:nl="" Cmd="P" Hexa="true" Format="HH\DHHHHLHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Delay (ms), Luminosité (0->255)," Hexa="true" Format="HH\DHHHHLHH"/>
+         </Commande>
+         <Commande Nom:fr="Progressif initial" Nom:en="" Nom:nl="" Cmd="D" Hexa="true" Format="HH\DHHHHLHHIHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Delay (ms), Luminosité (0->FF), Luminosité initiale(0->FF)" Hexa="true" Format="HH\DHHHHLHHIHH"/>
+         </Commande>
+         <Commande Nom:fr="Clignotement franc" Nom:en="" Nom:nl="" Cmd="C" Hexa="true" Format="HHTHHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
+         </Commande>
+         <Commande Nom:fr="Vacillement flamme" Nom:en="" Nom:nl="" Cmd="V" Hexa="true" Format="HH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led uniquement" Hexa="false" Format="HH"/>
+         </Commande>
+         <Commande Nom:fr="Clignotement adoucis" Nom:en="" Nom:nl="" Cmd="R" Hexa="true" Format="HHTHHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
+         </Commande>
+      </TypeCmd>
+      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+         <Commande Nom:fr="Allumer ou éteindre" Nom:en="" Nom:nl="" Cmd="B" Hexa="true" Format="B">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
+         </Commande>
+         <Commande Nom:fr="Redémarrer" Nom:en="" Nom:nl="" Cmd="R" Hexa="false"/>
+         <Commande Nom:fr="Tester la présence" Nom:en="" Nom:nl="" Cmd="P" Hexa="false"/>
       </TypeCmd>
    </Module>
-   <ProgrammePC Nom="Programme PC" Cmd="M00">
-      <TypeCmd Nom="Lecture données" Cmd="L">
-         <Commande Nom="Etat On/Off" Cmd="O" Hexa="true" Format="NNNB">
-            <Parametre Aide="1=>On 0=>Off"/>
+   <ProgrammePC Nom:fr="Programme PC" Nom:en="" Nom:nl="" Cmd="M00">
+      <TypeCmd Nom:fr="Lecture données" Nom:en="" Nom:nl="" Cmd="L">
+         <Commande Nom:fr="Etat On/Off" Nom:en="" Nom:nl="" Cmd="O" Hexa="true" Format="NNNB">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off"/>
          </Commande>
-         <Commande Nom="Ram disponible" Cmd="M" Hexa="true" Format="HHHH">
-            <Parametre Aide="octet"/>
+         <Commande Nom:fr="Ram disponible" Nom:en="" Nom:nl="" Cmd="M" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="octet"/>
          </Commande>
-         <Commande Nom="Etat de l'éclairage" Cmd="L" Hexa="true" Format="HHTA\DHHLHHVHHTHHHH">
-            <Parametre Aide="Led, Type, Demande (0=>FF), Luminosité (0=>FF), Variation, Interval (ms)" Hexa="false"/>
+         <Commande Nom:fr="Etat de l'éclairage" Nom:en="" Nom:nl="" Cmd="L" Hexa="true" Format="HHTA\DHHLHHVHHTHHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Type, Demande (0=>FF), Luminosité (0=>FF), Variation, Interval (ms)" Hexa="false"/>
          </Commande>
-         <Commande Nom="Tension Batterie" Cmd="U" Hexa="true"  Format="HHHH">
-            <Parametre Aide="mV"/>
+         <Commande Nom:fr="Tension Batterie" Nom:en="" Nom:nl="" Cmd="U" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="mV"/>
          </Commande>
-         <Commande Nom="Puissance" Cmd="P" Hexa="true"  Format="HHHH">
-            <Parametre Aide="%"/>
+         <Commande Nom:fr="Puissance" Nom:en="" Nom:nl="" Cmd="P" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="%"/>
          </Commande>
-         <Commande Nom="Température" Cmd="T" Hexa="true"  Format="HHHH">
-            <Parametre Aide="°C"/>
+         <Commande Nom:fr="Température" Nom:en="" Nom:nl="" Cmd="T" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="°C"/>
          </Commande>
-         <Commande Nom="Propriétés carte SD" Cmd="S" Hexa="true" Format="NNNNVHHHH" Prov="M01">
-            <Parametre Aide="Mb"/>Valeur en Hexa
+         <Commande Nom:fr="Propriétés carte SD" Nom:en="" Nom:nl="" Cmd="S" Hexa="true" Format="NNNNVHHHH" Prov="M01">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Mb"/>Valeur en Hexa
          </Commande>
-         <Commande Nom="Synchronisation" Cmd="S" Hexa="true" Format="HHHB" Prov="M04"/>
-         <Commande Nom="Validation" Cmd="V" Hexa="true" Format="HHHB" Prov="M04"/>
+         <Commande Nom:fr="Synchronisation" Nom:en="" Nom:nl="" Cmd="S" Hexa="true" Format="HHHB" Prov="M04"/>
+         <Commande Nom:fr="Validation" Nom:en="" Nom:nl="" Cmd="V" Hexa="true" Format="HHHB" Prov="M04"/>
       </TypeCmd>
-      <TypeCmd Nom="Donnée affichage " Cmd="N">
-         <Commande Nom="Alternant " Cmd="A" Hexa="true" Format="HHHH">
-            <Parametre Aide="ms"/>
+      <TypeCmd Nom:fr="Donnée affichage" Nom:en="" Nom:nl="" Cmd="N">
+         <Commande Nom:fr="Alternant" Nom:en="" Nom:nl="" Cmd="A" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="ms"/>
          </Commande>
-         <Commande Nom="Fixe" Cmd="F" Hexa="true" Format="HHHH">
-            <Parametre Aide="ms"/>
-         </Commande>
-      </TypeCmd>
-      <TypeCmd Nom="Lecture Température " Cmd="T">
-         <Commande Nom="Radiateur Aluminium " Cmd="L" Hexa="true" Format="HHHH">
-            <Parametre Aide="°C"/>
-         </Commande>
-         <Commande Nom="Ambiante" Cmd="M" Hexa="true" Format="HHHH">
-            <Parametre Aide="°C"/>
-         </Commande>
-         <Commande Nom="No device" Cmd="N" Hexa="true" Format="HHHH">
-            <Parametre Aide="Sonde de T° déconnectée, ou erreur entre aLu et aMbiant"/>
+         <Commande Nom:fr="Fixe" Nom:en="" Nom:nl="" Cmd="F" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="ms"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom="Date et Heure" Cmd="A">
-         <Commande Nom="Jour" Cmd="D" Hexa="true"  Format="HHHH">
-            <Parametre Aide="Jour du mois"/>
+      <TypeCmd Nom:fr="Lecture Température" Nom:en="" Nom:nl="" Cmd="T">
+         <Commande Nom:fr="Radiateur Aluminium" Nom:en="" Nom:nl="" Cmd="L" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="°C"/>
          </Commande>
-         <Commande Nom="Mois" Cmd="M" Hexa="true"  Format="HHHH">
-            <Parametre Aide="Mois"/>
+         <Commande Nom:fr="Ambiante" Nom:en="" Nom:nl="" Cmd="M" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="°C"/>
          </Commande>
-         <Commande Nom="Année" Cmd="Y" Hexa="true"  Format="HHHH">
-            <Parametre Aide="Année"/>
-         </Commande>
-         <Commande Nom="Jour de le semaine" Cmd="W" Hexa="true"  Format="HHHH">
-            <Parametre Aide="Jour de le semaine"/>
-         </Commande>
-         <Commande Nom="Heure" Cmd="H" Hexa="true"  Format="HHHH">
-            <Parametre Aide="Heure"/>
-         </Commande>
-         <Commande Nom="Minute" Cmd="N" Hexa="true"  Format="HHHH">
-            <Parametre Aide="Minute, "/>
-         </Commande>
-         <Commande Nom="Seconde" Cmd="S" Hexa="true"  Format="HHHH">
-            <Parametre Aide="Seconde, "/>
+         <Commande Nom:fr="No device" Nom:en="" Nom:nl="" Cmd="N" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Sonde de T° déconnectée, ou erreur entre aLu et aMbiant"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom="Démarre" Cmd="D"/>
-      <TypeCmd Nom="Variable utilisateur" Cmd="V">
-         <Commande Nom="Présence" Cmd="P" Hexa="true"  Format="HHHH">
-            <Parametre Aide="Adresse, Valeur"/>
+      <TypeCmd Nom:fr="Date et Heure" Nom:en="" Nom:nl="" Cmd="A">
+         <Commande Nom:fr="Jour" Nom:en="" Nom:nl="" Cmd="D" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Jour du mois"/>
+         </Commande>
+         <Commande Nom:fr="Mois" Nom:en="" Nom:nl="" Cmd="M" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Mois"/>
+         </Commande>
+         <Commande Nom:fr="Année" Nom:en="" Nom:nl="" Cmd="Y" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Année"/>
+         </Commande>
+         <Commande Nom:fr="Jour de le semaine" Nom:en="" Nom:nl="" Cmd="W" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Jour de le semaine"/>
+         </Commande>
+         <Commande Nom:fr="Heure" Nom:en="" Nom:nl="" Cmd="H" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Heure"/>
+         </Commande>
+         <Commande Nom:fr="Minute" Nom:en="" Nom:nl="" Cmd="N" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Minute,"/>
+         </Commande>
+         <Commande Nom:fr="Seconde" Nom:en="" Nom:nl="" Cmd="S" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Seconde,"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom="Opération Spéciales" Cmd="X">
-         <Commande Nom="Variable Présence" Cmd="P" Hexa="true"  Format="HHHH">
-            <Parametre Aide="Test de Présence, "/>
+      <TypeCmd Nom:fr="Démarre" Nom:en="" Nom:nl="" Cmd="D"/>
+      <TypeCmd Nom:fr="Variable utilisateur" Nom:en="" Nom:nl="" Cmd="V">
+         <Commande Nom:fr="Présence" Nom:en="" Nom:nl="" Cmd="P" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom="Présent" Cmd="P"/>
-      <Recetion Nom="ERREUR COMMANDE" Cmd="E"/>
+      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+         <Commande Nom:fr="Variable Présence" Nom:en="" Nom:nl="" Cmd="P" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Test de Présence,"/>
+         </Commande>
+      </TypeCmd>
+      <TypeCmd Nom:fr="Présent" Nom:en="" Nom:nl="" Cmd="P"/>
+      <Recetion Nom:fr="ERREUR COMMANDE" Nom:en="" Nom:nl="" Cmd="E"/>
    </ProgrammePC>
+   <Provenance Nom:fr="Programme PC" Nom:en="Soft PC" Nom:nl="Soft PC" Cmd="M00"/>
+   <Provenance Nom:fr="Serveur M1" Nom:en="Server M1" Nom:nl="Server M1" Cmd="M01"/>
 </Body>

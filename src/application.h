@@ -19,6 +19,7 @@ public:
 	static void loadTranslations(const QString& dir);
 	static void loadTranslations(const QDir& dir);
 	static const QStringList availableLanguages();
+    static const QString currentLanguage();
 
 public slots:
 	static void setLanguage(const QString& locale);

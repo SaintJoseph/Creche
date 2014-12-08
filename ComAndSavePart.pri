@@ -23,7 +23,8 @@ HEADERS                += $$PUBLIC_HEADERS \
                           $$PWD/src/qextserialenumerator_p.h \
                           $$PWD/src/horodateur.h \
                           $$PWD/func_name.h \
-                          $$PWD/src/convertisseurdechexa.h
+                          $$PWD/src/convertisseurdechexa.h \
+                          $$PWD/src/lecommandemodules.h
 
 SOURCES                += $$PWD/src/qextserialport.cpp \
                           $$PWD/src/qextserialenumerator.cpp\
@@ -34,7 +35,8 @@ SOURCES                += $$PWD/src/qextserialport.cpp \
                           $$PWD/src/savexmlfile.cpp \
                           $$PWD/src/horodateur.cpp \
                           $$PWD/src/application.cpp \
-                          $$PWD/src/convertisseurdechexa.cpp
+                          $$PWD/src/convertisseurdechexa.cpp \
+                          $$PWD/src/lecommandemodules.cpp
 
 unix {
     SOURCES            += $$PWD/src/qextserialport_unix.cpp

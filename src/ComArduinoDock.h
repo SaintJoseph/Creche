@@ -3,7 +3,6 @@
 
 #include <QDockWidget>
 #include <QPlainTextEdit>
-#include <QtXml>
 #include <QComboBox>
 #include <QTime>
 #include <QDate>
@@ -25,7 +24,7 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include "func_name.h"
-#include "convertisseurdechexa.h"
+#include "lecommandemodules.h"
 
 //Message pour l'ouverture ou la fermeture du port serie
 #define OPEN_PORT 1
@@ -40,7 +39,7 @@ class ComArduino : public QDockWidget
     ~ComArduino();
     void onOpenCloseButtonClicked(char action);
     //Fonction pour appliquer et réappliquer tous les labels en fonction des demande de traduction
-    void retranslate();
+    void retranslate(QString lang);
 
 signals:
     void genereOpenCloseEvent();
@@ -60,10 +59,6 @@ private slots:
     void onReadyRead();
     void onPortAddedOrRemoved();
     void onTimeUpdate();
-    void onModuleChanged(int index);
-    void onTypeCmdChanged(int index);
-    void onCmdChanged(int index);
-    void onHexaCame(QString Val);
 
 private:
     QTimer *timer, *ClockUpdate;
@@ -71,23 +66,21 @@ private:
     QextSerialPort *port;
     QextSerialEnumerator *enumerator;
     QDateTime *dateEtHeure;
-    QVBoxLayout *LayoutEnvoisRecep, *DateTimeConnect, *MenuGauche, *EspaceTerminal, *LayoutParamG, *LayoutParamD;
+    QVBoxLayout *DateTimeConnect, *MenuGauche, *EspaceTerminal, *LayoutParamG, *LayoutParamD;
     QHBoxLayout *LayoutPrincH, *LayoutCommandeMan, *EspaceDockLiaison, *EspaceParam;
     QLabel *LabelDateEtHeure, *label_img, *LabelBaudeRate, *LabelParity, *LabelDataBit, *LabelStopBit,\
-    *LabelQueryMode, *LabelTimeOut, *LabelPort, *LabelModule, *LabelTypeCmd, *LabelCmd, *LabelInstruction,\
-    *LabelAideParametre;
+    *LabelQueryMode, *LabelTimeOut, *LabelPort;
     QTabWidget *TabDock;
     QWidget *LiaisonArduino, *Parametre, *Base, *TerminalZone;
     HLed *LedVerte;
     QPlainTextEdit *TerminalUSBSerial;
-    QPushButton *ButtonRAZRAMArduino, *ButtonHeurPCArduino, *ButtonConditionsArduino, *ButtonEffLumineux,\
-    *ButtonSend, *ButtonSimuler;
-    QLineEdit *InstructionManuel, *LineEditInstruction;
-    QComboBox *BaudeRate, *ParityBox, *DataBitBox, *StopBitBox, *QueryModeBox, *PortBox, *QComboModul, *QComboTypeCmd, *QComboCmd;
+    QPushButton *ButtonSend;
+    QLineEdit *InstructionManuel;
+    QComboBox *BaudeRate, *ParityBox, *DataBitBox, *StopBitBox, *QueryModeBox, *PortBox;
     QSpinBox *TimeOutBox;
     QDomDocument *docCommandeModule;
-    ConvertisseurDecHexa *Convert;
     QString CommandeRecu;
+    LECommandeModules *WidgetEnvoisRecep;
     bool CommandeEnCours;
 
     QString Const_QString(int type);

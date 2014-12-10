@@ -26,7 +26,7 @@ public:
     QString Interpretation(QString Message);
 
 signals:
-    void Commande(QString);
+    void Commande(QByteArray);
 
 private slots:
     void onModuleChanged(int index);

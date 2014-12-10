@@ -55,7 +55,7 @@ private slots:
     void onQueryModeChanged(int idx);
     void onTimeoutChanged(int val);
     void onOpenCloseButtonClicked();
-    void onSendButtonClicked(QByteArray commandeToSend = "");
+    void onSendButtonClicked(QByteArray commandeToSend);
     void onReadyRead();
     void onPortAddedOrRemoved();
     void onTimeUpdate();

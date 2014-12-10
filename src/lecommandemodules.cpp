@@ -576,12 +576,12 @@ void LECommandeModules::onValidMesg()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    QString Message = "<";
-    Message.append(QComboModul->currentData().toString());
-    Message.append(QComboProv->currentData().toString());
-    Message.append(QComboTypeCmd->currentData().toString());
-    if (QComboCmd->currentIndex() != 0) Message.append(QComboCmd->currentData().toString());
-    if (!LineEditInstruction->text().isEmpty()) Message.append(LineEditInstruction->text().toUpper());
+    QByteArray Message = "<";
+    Message.append(QComboModul->currentData().toString().toLatin1());
+    Message.append(QComboProv->currentData().toString().toLatin1());
+    Message.append(QComboTypeCmd->currentData().toString().toLatin1());
+    if (QComboCmd->currentIndex() != 0) Message.append(QComboCmd->currentData().toString().toLatin1());
+    if (!LineEditInstruction->text().isEmpty()) Message.append(LineEditInstruction->text().toLatin1().toUpper());
     Message.append(">");
     LineEditInstruction->clear();
     emit Commande(Message);

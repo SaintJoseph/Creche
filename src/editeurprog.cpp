@@ -34,7 +34,6 @@ EditeurProg::EditeurProg(QWidget *parent) :
     //Zone éditable
     ZoneEdition = new QTextEdit;
     ZoneEdition->setFont(font);
-    ZoneEdition->setMaximumWidth(80%);
     //Label Nom du fichier
     LabelNomFile = new QLabel;
     LabelNomFile->setFont(font);
@@ -70,6 +69,7 @@ EditeurProg::EditeurProg(QWidget *parent) :
 
     retranslate("fr");
 
+    connect(GenCommande, SIGNAL(Commande(QByteArray)),SLOT(onTextCome(QByteArray)));
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -102,4 +102,12 @@ void EditeurProg::retranslate(QString lang)
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+}
+
+//Ajout des commandes depuis le générateur
+void EditeurProg::onTextCome(QByteArray message)
+{
+    ZoneEdition->moveCursor(QTextCursor::End);
+    ZoneEdition->insertPlainText(message);
+    ZoneEdition->insertPlainText("\n");
 }

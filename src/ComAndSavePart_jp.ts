@@ -10,175 +10,161 @@
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="39"/>
-        <location filename="ComArduinoDock.cpp" line="781"/>
+        <location filename="ComArduinoDock.cpp" line="618"/>
         <source>Baude Rate</source>
         <translation>ボーレート</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="42"/>
-        <location filename="ComArduinoDock.cpp" line="782"/>
+        <location filename="ComArduinoDock.cpp" line="619"/>
         <source>Parity</source>
         <translation>パリティ</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="45"/>
-        <location filename="ComArduinoDock.cpp" line="783"/>
+        <location filename="ComArduinoDock.cpp" line="620"/>
         <source>Data Bit</source>
         <translation>データビット</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="48"/>
-        <location filename="ComArduinoDock.cpp" line="784"/>
+        <location filename="ComArduinoDock.cpp" line="621"/>
         <source>Stop Bit</source>
         <translation>ストップビット</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="51"/>
-        <location filename="ComArduinoDock.cpp" line="785"/>
+        <location filename="ComArduinoDock.cpp" line="622"/>
         <source>Query Mode</source>
         <translation>クエリモード</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="54"/>
-        <location filename="ComArduinoDock.cpp" line="786"/>
+        <location filename="ComArduinoDock.cpp" line="623"/>
         <source>Liste des ports</source>
         <translation>ポートのリスト</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="57"/>
-        <location filename="ComArduinoDock.cpp" line="787"/>
+        <location filename="ComArduinoDock.cpp" line="624"/>
         <source>Time Out</source>
         <translation>タイム·アウト</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="110"/>
-        <location filename="ComArduinoDock.cpp" line="780"/>
+        <location filename="ComArduinoDock.cpp" line="107"/>
+        <location filename="ComArduinoDock.cpp" line="617"/>
         <source>Envoyer</source>
         <translation>送る</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="115"/>
-        <location filename="ComArduinoDock.cpp" line="779"/>
         <source>RAZ RAM Arduino</source>
-        <translation>RAZ RAM Arduino</translation>
+        <translation type="vanished">RAZ RAM Arduino</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="120"/>
-        <location filename="ComArduinoDock.cpp" line="778"/>
         <source>Heure PC -&gt; Arduino</source>
-        <translation>パソコンの時間 - &gt;アルドゥイーノ</translation>
+        <translation type="vanished">パソコンの時間 - &gt;アルドゥイーノ</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="125"/>
-        <location filename="ComArduinoDock.cpp" line="777"/>
         <source>Envoyer
 Conditions horaire</source>
-        <translation>送る
+        <translation type="vanished">送る
 時間ごとの条件</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="130"/>
-        <location filename="ComArduinoDock.cpp" line="776"/>
         <source>Envoyer
 Effets Lumineux</source>
-        <translation>送る
+        <translation type="vanished">送る
 照明の効果</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="168"/>
-        <location filename="ComArduinoDock.cpp" line="774"/>
+        <location filename="ComArduinoDock.cpp" line="145"/>
+        <location filename="ComArduinoDock.cpp" line="615"/>
         <source>Polling</source>
         <comment>Méthode utilisée</comment>
         <translation>ポーリング</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="169"/>
-        <location filename="ComArduinoDock.cpp" line="775"/>
+        <location filename="ComArduinoDock.cpp" line="146"/>
+        <location filename="ComArduinoDock.cpp" line="616"/>
         <source>EventDriven</source>
         <comment>Méthode Utilisée</comment>
         <translation>イベントドリブン</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="205"/>
-        <location filename="ComArduinoDock.cpp" line="788"/>
+        <location filename="ComArduinoDock.cpp" line="177"/>
+        <location filename="ComArduinoDock.cpp" line="625"/>
         <source>Envoi/Reception</source>
         <translation>終結部/レセプション</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="206"/>
-        <location filename="ComArduinoDock.cpp" line="789"/>
+        <location filename="ComArduinoDock.cpp" line="178"/>
+        <location filename="ComArduinoDock.cpp" line="626"/>
         <source>Envois et réception de donnée avec le module Arduino</source>
         <translation>Arduinoのモジュールで出荷し、データ受信</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="232"/>
-        <location filename="ComArduinoDock.cpp" line="790"/>
+        <location filename="ComArduinoDock.cpp" line="204"/>
+        <location filename="ComArduinoDock.cpp" line="627"/>
         <source>Paramètres</source>
         <translation>設定</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="233"/>
-        <location filename="ComArduinoDock.cpp" line="791"/>
+        <location filename="ComArduinoDock.cpp" line="205"/>
+        <location filename="ComArduinoDock.cpp" line="628"/>
         <source>Outil pour s&apos;assurer que le PC communique bien avec l&apos;Arduino</source>
         <translation>PCがアルドゥイーノとよく伝えていることを確認するためのツール</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="394"/>
+        <location filename="ComArduinoDock.cpp" line="339"/>
         <source>ddd dd MMM yyyy&lt;br&gt;hh:mm:ss ap</source>
         <comment>Date et Heure en mode 12h (am/pm), Exemple: Sam. 24 Aout 2013 (a la ligne) 10:25:14 am</comment>
         <translation>ddd dd MMM yyyy&lt;br&gt;hh:mm:ss ap</translation>
     </message>
     <message numerus="yes">
-        <location filename="ComArduinoDock.cpp" line="537"/>
         <source>Conditions horaire
 %n Mode(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>時間ごとの条件
 %n メソッド</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="ComArduinoDock.cpp" line="540"/>
         <source>Donnes Ecl.-&gt;Arduino
 %n Mode(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>照明へ&gt;アルドゥイーノを与える
 %nメソッド</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="594"/>
         <source>Arduino pret pour une Synchronisation
 RAZ RAM de l&apos;Arduino...</source>
-        <translation>同期のための準備のArduino
+        <translation type="vanished">同期のための準備のArduino
 RAMはアルドゥイーノをリセット...</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="623"/>
         <source>Arduino pret pour une Synchronisation
 Heure PC -&gt; Arduino...</source>
         <comment>Attention au retour à la ligne. Les 3 points sont normalement suivi d&apos;un Ok</comment>
-        <translation>同期のための準備のArduino
+        <translation type="vanished">同期のための準備のArduino
 パソコンの時間 - &gt; Arduinoの...</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="635"/>
         <source>Arduino pret pour une Synchronisation
 Heure de fonctionnement et Mode correspondant -&gt; Arduino...</source>
         <comment>Attention au retour à la ligne. Les 3 points sont normalement suivi d&apos;un Ok</comment>
-        <translation>同期のための準備のArduino
+        <translation type="vanished">同期のための準備のArduino
 操作と対応するモードの時間 - &gt; Arduinoの...</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="645"/>
         <source>Arduino pret pour une Synchronisation
 Donnees d&apos;eclairage -&gt; Arduino...</source>
         <comment>Attention au retour à la ligne. Les 3 points sont normalement suivi d&apos;un Ok</comment>
-        <translation>同期のための準備のArduino
+        <translation type="vanished">同期のための準備のArduino
 データライティング - &gt; Arduinoの...</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="743"/>
+        <location filename="ComArduinoDock.cpp" line="601"/>
         <source>Lecture de l&apos;Arduino...</source>
         <translation>アルドゥイーノを読む...</translation>
     </message>
@@ -187,7 +173,7 @@ Donnees d&apos;eclairage -&gt; Arduino...</source>
     <name>Compilation</name>
     <message>
         <location filename="Compile.cpp" line="195"/>
-        <location filename="Compile.cpp" line="1211"/>
+        <location filename="Compile.cpp" line="1213"/>
         <source>Conditions horaire programmée</source>
         <translation>利用規約プログラムされたスケジュール</translation>
     </message>
@@ -247,68 +233,81 @@ Donnees d&apos;eclairage -&gt; Arduino...</source>
         <translation>ファイルの読み取り中にエラーが発生しました。</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="457"/>
+        <location filename="Compile.cpp" line="459"/>
         <source>L&apos;Id des Led Blanche circuit 1 doit etre = 1,Id des Led Blanche circuit 2 = 2, Id des Led Blanche circuit 3 = 3, Id des Led Rouge = 4, Id des Led Orange = 5, Id des Led Bleus = 6, Id de la lune = 9
 a chaque state on définit l&apos;intensité lumineuse instantanée de chaque circuit de LED. Le module arduino calcule alors la rampe de variation</source>
         <translation>白色LED回路1のID= 1である必要があり、Idは白色LED回路2=2、Idは白色LED回路3=3、ID LED赤=4、ID LEDオレンジ=5、ID LEDブルー=6 IDムーン=9
 各状態は、各LED回路の瞬時光強度と定義される。モジュールarduinoのは、その後、ランプのばらつきを算出する</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="510"/>
+        <location filename="Compile.cpp" line="512"/>
         <source>L&apos;Id des Led TOR pour le portique doit etre = 7, détail des spots (20°):2 vert Id 0 et 1, 1 jaune Id 2, 5 blanc chaud Id 3 - 7, 1 Rouge Id 8</source>
         <comment>TOR = Tout Ou Rien</comment>
         <translation>ID LED TORガントリ= 7小売スポット（20°）でなければなりません：2 ID0と1の緑、黄1 ID 2、5白いホットIdは3-7、1赤ID 8</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="875"/>
+        <location filename="Compile.cpp" line="877"/>
         <source>   </source>
         <translation> </translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="876"/>
+        <location filename="Compile.cpp" line="878"/>
         <source>Vide</source>
         <translation>空の</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="916"/>
+        <location filename="Compile.cpp" line="918"/>
         <source>La synchronisation permet de mettre en phase le système avec l&apos;ancien système. La validation a lieu 4 fois par cycle et la synchronisation 1 fois par cycle (en meme temps qu&apos;une validation)</source>
         <translation>同期は、古いシステムを使用してシステムを段階的に廃止することができます。検証は、一周期（同時に検証）によってサイクルあたり4回行われ、同期時間れる</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1210"/>
+        <location filename="Compile.cpp" line="1212"/>
         <source>Initialisation du mode</source>
         <translation>初期化モード</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1212"/>
+        <location filename="Compile.cpp" line="1214"/>
         <source>Effet lumineux (1 ou plus)</source>
         <translation>光の効果（1つ以上）</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1213"/>
+        <location filename="Compile.cpp" line="1215"/>
         <source>Enregistrer fichier Xml</source>
         <comment>Titre fenetre</comment>
         <translation>xmlファイルを保存します</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1214"/>
+        <location filename="Compile.cpp" line="1216"/>
         <source>&lt;font color=&quot;#FF2A2A&quot;&gt;Voulez-vous sauvegarder le fichier suivant:&lt;font&gt;</source>
         <translation>&lt;font color=&quot;#FF2A2A&quot;&gt;ファイルを保存しますか：&lt;font&gt;</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1215"/>
+        <location filename="Compile.cpp" line="1217"/>
         <source>Enregistrer</source>
         <translation>登録</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1216"/>
+        <location filename="Compile.cpp" line="1218"/>
         <source>Ne pas enregistrer</source>
         <translation>保存しないでください</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1217"/>
+        <location filename="Compile.cpp" line="1219"/>
         <source>ID attribué à ce mode pour un fonctionnement multi mode</source>
         <translation>マルチモードにこのモードに割り当てられたID</translation>
+    </message>
+</context>
+<context>
+    <name>EditeurProg</name>
+    <message>
+        <location filename="editeurprog.cpp" line="98"/>
+        <source>Enregistrer</source>
+        <translation type="unfinished">登録</translation>
+    </message>
+    <message>
+        <location filename="editeurprog.cpp" line="99"/>
+        <source>Fermer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -433,6 +432,75 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
     </message>
 </context>
 <context>
+    <name>LECommandeModules</name>
+    <message>
+        <location filename="lecommandemodules.cpp" line="123"/>
+        <source>Erreur a l&apos;ouverture du fichier</source>
+        <translation type="unfinished">ファイルを開く際にエラーが発生</translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="123"/>
+        <source>Une erreur à l&apos;ouverture du fichier &quot;CommandeModule.xml&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="126"/>
+        <source>Erreur a la lecture du fichier</source>
+        <translation type="unfinished">ファイルの読み取りエラー</translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="126"/>
+        <source>Une erreur à la lecture du fichier &quot;CommandeModule.xml&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="442"/>
+        <source>, provenant de </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="605"/>
+        <source>Provenance&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="610"/>
+        <location filename="lecommandemodules.cpp" line="625"/>
+        <source>Provenance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="623"/>
+        <source>Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="624"/>
+        <source>Destinataire</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="626"/>
+        <source>Type d&apos;instruction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="627"/>
+        <source>Instruction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="628"/>
+        <source>Paramètre complémentaire</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="629"/>
+        <source>Valider</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="../mainwindow.ui" line="14"/>
@@ -475,30 +543,30 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="73"/>
+        <location filename="../mainwindow.cpp" line="78"/>
         <source>Langues</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="95"/>
-        <location filename="../mainwindow.cpp" line="138"/>
+        <location filename="../mainwindow.cpp" line="100"/>
+        <location filename="../mainwindow.cpp" line="144"/>
         <source>Communication Arduino</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="97"/>
-        <location filename="../mainwindow.cpp" line="139"/>
+        <location filename="../mainwindow.cpp" line="102"/>
+        <location filename="../mainwindow.cpp" line="145"/>
         <source>Liste des modes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="99"/>
-        <location filename="../mainwindow.cpp" line="137"/>
+        <location filename="../mainwindow.cpp" line="104"/>
+        <location filename="../mainwindow.cpp" line="143"/>
         <source>Condition horaire</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="136"/>
+        <location filename="../mainwindow.cpp" line="142"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>

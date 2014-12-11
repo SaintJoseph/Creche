@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="nl_NL">
+<TS version="2.1" language="nl_NL">
 <context>
     <name>ComArduino</name>
     <message>
@@ -10,129 +10,120 @@
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="39"/>
-        <location filename="ComArduinoDock.cpp" line="781"/>
+        <location filename="ComArduinoDock.cpp" line="618"/>
         <source>Baude Rate</source>
         <translation>Snelheid van Overdrac ht</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="42"/>
-        <location filename="ComArduinoDock.cpp" line="782"/>
+        <location filename="ComArduinoDock.cpp" line="619"/>
         <source>Parity</source>
         <translation>Pariteit</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="45"/>
-        <location filename="ComArduinoDock.cpp" line="783"/>
+        <location filename="ComArduinoDock.cpp" line="620"/>
         <source>Data Bit</source>
         <translation>Aantal Bits</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="48"/>
-        <location filename="ComArduinoDock.cpp" line="784"/>
+        <location filename="ComArduinoDock.cpp" line="621"/>
         <source>Stop Bit</source>
         <translation>Stop Bit</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="51"/>
-        <location filename="ComArduinoDock.cpp" line="785"/>
+        <location filename="ComArduinoDock.cpp" line="622"/>
         <source>Query Mode</source>
         <translation>Methode van Navorsing</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="54"/>
-        <location filename="ComArduinoDock.cpp" line="786"/>
+        <location filename="ComArduinoDock.cpp" line="623"/>
         <source>Liste des ports</source>
         <translation>Ports Lijst</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="57"/>
-        <location filename="ComArduinoDock.cpp" line="787"/>
+        <location filename="ComArduinoDock.cpp" line="624"/>
         <source>Time Out</source>
         <translation>Wachttijd</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="110"/>
-        <location filename="ComArduinoDock.cpp" line="780"/>
+        <location filename="ComArduinoDock.cpp" line="107"/>
+        <location filename="ComArduinoDock.cpp" line="617"/>
         <source>Envoyer</source>
         <translation>Zenden</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="115"/>
-        <location filename="ComArduinoDock.cpp" line="779"/>
         <source>RAZ RAM Arduino</source>
-        <translation>TTN RAM Arduino</translation>
+        <translation type="vanished">TTN RAM Arduino</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="120"/>
-        <location filename="ComArduinoDock.cpp" line="778"/>
         <source>Heure PC -&gt; Arduino</source>
-        <translation>Uur PC -&gt; Arduino</translation>
+        <translation type="vanished">Uur PC -&gt; Arduino</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="125"/>
-        <location filename="ComArduinoDock.cpp" line="777"/>
         <source>Envoyer
 Conditions horaire</source>
-        <translation>Tijdsvoorwaarden
+        <translation type="vanished">Tijdsvoorwaarden
 Zenden</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="130"/>
-        <location filename="ComArduinoDock.cpp" line="776"/>
         <source>Envoyer
 Effets Lumineux</source>
-        <translation>Lichteffecten
+        <translation type="vanished">Lichteffecten
 Zenden</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="168"/>
-        <location filename="ComArduinoDock.cpp" line="774"/>
+        <location filename="ComArduinoDock.cpp" line="145"/>
+        <location filename="ComArduinoDock.cpp" line="615"/>
         <source>Polling</source>
         <comment>Méthode utilisée</comment>
         <translation>Polling</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="169"/>
-        <location filename="ComArduinoDock.cpp" line="775"/>
+        <location filename="ComArduinoDock.cpp" line="146"/>
+        <location filename="ComArduinoDock.cpp" line="616"/>
         <source>EventDriven</source>
         <comment>Méthode Utilisée</comment>
         <translation>EventDriven</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="205"/>
-        <location filename="ComArduinoDock.cpp" line="788"/>
+        <location filename="ComArduinoDock.cpp" line="177"/>
+        <location filename="ComArduinoDock.cpp" line="625"/>
         <source>Envoi/Reception</source>
         <translation>Verzending / Ontvangst</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="233"/>
-        <location filename="ComArduinoDock.cpp" line="791"/>
+        <location filename="ComArduinoDock.cpp" line="205"/>
+        <location filename="ComArduinoDock.cpp" line="628"/>
         <source>Outil pour s&apos;assurer que le PC communique bien avec l&apos;Arduino</source>
         <translation>Om zeker te zijn dat de PC met de Arduino goed in verbinding staat</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="232"/>
-        <location filename="ComArduinoDock.cpp" line="790"/>
+        <location filename="ComArduinoDock.cpp" line="204"/>
+        <location filename="ComArduinoDock.cpp" line="627"/>
         <source>Paramètres</source>
         <translation>Parameters</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="206"/>
-        <location filename="ComArduinoDock.cpp" line="789"/>
+        <location filename="ComArduinoDock.cpp" line="178"/>
+        <location filename="ComArduinoDock.cpp" line="626"/>
         <source>Envois et réception de donnée avec le module Arduino</source>
         <translation>Verzendingen en ontvangsten van gegevens met de Arduino module</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="394"/>
+        <location filename="ComArduinoDock.cpp" line="339"/>
         <source>ddd dd MMM yyyy&lt;br&gt;hh:mm:ss ap</source>
         <comment>Date et Heure en mode 12h (am/pm), Exemple: Sam. 24 Aout 2013 (a la ligne) 10:25:14 am</comment>
         <translation>ddd dd MMM yyyy&lt;br&gt;hh:mm:ss</translation>
     </message>
     <message numerus="yes">
-        <location filename="ComArduinoDock.cpp" line="537"/>
         <source>Conditions horaire
 %n Mode(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>Tijdsvoorwaarde (%n)
 Zenden</numerusform>
             <numerusform>Tijdsvoorwaarden (%n)
@@ -140,10 +131,9 @@ Zenden</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="ComArduinoDock.cpp" line="540"/>
         <source>Donnes Ecl.-&gt;Arduino
 %n Mode(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>Verlichtinggegevens-&gt;Arduino
 %n Mode</numerusform>
             <numerusform>Verlichtinggegevens-&gt;Arduino
@@ -151,38 +141,34 @@ Zenden</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="594"/>
         <source>Arduino pret pour une Synchronisation
 RAZ RAM de l&apos;Arduino...</source>
-        <translation>Arduino klaar voor een synchronisatie
+        <translation type="vanished">Arduino klaar voor een synchronisatie
 TTN RAM van de Arduino...</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="623"/>
         <source>Arduino pret pour une Synchronisation
 Heure PC -&gt; Arduino...</source>
         <comment>Attention au retour à la ligne. Les 3 points sont normalement suivi d&apos;un Ok</comment>
-        <translation>Arduino klaar voor een synchronisatie
+        <translation type="vanished">Arduino klaar voor een synchronisatie
 Computeruur -&gt; Arduino...</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="635"/>
         <source>Arduino pret pour une Synchronisation
 Heure de fonctionnement et Mode correspondant -&gt; Arduino...</source>
         <comment>Attention au retour à la ligne. Les 3 points sont normalement suivi d&apos;un Ok</comment>
-        <translation>Arduino klaar voor een synchronisatie
+        <translation type="vanished">Arduino klaar voor een synchronisatie
 Werkingsuur en overeenkomstige wijze -&gt; Arduino...</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="645"/>
         <source>Arduino pret pour une Synchronisation
 Donnees d&apos;eclairage -&gt; Arduino...</source>
         <comment>Attention au retour à la ligne. Les 3 points sont normalement suivi d&apos;un Ok</comment>
-        <translation>Arduino klaar voor een synchronisatie
+        <translation type="vanished">Arduino klaar voor een synchronisatie
 Gegevens van de verlichting -&gt; Arduino...</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="743"/>
+        <location filename="ComArduinoDock.cpp" line="601"/>
         <source>Lecture de l&apos;Arduino...</source>
         <translation>Lezing van de Arduino...</translation>
     </message>
@@ -190,24 +176,24 @@ Gegevens van de verlichting -&gt; Arduino...</translation>
 <context>
     <name>Compilation</name>
     <message>
-        <location filename="Compile.cpp" line="1213"/>
+        <location filename="Compile.cpp" line="1215"/>
         <source>Enregistrer fichier Xml</source>
         <comment>Titre fenetre</comment>
         <translatorcomment>Venstertitel</translatorcomment>
         <translation>Xml file opslaan</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1214"/>
+        <location filename="Compile.cpp" line="1216"/>
         <source>&lt;font color=&quot;#FF2A2A&quot;&gt;Voulez-vous sauvegarder le fichier suivant:&lt;font&gt;</source>
         <translation>&lt;font color=&quot;#FF2A2A&quot;&gt;Wil u volgende file bewaren:&lt;font&gt;</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1215"/>
+        <location filename="Compile.cpp" line="1217"/>
         <source>Enregistrer</source>
         <translation>Opslaan</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1216"/>
+        <location filename="Compile.cpp" line="1218"/>
         <source>Ne pas enregistrer</source>
         <translation>Niet opslaan</translation>
     </message>
@@ -225,21 +211,21 @@ Gegevens van de verlichting -&gt; Arduino...</translation>
     </message>
     <message>
         <source>Fichier avec le détails des effets lumineux programmé pour la creche de l&apos;Eglise Saint Joseph</source>
-        <translation>File met de details van de lichteffecten geprogrammeerd voor de kribbe van de Sint Jozef kerk</translation>
+        <translation type="vanished">File met de details van de lichteffecten geprogrammeerd voor de kribbe van de Sint Jozef kerk</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1210"/>
+        <location filename="Compile.cpp" line="1212"/>
         <source>Initialisation du mode</source>
         <translation>Opstarten van de Lichteffecten Mode</translation>
     </message>
     <message>
         <location filename="Compile.cpp" line="195"/>
-        <location filename="Compile.cpp" line="1211"/>
+        <location filename="Compile.cpp" line="1213"/>
         <source>Conditions horaire programmée</source>
         <translation>Geprogrameerde Tijdsvoorwaarden</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1212"/>
+        <location filename="Compile.cpp" line="1214"/>
         <source>Effet lumineux (1 ou plus)</source>
         <translation>Signaal van de status van het verlichtingseffect</translation>
     </message>
@@ -254,13 +240,13 @@ Gegevens van de verlichting -&gt; Arduino...</translation>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="457"/>
+        <location filename="Compile.cpp" line="459"/>
         <source>L&apos;Id des Led Blanche circuit 1 doit etre = 1,Id des Led Blanche circuit 2 = 2, Id des Led Blanche circuit 3 = 3, Id des Led Rouge = 4, Id des Led Orange = 5, Id des Led Bleus = 6, Id de la lune = 9
 a chaque state on définit l&apos;intensité lumineuse instantanée de chaque circuit de LED. Le module arduino calcule alors la rampe de variation</source>
         <translation>Id van de witte Led stroombaan 1 moet zijn = 1, Id van de witte Led stroombaan 2 = 2, Id van de witte Led stroombaan 3 = 3, Id van de rode Led = 4, Id van de oranje Led = 5, Id van de blauwe Led = 6, bij elk stadium wordt de momentane lichtintensiteit van elke stroombaan LED bepaald. Dan berekent de Arduino module de variatiegradiënt </translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1217"/>
+        <location filename="Compile.cpp" line="1219"/>
         <source>ID attribué à ce mode pour un fonctionnement multi mode</source>
         <translation>Identificatie toegewezen aan deze mode voor een multimode werking</translation>
     </message>
@@ -301,26 +287,26 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
     </message>
     <message>
         <source>L&apos;Id des Led Blanche circuit 1 doit etre = 1,Id des Led Blanche circuit 2 = 2, Id des Led Blanche circuit 3 = 3, Id des Led Rouge = 4, Id des Led Orange = 5, Id des Led Bleus = 6, Id de la lune = 9</source>
-        <translation>Id van de witte Led stroombaan 1 moet zijn = 1, Id van de witte Led stroombaan 2 = 2, Id van de witte Led stroombaan 3 = 3, Id van de rode Led = 4, Id van de oranje Led = 5, Id van de blauwe Led = 6</translation>
+        <translation type="vanished">Id van de witte Led stroombaan 1 moet zijn = 1, Id van de witte Led stroombaan 2 = 2, Id van de witte Led stroombaan 3 = 3, Id van de rode Led = 4, Id van de oranje Led = 5, Id van de blauwe Led = 6</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="510"/>
+        <location filename="Compile.cpp" line="512"/>
         <source>L&apos;Id des Led TOR pour le portique doit etre = 7, détail des spots (20°):2 vert Id 0 et 1, 1 jaune Id 2, 5 blanc chaud Id 3 - 7, 1 Rouge Id 8</source>
         <comment>TOR = Tout Ou Rien</comment>
         <translation>Id van de Led AON voor de poort moet zijn = 7, detail van de spots (20°):2 groene Id 0 en 1, 1 gele Id 2, 5 warm witte Id 3 - 8&lt;br&gt;Id van de laatste Led spot AON voor de poort moet zijn = 8, detail van de spot bij 20°: 1 rode Id 0</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="875"/>
+        <location filename="Compile.cpp" line="877"/>
         <source>   </source>
         <translation>   </translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="876"/>
+        <location filename="Compile.cpp" line="878"/>
         <source>Vide</source>
         <translation>Leeg</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="916"/>
+        <location filename="Compile.cpp" line="918"/>
         <source>La synchronisation permet de mettre en phase le système avec l&apos;ancien système. La validation a lieu 4 fois par cycle et la synchronisation 1 fois par cycle (en meme temps qu&apos;une validation)</source>
         <translation>De synchronisatie laat toe het systeem in faze te zetten met het oude systeem. De validatie gebeurt 4 maal per cyclus en de synchronisatie éénmalig per cyclus (gelijktijdig met een validatie)</translation>
     </message>
@@ -343,99 +329,99 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
     <name>Dialog</name>
     <message>
         <source>Date et heure actuelle du PC</source>
-        <translation>Huidige datum en uur van de computer</translation>
+        <translation type="vanished">Huidige datum en uur van de computer</translation>
     </message>
     <message>
         <source>Message reçu de l&apos;Arduino</source>
         <extracomment>info bull</extracomment>
         <translatorcomment>info bul</translatorcomment>
-        <translation>Bericht ontvangen van de Arduino</translation>
+        <translation type="vanished">Bericht ontvangen van de Arduino</translation>
     </message>
     <message>
         <source>Donnes Ecl.-&gt;Arduino
 0 Mode</source>
         <oldsource>Horaire-&gt;Arduino
 Pas de Mode</oldsource>
-        <translation>Verlichtinggegevens-&gt;Arduino
+        <translation type="vanished">Verlichtinggegevens-&gt;Arduino
 0 Mode</translation>
     </message>
     <message>
         <source>Horaire-&gt;Arduino
 0 Mode</source>
-        <translation>Uurrooster-&gt;Arduino
+        <translation type="vanished">Uurrooster-&gt;Arduino
 0 Mode</translation>
     </message>
     <message>
         <source>RAZ RAM Arduino</source>
         <extracomment>Remise A Zero de la Random Access Memory du module Arduino</extracomment>
         <translatorcomment>Terugzetting tot nul van de Random Access Memory van de Arduino module</translatorcomment>
-        <translation>TTN RAM Arduino</translation>
+        <translation type="vanished">TTN RAM Arduino</translation>
     </message>
     <message>
         <source>Heure PC-&gt;Arduino</source>
         <extracomment>Envoyer l&apos;heure du PC vers le module Arduino</extracomment>
         <translatorcomment>Computeruur zenden naar de Arduino module</translatorcomment>
-        <translation>Computeruur-&gt;Arduino</translation>
+        <translation type="vanished">Computeruur-&gt;Arduino</translation>
     </message>
     <message>
         <source>Fermer</source>
-        <translation>Sluiten</translation>
+        <translation type="vanished">Sluiten</translation>
     </message>
     <message>
         <source>Param.</source>
         <extracomment>Abrégé de paramètre</extracomment>
         <translatorcomment>Afkorting voor parameter</translatorcomment>
-        <translation>Param.</translation>
+        <translation type="vanished">Param.</translation>
     </message>
     <message>
         <source>Com. Manuel</source>
         <extracomment>Abrégé de Communication manuel, ou bien commande manuel</extracomment>
         <translatorcomment>Afkorting voor manuele communicatie, of voor manuele opdracht</translatorcomment>
-        <translation>Manuele Com</translation>
+        <translation type="vanished">Manuele Com</translation>
     </message>
     <message>
         <source>DataBits:</source>
         <extracomment>Nombre de bits de données</extracomment>
         <translatorcomment>Aantal bits gegevens</translatorcomment>
-        <translation>DataBits:</translation>
+        <translation type="vanished">DataBits:</translation>
     </message>
     <message>
         <source>BaudRate:</source>
         <extracomment>Fréquence en Baude</extracomment>
         <translatorcomment>Frequentie in Baud</translatorcomment>
-        <translation>BaudRate:</translation>
+        <translation type="vanished">BaudRate:</translation>
     </message>
     <message>
         <source>Port:</source>
         <extracomment>Connection série vers le PC</extracomment>
         <translatorcomment>Seriële connectie met de computer</translatorcomment>
-        <translation>Port:</translation>
+        <translation type="vanished">Port:</translation>
     </message>
     <message>
         <source>Parity:</source>
-        <translation>Parity:</translation>
+        <translation type="vanished">Parity:</translation>
     </message>
     <message>
         <source>StopBits:</source>
-        <translation>StopBits:</translation>
+        <translation type="vanished">StopBits:</translation>
     </message>
     <message>
         <source>Timeout:</source>
-        <translation>Timeout:</translation>
+        <translation type="vanished">Timeout:</translation>
     </message>
     <message>
         <source>Inscrire une commande Manuellement vers l&apos;Arduino</source>
         <extracomment>Info bull</extracomment>
         <translatorcomment>info bul</translatorcomment>
-        <translation>Een opdracht manueel uitschrijven naar de Arduino</translation>
+        <translation type="vanished">Een opdracht manueel uitschrijven naar de Arduino</translation>
     </message>
     <message>
         <source>QueryMode:</source>
-        <translation>QueryMode:</translation>
+        <translation type="vanished">QueryMode:</translation>
     </message>
     <message>
         <source>Envoyer</source>
-        <translation>Zenden</translation>
+        <translation type="vanished">Zenden</translation>
     </message>
     <message>
         <source>Lecture de l&apos;Arduino...</source>
@@ -447,13 +433,13 @@ Pas de Mode</oldsource>
         <source>Polling</source>
         <comment>MÃ©thode utilisÃ©e</comment>
         <translatorcomment>Gevolgde methode</translatorcomment>
-        <translation>Polling</translation>
+        <translation type="vanished">Polling</translation>
     </message>
     <message>
         <source>EventDriven</source>
         <comment>MÃ©thode utilisÃ©e</comment>
         <translatorcomment>Gevolgde methode</translatorcomment>
-        <translation>EventDriven</translation>
+        <translation type="vanished">EventDriven</translation>
     </message>
     <message>
         <source>Effets lumineux de creche</source>
@@ -463,16 +449,16 @@ Pas de Mode</oldsource>
     </message>
     <message>
         <source>Lecture de l&apos;Arduino...</source>
-        <translation>Lezing van de Arduino...</translation>
+        <translation type="vanished">Lezing van de Arduino...</translation>
     </message>
     <message>
         <source>Effets lumineux de creche</source>
-        <translation>Lichteffecten van kribbe</translation>
+        <translation type="vanished">Lichteffecten van kribbe</translation>
     </message>
     <message numerus="yes">
         <source>Horaire-&gt;Arduino
 %n Mode(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>Uurrooster-&gt;Arduino
 %n Mode</numerusform>
             <numerusform>Uurrooster-&gt;Arduino
@@ -482,7 +468,7 @@ Pas de Mode</oldsource>
     <message numerus="yes">
         <source>Donnes Ecl.-&gt;Arduino
 %n Mode(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>Verlichtinggegevens-&gt;Arduino
 %n Mode</numerusform>
             <numerusform>Verlichtinggegevens-&gt;Arduino
@@ -492,7 +478,7 @@ Pas de Mode</oldsource>
     <message>
         <source>Arduino pret pour une Synchronisation
 RAZ RAM de l&apos;Arduino...</source>
-        <translation>Arduino klaar voor een synchronisatie
+        <translation type="vanished">Arduino klaar voor een synchronisatie
 TTN RAM van de Arduino...</translation>
     </message>
     <message>
@@ -500,7 +486,7 @@ TTN RAM van de Arduino...</translation>
 Heure PC -&gt; Arduino...</source>
         <comment>Attention au retour Ã  la ligne. Les 3 points sont normalement suivi d&apos;un Ok</comment>
         <translatorcomment>Opgelet voor het aan de lijn gaan ! De 3 punten zijn normaal gevolgd door een OK</translatorcomment>
-        <translation>Arduino klaar voor een synchronisatie
+        <translation type="vanished">Arduino klaar voor een synchronisatie
 Computeruur -&gt; Arduino...</translation>
     </message>
     <message>
@@ -508,7 +494,7 @@ Computeruur -&gt; Arduino...</translation>
 Heure de fonctionnement et Mode correspondant -&gt; Arduino...</source>
         <comment>Attention au retour Ã  la ligne. Les 3 points sont normalement suivi d&apos;un Ok</comment>
         <translatorcomment>Opgelet voor het aan de lijn gaan ! De 3 punten zijn normaal gevolgd door een OK</translatorcomment>
-        <translation>Arduino klaar voor een synchronisatie
+        <translation type="vanished">Arduino klaar voor een synchronisatie
 Werkingsuur en overeenkomstige wijze -&gt; Arduino...</translation>
     </message>
     <message>
@@ -518,22 +504,35 @@ Donnees d&apos;eclairage -&gt; Arduino...</source>
 DonnÃ©es d&apos;Ã©clairage -&gt; Arduino...</oldsource>
         <comment>Attention au retour Ã  la ligne. Les 3 points sont normalement suivi d&apos;un Ok</comment>
         <translatorcomment>Opgelet voor het aan de lijn gaan ! De 3 punten zijn normaal gevolgd door een OK</translatorcomment>
-        <translation>Arduino klaar voor een synchronisatie
+        <translation type="vanished">Arduino klaar voor een synchronisatie
 Gegevens van de verlichting -&gt; Arduino...</translation>
     </message>
     <message>
         <source>ddd dd MMM yyyy&lt;br&gt;hh:mm:ss ap</source>
         <comment>Date et Heure en mode 12h (am/pm), Exemple: Sam. 24 Aout 2013 (a la ligne) 10:25:14 am</comment>
         <translatorcomment>Datum en uur in wijze 12h (am/pm). Bijvoorbeeld: Zat. 24 Augustus 2013 (aan de lijn) 10:25:14 am</translatorcomment>
-        <translation>ddd dd MMM yyyy&lt;br&gt;hh:mm:ss</translation>
+        <translation type="vanished">ddd dd MMM yyyy&lt;br&gt;hh:mm:ss</translation>
     </message>
     <message>
         <source>Impossible de fermer la fenetre</source>
-        <translation>Onmogelijk het venster te sluiten</translation>
+        <translation type="vanished">Onmogelijk het venster te sluiten</translation>
     </message>
     <message>
         <source>Avant de fermer cette fenetre vous devez, premierement debrancher le module arduino.</source>
-        <translation>Alvorens dit venster te sluiten, moet u eerst en vooral de Arduino module uitschakelen.</translation>
+        <translation type="vanished">Alvorens dit venster te sluiten, moet u eerst en vooral de Arduino module uitschakelen.</translation>
+    </message>
+</context>
+<context>
+    <name>EditeurProg</name>
+    <message>
+        <location filename="editeurprog.cpp" line="98"/>
+        <source>Enregistrer</source>
+        <translation type="unfinished">Opslaan</translation>
+    </message>
+    <message>
+        <location filename="editeurprog.cpp" line="99"/>
+        <source>Fermer</source>
+        <translation type="unfinished">Sluiten</translation>
     </message>
 </context>
 <context>
@@ -657,6 +656,75 @@ Gegevens van de verlichting -&gt; Arduino...</translation>
     </message>
 </context>
 <context>
+    <name>LECommandeModules</name>
+    <message>
+        <location filename="lecommandemodules.cpp" line="123"/>
+        <source>Erreur a l&apos;ouverture du fichier</source>
+        <translation type="unfinished">Fout bij het openen van de file</translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="123"/>
+        <source>Une erreur à l&apos;ouverture du fichier &quot;CommandeModule.xml&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="126"/>
+        <source>Erreur a la lecture du fichier</source>
+        <translation type="unfinished">Fout bij het lezen van de file</translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="126"/>
+        <source>Une erreur à la lecture du fichier &quot;CommandeModule.xml&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="442"/>
+        <source>, provenant de </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="605"/>
+        <source>Provenance&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="610"/>
+        <location filename="lecommandemodules.cpp" line="625"/>
+        <source>Provenance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="623"/>
+        <source>Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="624"/>
+        <source>Destinataire</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="626"/>
+        <source>Type d&apos;instruction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="627"/>
+        <source>Instruction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="628"/>
+        <source>Paramètre complémentaire</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lecommandemodules.cpp" line="629"/>
+        <source>Valider</source>
+        <translation type="unfinished">Valideren</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="../mainwindow.ui" line="14"/>
@@ -699,30 +767,30 @@ Gegevens van de verlichting -&gt; Arduino...</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="73"/>
+        <location filename="../mainwindow.cpp" line="78"/>
         <source>Langues</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="95"/>
-        <location filename="../mainwindow.cpp" line="138"/>
+        <location filename="../mainwindow.cpp" line="100"/>
+        <location filename="../mainwindow.cpp" line="144"/>
         <source>Communication Arduino</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="97"/>
-        <location filename="../mainwindow.cpp" line="139"/>
+        <location filename="../mainwindow.cpp" line="102"/>
+        <location filename="../mainwindow.cpp" line="145"/>
         <source>Liste des modes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="99"/>
-        <location filename="../mainwindow.cpp" line="137"/>
+        <location filename="../mainwindow.cpp" line="104"/>
+        <location filename="../mainwindow.cpp" line="143"/>
         <source>Condition horaire</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="136"/>
+        <location filename="../mainwindow.cpp" line="142"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>

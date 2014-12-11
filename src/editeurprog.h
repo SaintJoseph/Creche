@@ -25,6 +25,7 @@ signals:
 public slots:
 
 private slots:
+    void onTextCome(QByteArray message);
 
 private:
     LECommandeModules *GenCommande;

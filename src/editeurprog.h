@@ -9,6 +9,9 @@
 #include <QTextEdit>
 #include <QFont>
 #include <QLineEdit>
+#include <QMessageBox>
+#include <QTime>
+#include <QFileDialog>
 
 class EditeurProg : public QWidget
 {
@@ -26,6 +29,7 @@ public slots:
 
 private slots:
     void onTextCome(QByteArray message);
+    void onSaveButton();
 
 private:
     LECommandeModules *GenCommande;

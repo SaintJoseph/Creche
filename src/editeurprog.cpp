@@ -29,8 +29,6 @@ EditeurProg::EditeurProg(QWidget *parent) :
     //Genérateur de commande
     GenCommande = new LECommandeModules;
     GenCommande->setProvModifiable(true, 0);
-    GenCommande->setMaximumWidth(500);
-    GenCommande->setMaximumWidth(200);
     //Zone éditable
     ZoneEdition = new QTextEdit;
     ZoneEdition->setFont(font);
@@ -70,6 +68,8 @@ EditeurProg::EditeurProg(QWidget *parent) :
     retranslate("fr");
 
     connect(GenCommande, SIGNAL(Commande(QByteArray)),SLOT(onTextCome(QByteArray)));
+    connect(BPEnregistrer, SIGNAL(clicked()), SLOT(onSaveButton()));
+
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -110,4 +110,45 @@ void EditeurProg::onTextCome(QByteArray message)
     ZoneEdition->moveCursor(QTextCursor::End);
     ZoneEdition->insertPlainText(message);
     ZoneEdition->insertPlainText("\n");
+}
+
+//Traitement du fichier et sauvegarde de celui-ci
+void EditeurProg::onSaveButton()
+{
+    //On parcour le fichier ligne par ligne pour les traiters et les compléter dans l'ordre
+    QStringList LigneParLigne = ZoneEdition->toPlainText().split("\n");
+    QString TextFinal = "#Fichier Exe_" + LigneFile->text() + ".cre\n#Créé le " + QDate::currentDate().toString() + " T " + QTime::currentTime().toString() + "\n";
+    int CompteurLigne = 1;
+    foreach (QString Ligne, LigneParLigne) {
+       if (!Ligne.isEmpty()) {
+           if (Ligne.at(0) == QChar('#')) {
+               TextFinal.append(Ligne + QString("\n\0"));
+           }
+           else if (Ligne.contains("#")) {
+               TextFinal.append(Ligne.mid(Ligne.indexOf('#')) + QString("\n"));
+           }
+           else if (Ligne.contains("<") && Ligne.contains(">")) {
+               QString NumLigne = QString::number(CompteurLigne, 16).toUpper();
+               int taille = NumLigne.size();
+               while (taille < 3) {
+                   taille = NumLigne.size();
+                   NumLigne.prepend(QString("0"));
+               }
+               TextFinal.append(NumLigne + QString(" ") + Ligne.mid(Ligne.indexOf('<')).remove(QChar(' '), Qt::CaseSensitive) + QString("\n"));
+               CompteurLigne += 2;
+           }
+           else {
+               TextFinal.append(QString("#") + Ligne + QString("\n\0"));
+           }
+       }
+    }
+    QString Nomfichier =  QFileDialog::getSaveFileName(this, tr("Enregistrer un fichier 'Effet lumineux Creche' "), "./Exe_" + LigneFile->text() + ".cre", tr("cre Files (*.cre);;Text Files (*.txt, *.xml, *.Xml, *.XML);;All Files (*.*)"));
+    if (Nomfichier != "")
+    {
+        QFile file(Nomfichier);
+        file.open(QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream out(&file);
+        out << TextFinal;
+        file.close();
+    }
 }

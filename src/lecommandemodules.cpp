@@ -135,6 +135,9 @@ LECommandeModules::LECommandeModules(QWidget *parent):
     //On applique les labels et peuple les comboBox
     retranslate("fr");
 
+    //Largeur du widget
+    setMaximumWidth(400);
+    setMinimumWidth(200);
     //On applique des valeurs par défaut
     setProvModifiable(true, 0);
 

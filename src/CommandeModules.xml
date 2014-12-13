@@ -45,7 +45,9 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       <TypeCmd Nom:fr="Opérations spéciales" Nom:en="Special operations" Nom:nl="Bijzondere werkingen" Cmd="X">
          <Commande Nom:fr="Redémarrer" Nom:en="Restart" Nom:nl="Herstarten" Cmd="R"/>
          <Commande Nom:fr="Tester la présence" Nom:en="Test the presence" Nom:nl="Aanwezigheid testen" Cmd="P"/>
-         <Commande Nom:fr="Etat On/Off" Nom:en="Status On/Off" Nom:nl="Status On/Off" Cmd="B" Hexa="true" Format="B"/>
+         <Commande Nom:fr="Etat On/Off" Nom:en="Status On/Off" Nom:nl="Status On/Off" Cmd="B" Hexa="true" Format="B">
+            <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
+         </Commande>
       </TypeCmd>
       <Reception Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
          <Commande Nom:fr="Température" Nom:en="Temperature" Nom:nl="Temperatuur" Cmd="T" Hexa="false"/>
@@ -113,9 +115,9 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom:fr="Redémarrer" Nom:en="Restart" Nom:nl="Herstarten" Cmd="R"/>
          <Commande Nom:fr="Tester la présence" Nom:en="Test the presence" Nom:nl="Aanwezigheid testen" Cmd="P"/>
       </TypeCmd>
-      <Reception Nom:fr="Démarrage" Nom:en="" Nom:nl="" Cmd="D00"/>
+      <Reception Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D00"/>
    </Module>
-   <Module Nom:fr="PWM M2" Nom:en="" Nom:nl="" Cmd="M02">
+   <Module Nom:fr="MLI M2" Nom:en="PWM M2" Nom:nl="PWM M2" Cmd="M02">
       <TypeCmd Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
          <Commande Nom:fr="Etat On/Off" Nom:en="Status On/Off" Nom:nl="Status On/Off" Cmd="O" Hexa="true" Format="HHHH">
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>
@@ -153,16 +155,16 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+      <TypeCmd Nom:fr="Opérations spéciales" Nom:en="Special operations" Nom:nl="Bijzondere werkingen" Cmd="X">
          <Commande Nom:fr="Allumer ou éteindre" Nom:en="" Nom:nl="" Cmd="B">
             <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="true" Format="B"/>
          </Commande>
          <Commande Nom:fr="Redémarrer" Nom:en="Restart" Nom:nl="Herstarten" Cmd="R"/>
          <Commande Nom:fr="Tester la présence" Nom:en="Test the presence" Nom:nl="Aanwezigheid testen" Cmd="P" Hexa="false"/>
       </TypeCmd>
-      <Reception Nom:fr="Démarrage" Nom:en="" Nom:nl="" Cmd="D00"/>
+      <Reception Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D00"/>
    </Module>
-   <Module Nom:fr="BCD M3" Nom:en="" Nom:nl="" Cmd="M03">
+   <Module Nom:fr="BCD M3" Nom:en="BCD M3" Nom:nl="BCD M3" Cmd="M03">
       <TypeCmd Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
          <Commande Nom:fr="Valeur Puissance affichée" Nom:en="" Nom:nl="" Cmd="P" Hexa="true" Format="HHHH">
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>
@@ -191,7 +193,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
             <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+      <TypeCmd Nom:fr="Opérations spéciales" Nom:en="Special operations" Nom:nl="Bijzondere werkingen" Cmd="X">
          <Commande Nom:fr="Allumer ou éteindre" Nom:en="" Nom:nl="" Cmd="B">
             <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="false"  Format="B"/>
          </Commande>
@@ -201,7 +203,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom:fr="Redémarrer" Nom:en="Restart" Nom:nl="Herstarten" Cmd="R"/>
          <Commande Nom:fr="Tester la présence" Nom:en="Test the presence" Nom:nl="Aanwezigheid testen" Cmd="P"/>
       </TypeCmd>
-      <Reception Nom:fr="Démarrage" Nom:en="" Nom:nl="" Cmd="D00"/>
+      <Reception Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D00"/>
    </Module>
    <Module Nom:fr="BoutonServeur M4" Nom:en="" Nom:nl="" Cmd="M04">
       <TypeCmd Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
@@ -249,14 +251,14 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+      <TypeCmd Nom:fr="Opérations spéciales" Nom:en="Special operations" Nom:nl="Bijzondere werkingen" Cmd="X">
          <Commande Nom:fr="Allumer ou éteindre" Nom:en="" Nom:nl="" Cmd="B"  Hexa="true" Format="B">
             <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
          </Commande>
          <Commande Nom:fr="Redémarrer" Nom:en="Restart" Nom:nl="Herstarten" Cmd="R"/>
          <Commande Nom:fr="Tester la présence" Nom:en="Test the presence" Nom:nl="Aanwezigheid testen" Cmd="P"/>
       </TypeCmd>
-      <Reception Nom:fr="Démarrage" Nom:en="" Nom:nl="" Cmd="D00"/>
+      <Reception Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D00"/>
    </Module>
    <Module Nom:fr="Lanterne M5" Nom:en="" Nom:nl="" Cmd="M05">
       <TypeCmd Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
@@ -292,7 +294,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Période (ms)" Hexa="true" Format="HHTHHHH"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+      <TypeCmd Nom:fr="Opérations spéciales" Nom:en="Special operations" Nom:nl="Bijzondere werkingen" Cmd="X">
          <Commande Nom:fr="Allumer ou éteindre" Nom:en="" Nom:nl="" Cmd="B" Hexa="true" Format="B">
             <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
          </Commande>
@@ -312,34 +314,34 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Led, Type, Demande (0=>FF), Luminosité (0=>FF), Variation, Interval (ms)" Hexa="false"/>
          </Commande>
          <Commande Nom:fr="Tension Batterie" Nom:en="Battery Voltage" Nom:nl="Batterij Spanning" Cmd="U" Hexa="true"  Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="mV"/>
+            <Parametre Aide:en="mV" Aide:nl="mV" Aide:fr="mV"/>
          </Commande>
          <Commande Nom:fr="Puissance" Nom:en="" Nom:nl="" Cmd="P" Hexa="true"  Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="%"/>
+            <Parametre Aide:en="%" Aide:nl="%" Aide:fr="%"/>
          </Commande>
          <Commande Nom:fr="Température" Nom:en="Temperature" Nom:nl="Temperatuur" Cmd="T" Hexa="true"  Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="°C"/>
+            <Parametre Aide:en="°C" Aide:nl="°C" Aide:fr="°C"/>
          </Commande>
          <Commande Nom:fr="Propriétés carte SD" Nom:en="Property SD card" Nom:nl="Eigenschap SD kaart" Cmd="S" Hexa="true" Format="NNNNVHHHH" Prov="M01">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="Mb"/>Valeur en Hexa
+            <Parametre Aide:en="Mb" Aide:nl="Mb" Aide:fr="Mb"/>Valeur en Hexa
          </Commande>
          <Commande Nom:fr="Synchronisation" Nom:en="Timing" Nom:nl="Synchronisatie" Cmd="S" Hexa="true" Format="HHHB" Prov="M04"/>
          <Commande Nom:fr="Validation" Nom:en="Validation" Nom:nl="Bevestiging" Cmd="V" Hexa="true" Format="HHHB" Prov="M04"/>
       </TypeCmd>
       <TypeCmd Nom:fr="Donnée affichage" Nom:en="" Nom:nl="" Cmd="N">
          <Commande Nom:fr="Alternant" Nom:en="" Nom:nl="" Cmd="A" Hexa="true" Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="ms"/>
+            <Parametre Aide:en="ms" Aide:nl="ms" Aide:fr="ms"/>
          </Commande>
          <Commande Nom:fr="Fixe" Nom:en="" Nom:nl="" Cmd="F" Hexa="true" Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="ms"/>
+            <Parametre Aide:en="ms" Aide:nl="ms" Aide:fr="ms"/>
          </Commande>
       </TypeCmd>
       <TypeCmd Nom:fr="Lecture Température" Nom:en="" Nom:nl="" Cmd="T">
          <Commande Nom:fr="Radiateur Aluminium" Nom:en="" Nom:nl="" Cmd="L" Hexa="true" Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="°C"/>
+            <Parametre Aide:en="°C" Aide:nl="°C" Aide:fr="°C"/>
          </Commande>
          <Commande Nom:fr="Ambiante" Nom:en="" Nom:nl="" Cmd="M" Hexa="true" Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="°C"/>
+            <Parametre Aide:en="°C" Aide:nl="°C" Aide:fr="°C"/>
          </Commande>
          <Commande Nom:fr="No device" Nom:en="" Nom:nl="" Cmd="N" Hexa="true" Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Sonde de T° déconnectée, ou erreur entre aLu et aMbiant"/>
@@ -374,13 +376,13 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
          </Commande>
       </TypeCmd>
-      <TypeCmd Nom:fr="Opération Spéciales" Nom:en="" Nom:nl="" Cmd="X">
+      <TypeCmd Nom:fr="Opérations spéciales" Nom:en="Special operations" Nom:nl="Bijzondere werkingen" Cmd="X">
          <Commande Nom:fr="Variable Présence" Nom:en="" Nom:nl="" Cmd="P" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Test de Présence,"/>
          </Commande>
       </TypeCmd>
       <TypeCmd Nom:fr="Présent" Nom:en="" Nom:nl="" Cmd="P"/>
-      <Reception Nom:fr="ERREUR COMMANDE" Nom:en="" Nom:nl="" Cmd="E"/>
+      <Reception Nom:fr="ERREUR DE COMMANDE" Nom:en="INSTRUCTION ERROR" Nom:nl="FOUTE OPDRACHT" Cmd="E"/>
    </ProgrammePC>
    <Provenance Nom:fr="Programme PC" Nom:en="Soft PC" Nom:nl="Soft PC" Cmd="M00"/>
    <Provenance Nom:fr="Serveur M1" Nom:en="Server M1" Nom:nl="Server M1" Cmd="M01"/>

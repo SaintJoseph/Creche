@@ -15,7 +15,7 @@ Application::Application(int& argc, char* argv[])
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     loadTranslations(":/");
-    setLanguage("en_GB");
+    setLanguage("fr_BE");
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

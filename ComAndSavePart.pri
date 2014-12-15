@@ -25,7 +25,7 @@ HEADERS                += $$PUBLIC_HEADERS \
                           $$PWD/func_name.h \
                           $$PWD/src/convertisseurdechexa.h \
                           $$PWD/src/lecommandemodules.h \
-                          $$PWD/src/editeurprog.h
+                          $$PWD/src/editeurprog.h \
 
 SOURCES                += $$PWD/src/qextserialport.cpp \
                           $$PWD/src/qextserialenumerator.cpp\
@@ -38,7 +38,7 @@ SOURCES                += $$PWD/src/qextserialport.cpp \
                           $$PWD/src/application.cpp \
                           $$PWD/src/convertisseurdechexa.cpp \
                           $$PWD/src/lecommandemodules.cpp \
-                          $$PWD/src/editeurprog.cpp
+                          $$PWD/src/editeurprog.cpp \
 
 unix {
     SOURCES            += $$PWD/src/qextserialport_unix.cpp

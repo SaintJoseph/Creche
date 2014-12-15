@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QFileDialog>
+#include <QTextCursor>
 
 class EditeurProg : public QWidget
 {
@@ -30,6 +31,8 @@ public slots:
 private slots:
     void onTextCome(QByteArray message);
     void onSaveButton();
+    //A chaque modification de la zone d'édition on reformate l'affichage
+    void onTextChange();
 
 private:
     LECommandeModules *GenCommande;

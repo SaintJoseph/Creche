@@ -7,11 +7,17 @@
 #include <QDebug>
 #include <QPixmap>
 #include <QLabel>
+#include <QtXml>
 #include "func_name.h"
+#include <QCheckBox>
+#include <QHash>
+#include <QHashIterator>
 
 namespace Ui {
 class NewModeDialog;
 }
+
+typedef QHash<QString, QCheckBox*> ListeModule;
 
 class NewModeDialog : public QDialog
 {
@@ -22,7 +28,9 @@ public:
     ~NewModeDialog();
     Ui::NewModeDialog *ui;
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
-    void retranslate();
+    void retranslate(QString lang);
+    //Renvois le nom du module pour l'indice indiqué, sauf s'il n'y en pas ou qu'il n'est pas coché
+    QStringList askeModules();
 
 private Q_SLOTS:
     void OnBrowse();
@@ -36,6 +44,10 @@ signals:
 
 private:
     QString Chemin;
+    QString indLangue;
+    QDomDocument *docCommandeModule;
+    ListeModule listemodules;
+
 };
 
 #endif // NEWMODEDIALOG_H

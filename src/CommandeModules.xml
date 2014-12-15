@@ -55,7 +55,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       <Reception Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D"/>
       <Reception Nom:fr="ERREUR DE COMMANDE" Nom:en="INSTRUCTION ERROR" Nom:nl="FOUTE OPDRACHT" Cmd="Z"/>
    </Module>
-   <Module Nom:fr="Serveur M1" Nom:en="Server M1" Nom:nl="Server M1" Cmd="M01">
+   <Module Nom:fr="Serveur M1" Nom:en="Server M1" Nom:nl="Server M1" Cmd="M01" Checked="1">
       <TypeCmd Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
          <Commande Nom:fr="Etat On/Off" Nom:en="Status On/Off" Nom:nl="Status On/Off" Cmd="O" Hexa="true" Format="HHHH">
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>
@@ -117,7 +117,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       </TypeCmd>
       <Reception Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D00"/>
    </Module>
-   <Module Nom:fr="MLI M2" Nom:en="PWM M2" Nom:nl="PWM M2" Cmd="M02">
+   <Module Nom:fr="MLI M2" Nom:en="PWM M2" Nom:nl="PWM M2" Cmd="M02" Checked="0">
       <TypeCmd Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
          <Commande Nom:fr="Etat On/Off" Nom:en="Status On/Off" Nom:nl="Status On/Off" Cmd="O" Hexa="true" Format="HHHH">
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>
@@ -164,7 +164,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       </TypeCmd>
       <Reception Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D00"/>
    </Module>
-   <Module Nom:fr="BCD M3" Nom:en="BCD M3" Nom:nl="BCD M3" Cmd="M03">
+   <Module Nom:fr="BCD M3" Nom:en="BCD M3" Nom:nl="BCD M3" Cmd="M03" Checked="0">
       <TypeCmd Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
          <Commande Nom:fr="Valeur Puissance affichée" Nom:en="" Nom:nl="" Cmd="P" Hexa="true" Format="HHHH">
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>
@@ -205,7 +205,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       </TypeCmd>
       <Reception Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D00"/>
    </Module>
-   <Module Nom:fr="BoutonServeur M4" Nom:en="" Nom:nl="" Cmd="M04">
+   <Module Nom:fr="BoutonServeur M4" Nom:en="" Nom:nl="" Cmd="M04" Checked="1">
       <TypeCmd Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
          <Commande Nom:fr="Etat On/Off" Nom:en="Status On/Off" Nom:nl="Status On/Off" Cmd="O" Hexa="true" Format="HHHH">
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>
@@ -260,7 +260,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       </TypeCmd>
       <Reception Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D00"/>
    </Module>
-   <Module Nom:fr="Lanterne M5" Nom:en="" Nom:nl="" Cmd="M05">
+   <Module Nom:fr="Lanterne M5" Nom:en="" Nom:nl="" Cmd="M05" Checked="0">
       <TypeCmd Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
          <Commande Nom:fr="Etat On/Off" Nom:en="Status On/Off" Nom:nl="Status On/Off" Cmd="O" Hexa="true" Format="HHHH">
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>

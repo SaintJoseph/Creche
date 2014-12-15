@@ -96,64 +96,9 @@ QByteArray Compilation::LireConditions()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    //L'écriture d'un condition doit etre: [Debut(Mois , Jour , JourSem, Heure, Min), fin(Mois, Jour, JourSem, Heure, Min) Mode, priorite]
-    //Rappel on écrit sur le port Arduino avec un QByteArray
-    QDomElement element = doc->documentElement();
-    QByteArray byteArray("");
-    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-    {
-        if (qde.tagName() == TAG_CONDITION)
-        {
-            int conteur = 0;
-            for (QDomElement qdec = qde.firstChildElement(); !qdec.isNull(); qdec = qdec.nextSiblingElement())
-            {
-                for (QDomElement qdecs = qdec.firstChildElement(); !qdecs.isNull(); qdecs = qdecs.nextSiblingElement())
-                {
-                    if (conteur == 0 || conteur == 5)
-                    {
-                            if (qdecs.tagName() == TAG_MOIS)
-                                byteArray.append(qdecs.text().toUInt());
-                            else {
-                                byteArray.append("\255");
-                                conteur++;
-                            }
-                    }
-                    if (conteur == 1 || conteur == 6)
-                    {
-                            if (qdecs.tagName() == TAG_JOUR)
-                                byteArray.append(qdecs.text().toUInt());
-                            else {
-                                byteArray.append("\255");
-                                conteur++;
-                            }
-                    }
-                    if (conteur == 2 || conteur == 7)
-                    {
-                            if (qdecs.tagName() == TAG_JOURSEM)
-                                byteArray.append(qdecs.text().toUInt());
-                            else {
-                                byteArray.append("\255");
-                                conteur++;
-                            }
-                    }
-                            if (qdecs.tagName() == TAG_HEURE && (conteur == 3 || conteur == 8))
-                                byteArray.append(qdecs.text().toUInt());
-                            if (qdecs.tagName() == TAG_MIN && (conteur == 4 || conteur == 9))
-                                byteArray.append(qdecs.text().toUInt());
-                    conteur++;
-                }
-            }
-            if (element.tagName() == TAG_MODE)
-            {
-                byteArray.append(element.attribute(ATTRIBUT_ID).toInt());
-                byteArray.append(element.attribute(ATTRIBUT_PRIORITY).toInt());
-            }
-        }
-    }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    return byteArray;
 }
 
 //Fonction qui li les conditions de toutes les instances existante du programme
@@ -162,16 +107,9 @@ QByteArray Compilation::LireToutesConditions()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    QByteArray cond = "";
-    for (int i = 0; i < nbInstance; i++)
-    {
-        cond += (ListeInstance[i] != NULL)?ListeInstance[i]->LireConditions():"";
-    }
-    cond.append("\255\255\255\255\255\255\255\255\255\255\255\255");
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    return cond;
 }
 
 //Constructeur
@@ -255,7 +193,7 @@ Compilation::Compilation(QWidget *parent) : QWidget(parent)
     nbInstance++;
 
     //Application des labels
-    retranslate();
+    retranslate("fr");
 
     //Lorsque le fenetre de dialogue qui permet de parametre un mode envois un signal c'est qu'elle transmet alors ses infos a l'objet compile.
     connect(NewMode, SIGNAL(BoutonNouveau(QString,QString,QString,int,int)), this, SLOT(initialisationNouveauDom(QString,QString,QString,int,int)));
@@ -316,13 +254,17 @@ void Compilation::initialisationNouveauDom(QString Nom, QString Description, QSt
     QDomElement setmode = addElement(doc, doc, TAG_MODE , QString::null);
     setmode.setAttribute(ATTRIBUT_ID, idMode);
     setmode.setAttribute(ATTRIBUT_PRIORITY, priorite);
-    QDomElement nom = addElement(doc, &setmode, TAG_NOM , Nom);
-    QDomElement describ = addElement(doc, &setmode, TAG_DESCRIPTION , Description);
-    QDomElement data = addElement(doc, &setmode, TAG_DATA, QString::null);
+    addElement(doc, &setmode, TAG_NOM , Nom);
+    addElement(doc, &setmode, TAG_DESCRIPTION , Description);
+    addElement(doc, &setmode, TAG_DATA, QString::null);
+    QStringList ListeDesModules = NewMode->askeModules();
+    foreach (QString Module, ListeDesModules) {
+        addElement(doc, &setmode, TAG_MODULE, Module);
+    }
     //Led Initialisation turne to green
     LedIni->setColor(QColor(83,221,0));
-    QDomElement element = doc->documentElement();
     setToolTip(Description);
+
     //Controle et application des couleurs aux led en fonction
     ControleCompilation();
 
@@ -395,31 +337,10 @@ bool Compilation::addState(int id, int pause)
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    bool test = false;
-    QDomElement element = doc->documentElement();
-    for (QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-    {
-        if (qde.tagName() == TAG_DATA)
-        {
-            for (QDomElement qdecs1 = qde.firstChildElement(); !qdecs1.isNull(); qdecs1 = qdecs1.nextSiblingElement())
-            {
-                if (qdecs1.tagName() == TAG_STATE && qdecs1.attribute(ATTRIBUT_ID).toInt() == id)
-                {
-                    test = false;
-                }
-            }
-            QDomElement setState = addElement(doc, qde, TAG_STATE, QString::null);
-            setState.setAttribute(ATTRIBUT_ID, id++);
-            addElement(doc, setState, TAG_PAUSE, QString::number(pause));
-            test = true;
-        }
-    }
-    //Controle et application des couleurs aux led en fonction
-    ControleCompilation();
+
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    return test;
 }
 
 //Fonction qui ajoute un Progressif dans l'arbre des états pour un state donné, et renvois l'id + 1 si le progressif est bien créé
@@ -428,52 +349,10 @@ bool Compilation::addProgressif(LedColor id, int idState, int level, const QStri
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    QDomElement element = doc->documentElement();
-    for (QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-    {
-        if (qde.tagName() == TAG_DATA)
-        {
-            for (QDomElement qdec = element.firstChildElement(); !qdec.isNull(); qdec = qdec.nextSiblingElement())
-            {
-                if (qdec.tagName() == TAG_DATA)
-                {
-                    for (QDomElement qdecs = qdec.firstChildElement(); !qdecs.isNull(); qdecs = qdecs.nextSiblingElement())
-                    {
-                        if (qdecs.tagName() == TAG_STATE && qdecs.attribute(ATTRIBUT_ID).toInt() == idState)
-                        {
-                            for (QDomElement qdecs1 = qdecs.firstChildElement(); !qdecs1.isNull(); qdecs1 = qdecs1.nextSiblingElement())
-                            {
-                                if (qdecs1.tagName() == TAG_PROGRESSIF && qdecs1.attribute(ATTRIBUT_ID).toInt() == id)
-                                {
-#ifdef DEBUG_COMANDSAVE
-                                    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-                                    return false;
-                                }
-                            }
-                            QDomElement setProgr = addElement(doc, qdecs, TAG_PROGRESSIF, QString::null);
-                            setProgr.setAttribute(ATTRIBUT_ID, (int) id);
-                            addElement(doc, setProgr, TAG_NOM, Nom);
-                            addElement(doc, setProgr, TAG_DESCRIPTION, Description);
-                            addElement(doc, setProgr, TAG_LEVEL, QString::number(level));
-                            QDomComment comm = doc->createComment(tr("L'Id des Led Blanche circuit 1 doit etre = 1,\
-Id des Led Blanche circuit 2 = 2, Id des Led Blanche circuit 3 = 3, Id des Led Rouge = 4, Id des Led Orange = 5, Id des Led Bleus = 6, Id de la lune = 9\n\
-a chaque state on définit l'intensité lumineuse instantanée de chaque circuit de LED. Le module arduino calcule alors la rampe de variation"));
-                            setProgr.appendChild(comm);
-#ifdef DEBUG_COMANDSAVE
-                            std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-    }
+
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    return false;
 }
 
 //Fonction qui ajoute un ensemble TOR dans l'arbre des états pour un state donné, et renvois l'id + 1 si le ensemble TOR est bien créé
@@ -482,54 +361,10 @@ bool Compilation::addTOR(int id, int idState, bool tor[], const QString &Nom, co
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    QDomElement element = doc->documentElement();
-    for (QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-    {
-        if (qde.tagName() == TAG_DATA)
-        {
-            for (QDomElement qdec = element.firstChildElement(); !qdec.isNull(); qdec = qdec.nextSiblingElement())
-            {
-                if (qdec.tagName() == TAG_DATA)
-                {
-                    for (QDomElement qdecs = qdec.firstChildElement(); !qdecs.isNull(); qdecs = qdecs.nextSiblingElement())
-                    {
-                        if (qdecs.tagName() == TAG_STATE && qdecs.attribute(ATTRIBUT_ID).toInt() == idState)
-                        {
-                            for (QDomElement qdecs1 = qdecs.firstChildElement(); !qdecs1.isNull(); qdecs1 = qdecs1.nextSiblingElement())
-                            {
-                                if (qdecs1.tagName() == TAG_TOR && qdecs1.attribute(ATTRIBUT_ID).toInt() == id)
-                                {
-#ifdef DEBUG_COMANDSAVE
-                                    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-                                    return false;
-                                }
-                            }
-                            QDomElement setTor = addElement(doc, qdecs, TAG_TOR, QString::null);
-                            setTor.setAttribute(ATTRIBUT_ID, id);
-                            addElement(doc, setTor, TAG_NOM, Nom);
-                            addElement(doc, setTor, TAG_DESCRIPTION, Description);
-                            QDomComment comm = doc->createComment(tr("L'Id des Led TOR pour le portique doit etre = 7, détail des spots (20°):2 vert Id 0 et 1, 1 jaune Id 2, 5 blanc chaud Id 3 - 7, 1 Rouge Id 8", "TOR = Tout Ou Rien"));
-                            setTor.appendChild(comm);
-                            for (int i = 0; i < 16; i++)
-                            {
-                                QDomElement TorA = addElement(doc, setTor, TAG_LED, ((tor[i])?"On":"Off"));
-                                TorA.setAttribute(ATTRIBUT_ID, i);
-                            }
-#ifdef DEBUG_COMANDSAVE
-                            std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-    }
+
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    return false;
 }
 
 //Fonction qui renvois une valeur ID pour le mode, proposition faite à l'utilisateur,
@@ -623,230 +458,10 @@ QByteArray Compilation::LireData()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    //Controle des données
-    //Extraction
-    //Renvois
-    QDomElement element = doc->documentElement();
-    QByteArray byteArray("");
-    int nbstate = 0;
-    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-    {
-        if (qde.tagName() == TAG_DATA)
-        {
-            for(QDomElement dataElement = qde.firstChildElement(); !dataElement.isNull(); dataElement = dataElement.nextSiblingElement())
-            {
-                //La variable conteur permet de déterminer la position d'un information car chaque info a une position précise
-                int Compteur = 1, lop = 0;
-                //lop permet de limiter le nombre de boucle au cas ou il y a une erreur dans le fichier
-                while(lop < 110) //Normalement avec 100 state possibles on devrais mettre 100 + sécurité = 110, mais c'est beaucoup trop
-                {
-                    //La compilation prend en compte chaque state 1 seule fois. Pour cela il controle le num de state avec nbstate avant compilation
-                    if (dataElement.tagName() == TAG_STATE && dataElement.attribute(ATTRIBUT_ID).toInt() == nbstate)
-                    {
-                        nbstate++;
-                        //Pour chaque state, le premier chiffre indique le mode auquel il appartient
-                        byteArray += element.attribute(ATTRIBUT_ID).toInt();
-                        Compteur++;
-                        //Le deuxième chiffre indique l'id du state
-                        byteArray += dataElement.attribute(ATTRIBUT_ID).toInt();
-                        Compteur++;
-                        int loop = 0;
-                        while (loop < 40 && Compteur < 32)
-                        {
-                            int ValeurCompteur = Compteur;
-                            for(QDomElement stateElement = dataElement.firstChildElement(); !stateElement.isNull(); stateElement = stateElement.nextSiblingElement())
-                            {
-                                switch (Compteur) {
-                                case 3: //le 3 chiffre indique le temps de pause
-                                    if (stateElement.tagName() == TAG_PAUSE)
-                                    {
-                                        byteArray += (char) stateElement.text().toInt();
-                                    }
-                                    else byteArray.append((char)0);
-                                    Compteur++;
-                                    break;
-                                case 4: //Blanc 1 , level pos 4
-                                    if (stateElement.tagName() == TAG_PROGRESSIF && stateElement.attribute(ATTRIBUT_ID).toInt() == 1)
-                                    {
-                                        compileProgressif(&byteArray, &stateElement, &Compteur);
-                                    }
-                                    break;
-                                case 5: //Blanc 2 , level pos 5
-                                    if (stateElement.tagName() == TAG_PROGRESSIF && stateElement.attribute(ATTRIBUT_ID).toInt() == 2)
-                                    {
-                                        compileProgressif(&byteArray, &stateElement, &Compteur);
-                                    }
-                                    break;
-                                case 6: //Blanc 3 , level pos 6
-                                    if (stateElement.tagName() == TAG_PROGRESSIF && stateElement.attribute(ATTRIBUT_ID).toInt() == 3)
-                                    {
-                                        compileProgressif(&byteArray, &stateElement, &Compteur);
-                                    }
-                                    break;
-                                case 7: //Rouge , level pos 7
-                                    if (stateElement.tagName() == TAG_PROGRESSIF && stateElement.attribute(ATTRIBUT_ID).toInt() == 4)
-                                    {
-                                        compileProgressif(&byteArray, &stateElement, &Compteur);
-                                    }
-                                    break;
-                                case 8: //Orange , level pos 8
-                                    if (stateElement.tagName() == TAG_PROGRESSIF && stateElement.attribute(ATTRIBUT_ID).toInt() == 5)
-                                    {
-                                        compileProgressif(&byteArray, &stateElement, &Compteur);
-                                    }
-                                    break;
-                                case 9: //Bleu , level pos 9
-                                    if (stateElement.tagName() == TAG_PROGRESSIF && stateElement.attribute(ATTRIBUT_ID).toInt() == 6)
-                                    {
-                                        compileProgressif(&byteArray, &stateElement, &Compteur);
-                                    }
-                                    break;
-                                case 10: //TOR portique , value 10, value 11
-                                    if (stateElement.tagName() == TAG_TOR && stateElement.attribute(ATTRIBUT_ID).toInt() == 7)
-                                    {
-                                        int cont = 0, loop = 0;
-                                        unsigned char mask = 0x01, data = 0x00;
-                                        while (cont < 16) {
-                                            loop++;
-                                            for(QDomElement tor = stateElement.firstChildElement(); !tor.isNull(); tor = tor.nextSiblingElement())
-                                            {
-                                                if (tor.tagName() == TAG_LED)
-                                                {
-                                                    if (tor.attribute(ATTRIBUT_ID).toInt() == cont)
-                                                    {
-                                                        //Les booleens des 16 led TOR programmées sont convertir sur 2 octets distincs. Chacun des octets est alors inseré dans la chaine de transfert
-                                                        if (tor.text() == "On") data |= (mask << cont % 8);
-                                                        cont++;
-                                                        //On a recopier les binaire du 1er octet
-                                                        if (cont == 8)
-                                                        {
-                                                            byteArray += data;
-                                                            data = 0x00;
-                                                            Compteur++;
-                                                        }
-                                                        if (cont == 16)
-                                                        {
-                                                            byteArray += data;
-                                                            Compteur++;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            if (loop > 32) break;
-                                        }
-                                    }
-                                    break;
-                                case 12: //Libre
-                                    byteArray += "\1\1";
-                                    Compteur += 2;
-                                    break;
-                                case 13: //Lune level pos 13
-                                    if (stateElement.tagName() == TAG_PROGRESSIF && stateElement.attribute(ATTRIBUT_ID).toInt() == 9)
-                                    {
-                                        compileProgressif(&byteArray, &stateElement, &Compteur);
-                                    }
-                                    break;
-                                case 14: //Libre
-                                    byteArray += "\1\1";
-                                    Compteur += 2;
-                                    break;
-                                case 15: //Libre
-                                    byteArray += "\1\1";
-                                    Compteur += 2;
-                                    break;
-                                case 16: //Libre
-                                    byteArray += "\1\1";
-                                    Compteur += 2;
-                                    break;
-                                case 17: //Libre
-                                    byteArray += "\1\1";
-                                    Compteur += 2;
-                                    break;
-                                case 18: //Validation pos 30, validation de synchro pos 31
-                                    //Valeur booleénne. il y a 4 validations par cycle, et 1 validation de synchronisation par cycle
-                                    if (stateElement.tagName() == TAG_SYNC)
-                                    {
-                                        byteArray += stateElement.attribute(ATTRIBUT_SYNC).toInt();
-                                        byteArray += stateElement.attribute(ATTRIBUT_VALID).toInt();
-                                        Compteur += 2;
-                                    }
-                                    break;
-                                default:
-                                    break;
-                                }
-                            }
-                            //Condition qui vient recopier la valeur du state précédent lorsqu'une LED avec un id défini est manquant dans un state autre que le state initiale
-                            if (ValeurCompteur == Compteur && dataElement.attribute(ATTRIBUT_ID) > 0)
-                            {
-                                //S'il faut faire un recopiage de validation la valeur est tjr null (pas de recopiage)
-                                if (Compteur == 18)
-                                {
-                                    //Pour ajouter des 0 en fin de chaine, je suis obliger de passer par une variable sinon, il considère que j'ai un carractère de terminaison de chaine
-                                    int a = 0;
-                                    byteArray += a;
-                                    byteArray += a;
-                                    Compteur += 2;
-                                }
-                                else
-                                {
-                                   //Comme l'état des led est défini par 1 char alors on le recopie directement
-                                   int pos = byteArray.count() - 19;
-                                   byteArray += byteArray.at((pos < 0)?0:pos);
-                                   Compteur++;
-                                }
-                            }
-                            loop++;
-                        }
-                        if (Compteur < 19 && dataElement.attribute(ATTRIBUT_ID) == 0)
-                        {
 
-#ifdef DEBUG_COMANDSAVE
-                            qDebug() << "Compilation impossible : l'éclairage avec l'Id " << (Compteur - 2 - Compteur % 2) / 2 << ", pour le state " << dataElement.attribute(ATTRIBUT_ID) << "n'a pas été trouvé.";
-                            qDebug() << "Le state initial doit avoir une définition pour chacun des éclairages";
-                            std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-
-                            return (QByteArray) "\0";
-                        }
-                    }
-                    lop++;
-                }
-            }
-        }
-    }
-
-#ifdef DEBUG_COMANDSAVE
-    if (nbstate == 0) qDebug() << "Compilation du mode " << element.attribute(ATTRIBUT_ID) << "echouée, state 0 introuvable.";
-    else qDebug() << "Compilation du mode " << element.attribute(ATTRIBUT_ID) << "terminé avec succet, " << nbstate << "state trouvés et compilé.";
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-
-    return byteArray;
-}
-
-bool Compilation::compileProgressif(QByteArray *byteArray, QDomElement *element, int *position)
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    int cont = 0, loop = 0;
-    while (cont < 1) {
-        loop++;
-        for(QDomElement progressif = element->firstChildElement(); !progressif.isNull(); progressif = progressif.nextSiblingElement())
-        {
-            if (progressif.tagName() == TAG_LEVEL && cont == 0)
-            {
-                *byteArray += progressif.text().toInt();
-                *position = *position + 1;
-                cont++;
-            }
-        }
-        if (loop > 3) break;
-    }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    return ((cont == 1)?true:false);
 }
 
 QByteArray Compilation::LireToutData()
@@ -854,16 +469,10 @@ QByteArray Compilation::LireToutData()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    QByteArray byteArray("");
-    for (int i = 0; i < nbInstance; i++)
-    {
-        byteArray += (ListeInstance[i] != NULL)?ListeInstance[i]->LireData():"";
-    }
-    byteArray.append("\255\255\255\255\255\255\255\255\255\255\255\255");
+
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    return byteArray;
 }
 
 //Fonction Globale pour les const QString
@@ -889,48 +498,10 @@ bool Compilation::addValidation(int idState, bool Validation, bool Synchronisati
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-     QDomElement element = doc->documentElement();
-     for (QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-     {
-         if (qde.tagName() == TAG_DATA)
-         {
-             for (QDomElement qdec = element.firstChildElement(); !qdec.isNull(); qdec = qdec.nextSiblingElement())
-             {
-                 if (qdec.tagName() == TAG_DATA)
-                 {
-                     for (QDomElement qdecs = qdec.firstChildElement(); !qdecs.isNull(); qdecs = qdecs.nextSiblingElement())
-                     {
-                         if (qdecs.tagName() == TAG_STATE && qdecs.attribute(ATTRIBUT_ID).toInt() == idState)
-                         {
-                             for (QDomElement qdecs1 = qdecs.firstChildElement(); !qdecs1.isNull(); qdecs1 = qdecs1.nextSiblingElement())
-                             {
-                                 if (qdecs1.tagName() == TAG_SYNC && qdecs1.hasAttribute(ATTRIBUT_VALID) && qdecs1.hasAttribute(ATTRIBUT_SYNC))
-                                 {
-                                     return false;
-#ifdef DEBUG_COMANDSAVE
-                                     std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-                                 }
-                             }
-                             QDomElement setTor = addElement(doc, qdecs, TAG_SYNC, QString::null);
-                             setTor.setAttribute(ATTRIBUT_SYNC, Synchronisation);
-                             setTor.setAttribute(ATTRIBUT_VALID, Validation);
-                             QDomComment comm = doc->createComment(tr("La synchronisation permet de mettre en phase le système avec l'ancien système. La validation a lieu 4 fois par cycle et la synchronisation 1 fois par cycle (en meme temps qu'une validation)"));
-                             setTor.appendChild(comm);
-#ifdef DEBUG_COMANDSAVE
-                             std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-                             return true;
-                         }
-                     }
-                 }
-             }
-         }
-     }
+
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-     return false;
 }
 
 //Fonction qui retourne la valeur de l'instance
@@ -966,7 +537,7 @@ Compilation *Compilation::ReturnInstance(int x)
     return NULL;
 }
 
-//Fonction surchargée d'évènement souris
+//Fonction surchargée, d'évènement souris
 void Compilation::mouseDoubleClickEvent(QMouseEvent *e)
 {
 #ifdef DEBUG_COMANDSAVE
@@ -1025,26 +596,9 @@ void Compilation::ControleCompilation()
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     QDomElement element = doc->documentElement();
-    //nbstate compte le nombre de state
-    int nbstate = 0;
     int cond = 0;
     for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
     {
-        if (qde.tagName() == TAG_DATA)
-        {
-            for(QDomElement dataElement = qde.firstChildElement(); !dataElement.isNull(); dataElement = dataElement.nextSiblingElement())
-            {
-                //lop permet de limiter le nombre de boucle au cas ou il y a une erreur dans le fichier
-                int lop = 0;
-                while(lop < 110) //Normalement avec 100 state possibles on devrais mettre 100 + sécurité = 110, mais c'est beaucoup trop
-                {
-                    //La compilation prend en compte chaque state 1 seule fois. Pour cela il controle le num de state avec nbstate avant compilation
-                    if (dataElement.tagName() == TAG_STATE && dataElement.attribute(ATTRIBUT_ID).toInt() == nbstate)
-                        nbstate++;
-                    lop++;
-                }
-            }
-        }
         if (qde.tagName() == TAG_CONDITION)
         {
             for(QDomElement dataElement = qde.firstChildElement(); !dataElement.isNull(); dataElement = dataElement.nextSiblingElement())
@@ -1055,16 +609,6 @@ void Compilation::ControleCompilation()
                     cond++;
             }
         }
-    }
-    if (nbstate == 0)
-        LedState->setColor(QColor(180,0,0));
-     else
-    {
-        if (nbstate > 0 && nbstate < 5)
-            LedState->setColor(QColor(255,109,0));
-        else
-            if (nbstate > 4)
-                LedState->setColor(QColor(0,231,41));
     }
     if (cond > 0)
     {
@@ -1204,7 +748,7 @@ void Compilation::delElement( QDomDocument *doc, const QString &tag, const QStri
 }
 
 //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
-void Compilation::retranslate()
+void Compilation::retranslate(QString lang)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
@@ -1217,8 +761,8 @@ void Compilation::retranslate()
     enregistrer->setButtonText(QMessageBox::Save,tr("Enregistrer"));
     enregistrer->setButtonText(QMessageBox::Discard, tr("Ne pas enregistrer"));
     LabelId->setToolTip(tr("ID attribué à ce mode pour un fonctionnement multi mode"));
-//    if (NewMode)
-//        NewMode->retranslate();
+    if (NewMode)
+        NewMode->retranslate(lang);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

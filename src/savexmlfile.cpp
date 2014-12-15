@@ -364,7 +364,7 @@ void SaveXmlFile::SupprimerCondHoraire()
 }
 
 //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
-void SaveXmlFile::retranslate()
+void SaveXmlFile::retranslate(QString lang)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name<< std::endl;
@@ -374,7 +374,7 @@ void SaveXmlFile::retranslate()
     ButtonNewMode->setText(tr("New Mode"));
     for (int i = 0; i < 5; i++)
         if(ListeModeOuvertPoint[i])
-            ListeModeOuvertPoint[i]->retranslate();
+            ListeModeOuvertPoint[i]->retranslate(lang);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

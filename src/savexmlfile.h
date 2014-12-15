@@ -37,7 +37,7 @@ public:
     //Fonction qui retourne les condition horaire de linstance active
     static QString ReturneCondHoraire();
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
-    void retranslate();
+    void retranslate(QString lang);
 
 signals:
     //Signal Pour la création d'un nouveau mode

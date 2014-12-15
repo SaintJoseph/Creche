@@ -30,17 +30,13 @@
 #define TAG_MIN "Min"
 #define TAG_DATA "Data"
 #define TAG_STATE "State"
-#define TAG_ONOFF "OnOff"
 #define TAG_PAUSE "Pause"
-#define TAG_PROGRESSIF "Progressif"
-#define TAG_LEVEL "Level"
-#define TAG_TOR "Tor"
 #define TAG_LED "Led"
-#define TAG_ETAT "Etat"
 #define TAG_NOM "Nom"
-#define TAG_SYNC "Synchro"
+#define TAG_MODULE "Module"
 #define ATTRIBUT_SYNC "Sync"
 #define ATTRIBUT_VALID "Validation"
+#define ATTRIBUT_MODULE "Module"
 
 //Structure pour facilité l'échange des données condition Horaire
 struct CondHoraire{
@@ -101,7 +97,7 @@ public:
     //Fonction qui supprime les condition Horaire
     void SupprimeCondHoraire();
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
-    void retranslate();
+    void retranslate(QString lang);
 
 signals:
     void IDproposer(int);
@@ -167,27 +163,19 @@ private:
 <Mode id="" Priorite="">
  <Nom></Nom>
  <Description></Description>
+ <Module></Module>
  <Data>
-  <State id="">
-   <Progressif id="">
-    <Nom></Nom>
-    <Description></Description>
-    <Level></Level>
-    <Rampe></Rampe>
-   </Progressif>
-   <Tor id="">
-    <Nom></Nom>
-    <Description></Description>
-    <Led id=""></Led>
-    <Led id=""></Led>
-    <Led id=""></Led>
-    <Led id=""></Led>
-    <Led id=""></Led>
-    <Led id=""></Led>
-    <Led id=""></Led>
-    <Led id=""></Led>
-   </Tor>
-  </State>
+  <Led id="" Module="">
+   <Description></Description>
+   <State id="">
+    <Parametre></Parametre>
+    <Pause></Pause>
+   </State>
+  </led>
+  <Validation>
+   <Description></Description>
+   <Pause></Pause>
+  </Validation>
  </Data>
  <Condition id="">
   <StartTime>

@@ -69,6 +69,8 @@ EditeurProg::EditeurProg(QWidget *parent) :
 
     connect(GenCommande, SIGNAL(Commande(QByteArray)),SLOT(onTextCome(QByteArray)));
     connect(BPEnregistrer, SIGNAL(clicked()), SLOT(onSaveButton()));
+    //A chaque fois que le texte est modifier on adapte la mise en forme
+    //connect(ZoneEdition, SIGNAL(textChanged()), SLOT(onTextChange()));
 
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
@@ -151,4 +153,37 @@ void EditeurProg::onSaveButton()
         out << TextFinal;
         file.close();
     }
+}
+
+//Fonction qui formate le text affiché
+void EditeurProg::onTextChange()
+{
+    //On déconnecte le changement du text, on apporte le nouveau formatage
+    //Puis on reconnecte le changement de text
+    QTextCursor tc = ZoneEdition->textCursor();
+    tc.select(QTextCursor::LineUnderCursor);
+    QString word = tc.selectedText();
+    ZoneEdition->disconnect();
+    if (word.contains("#")) {
+        tc.removeSelectedText();
+        word.prepend("<span style=\"color: blue\">");
+        word.append("</span>");
+        tc.insertHtml(word);
+        tc.movePosition(QTextCursor::WordLeft);
+    }
+    else if (word.contains("<")) {
+        tc.removeSelectedText();
+        word.prepend("<span style=\"color: green\"><d>");
+        word.append("</b></span>");
+        tc.insertHtml(word);
+        tc.movePosition(QTextCursor::WordLeft);
+    }
+    else {
+        tc.removeSelectedText();
+        word.prepend("<span style=\"color: red\"><i>");
+        word.append("</i></span>");
+        tc.insertHtml(word);
+        tc.movePosition(QTextCursor::WordLeft);
+    }
+    connect(ZoneEdition, SIGNAL(textChanged()), SLOT(onTextChange()));
 }

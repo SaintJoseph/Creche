@@ -34,8 +34,6 @@ public:
     bool addTOR(int idState, bool tor[16], const QString &Nom, const QString &Description);
     //Fonction qui li et compile les donnes d'eclairage
     bool addValidation(int idState, bool Validation, bool Synchronisation);
-    //Fonction qui retourne les condition horaire de linstance active
-    static QString ReturneCondHoraire();
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
     void retranslate(QString lang);
 
@@ -51,6 +49,11 @@ public slots:
     void addCondition(CondHoraire *CondH);
     //Fonction pour supprimer les conditions horaire
     void SupprimerCondHoraire();
+    //Retourne un pointeur vers le mode actif
+    Compilation* InstanceActive();
+    //Sur demande des condition Horaire
+    void onDemandeCHToPlainText(QPlainTextEdit *ZoneDeTexte);
+    void onDemandeCHToPlainText(CondHoraire *CondH);
 
 private slots:
     //Créeation d'une nouvelle instance de compilation

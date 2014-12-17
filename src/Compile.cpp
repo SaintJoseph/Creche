@@ -70,6 +70,25 @@ bool Compilation::addCondition(CondHoraire *CondH)
     }
     QDomElement setcond = addElement(doc, element, TAG_CONDITION, QString::null);
     setcond.setAttribute(ATTRIBUT_ID, ValeurID + 1);
+    switch (CondH->Type) {
+    case Periode:
+        setcond.setAttribute(ATTRIBUT_TYPE, QString::number(Periode) + " Periode");
+        break;
+    case Journalier:
+        setcond.setAttribute(ATTRIBUT_TYPE, QString::number(Journalier) + " Journalier");
+        break;
+    case Hebdomadaire:
+        setcond.setAttribute(ATTRIBUT_TYPE, QString::number(Hebdomadaire) + " Hebdomadaire");
+        break;
+    case Vide:
+        setcond.setAttribute(ATTRIBUT_TYPE, QString::number(Vide) + " Vide");
+        break;
+    case View:
+        setcond.setAttribute(ATTRIBUT_TYPE, QString::number(View) + " View");
+        break;
+    default:
+        break;
+    }
     QDomElement setstart = addElement(doc, setcond, TAG_SARTTIME, QString::null);
     QDomElement setend = addElement(doc, setcond, TAG_ENDTIME, QString::null);
     if (CondH->DMois > 0) addElement(doc, setstart, TAG_MOIS, QString::number(CondH->DMois));
@@ -92,17 +111,6 @@ bool Compilation::addCondition(CondHoraire *CondH)
 
 //Fonction qui lit toute les conditions d'un mode pour envois vers Arduino
 QByteArray Compilation::LireConditions()
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-}
-
-//Fonction qui li les conditions de toutes les instances existante du programme
-QByteArray Compilation::LireToutesConditions()
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
@@ -599,7 +607,7 @@ void Compilation::ControleCompilation()
     int cond = 0;
     for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
     {
-        if (qde.tagName() == TAG_CONDITION)
+        if (qde.tagName() == TAG_CONDITION && qde.hasAttribute(ATTRIBUT_TYPE))
         {
             for(QDomElement dataElement = qde.firstChildElement(); !dataElement.isNull(); dataElement = dataElement.nextSiblingElement())
             {
@@ -635,6 +643,27 @@ void Compilation::DemndeLectureCH(CondHoraire *CondH)
     {
         if (qde.tagName() == TAG_CONDITION)
         {
+            if (qde.hasAttribute(ATTRIBUT_TYPE)) {
+                switch (qde.attribute(ATTRIBUT_TYPE).mid(0,1).toInt()) {
+                case Periode:
+                    CondH->Type = Periode;
+                    break;
+                case Journalier:
+                    CondH->Type = Journalier;
+                    break;
+                case Hebdomadaire:
+                    CondH->Type = Hebdomadaire;
+                    break;
+                case Vide:
+                    CondH->Type = Vide;
+                    break;
+                case View:
+                    CondH->Type = View;
+                    break;
+                default:
+                    break;
+                }
+            }
             for(QDomElement qdea = qde.firstChildElement(); !qdea.isNull(); qdea = qdea.nextSiblingElement())
             {
                 if (qdea.tagName() == TAG_SARTTIME)
@@ -677,8 +706,8 @@ void Compilation::DemndeLectureCH(CondHoraire *CondH)
 #endif /* DEBUG_COMANDSAVE */
 }
 
-//Fonction qui retourne les conditions horaire de l'instance active
-QString Compilation::ReturnCondHoraire()
+//Demande de lecture des conditions horaire
+void Compilation::DemndeLectureCH(QPlainTextEdit *CondH)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
@@ -696,13 +725,18 @@ QString Compilation::ReturnCondHoraire()
             test = true;
         }
     }
-    if (test)
-        return str;
+    if (test) {
+        //On peut modifier le contenu du plainTextEdit
+        CondH->clear();
+        CondH->insertPlainText(str);
+    }
+    else {
+        CondH->clear();
+        CondH->insertPlainText(Const_QString(1));
+    }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    //return "Vide"
-    return Const_QString(1);
 }
 
 //Fonction qui supprime les condition Horaire

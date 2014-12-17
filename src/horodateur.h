@@ -34,15 +34,15 @@ public:
     //Fonction pour appliquer et réappliquer les labels suite a une demande de traduction
     void retranslate();
 
-    //Enumeration pour le type de condition horaire souhaitée
-    enum Type {Periode, Journalier, Hebdomadaire, Vide, View};
-
-
 signals:
     //Envois des conditions horaires
     void SendCondHoraire(CondHoraire *);
     //Demande pour supprimer condition horaire
     void DemandeSuppCondHoraire();
+    //Demande des conditions Horaire en Qstring
+    void DemandeCHstring(QPlainTextEdit*);
+    //Demande des conditions Horaire en struct
+    void DemandeCHstring(CondHoraire*);
 
 public slots:
 
@@ -68,6 +68,7 @@ private:
     QDateEdit *DateEditeStart, *DateEditeEnd;
     QTimeEdit *TimeEditStart, *TimeEditEnd;
     QPlainTextEdit *TextView;
+    CondHoraire *ConditionRetour;
 
 };
 

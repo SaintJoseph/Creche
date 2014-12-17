@@ -13,6 +13,7 @@
 #include "hled.h"
 #include <QPainterPath>
 #include <QPainter>
+#include <QPlainTextEdit>
 #include <QTextStream>
 #include "func_name.h"
 
@@ -37,11 +38,16 @@
 #define ATTRIBUT_SYNC "Sync"
 #define ATTRIBUT_VALID "Validation"
 #define ATTRIBUT_MODULE "Module"
+#define ATTRIBUT_TYPE "Type"
+
+//Enumeration pour le type de condition horaire souhaitée
+enum TypeCondHoraire {Periode = 0, Journalier, Hebdomadaire, Vide, View};
 
 //Structure pour facilité l'échange des données condition Horaire
 struct CondHoraire{
     int DMois, DJour, DJourSem, DHeure, DMinute,
         EMois, EJour, EJourSem, EHeure, EMinute;
+    TypeCondHoraire Type;
 };
 
 //Class personnalisée pour le traitement des fichier Xml généré, lu et enregistré
@@ -92,8 +98,6 @@ public:
     static Compilation *ReturnInstance(int x);
     //Fonction qui allume et eteint les LED
     void TurneLedOn(bool On = true);
-    //Fonction qui retourneles condition horaire de l'instance
-    QString ReturnCondHoraire();
     //Fonction qui supprime les condition Horaire
     void SupprimeCondHoraire();
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
@@ -111,7 +115,9 @@ public slots:
     void initialisationFichierDom();
     void ProposeID();
     void showNewModeDialog();
+    //Retourne les condition Horaire sous forme de structure ou de texte
     void DemndeLectureCH(CondHoraire *CondH);
+    void DemndeLectureCH(QPlainTextEdit *CondH);
 
 protected:
     //re-implement processing of moue events

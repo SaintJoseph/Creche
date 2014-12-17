@@ -325,15 +325,15 @@ void SaveXmlFile::affichageqDebug(QString text)
 #endif /* DEBUG_COMANDSAVE */
 
 //Fonction qui retourne les condition horaire de linstance active
-QString SaveXmlFile::ReturneCondHoraire()
+Compilation* SaveXmlFile::InstanceActive()
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << "/" << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //Ici l'égalité est une recopie, on test le pointeur recopié
     if (Compilation *comp = Compilation::ReturnInstance(ActiveModeNum))
-        return comp->ReturnCondHoraire();
-    return Const_QString(0);
+        return comp;
+    return NULL;
 }
 
 //Fonction Globale pour les const QString
@@ -378,4 +378,16 @@ void SaveXmlFile::retranslate(QString lang)
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+}
+
+//Sur demande des condition Horaire pour le dock Horaire
+void SaveXmlFile::onDemandeCHToPlainText(QPlainTextEdit *ZoneDeTexte)
+{
+    InstanceActive()->DemndeLectureCH(ZoneDeTexte);
+}
+
+//Sur demande des condition Horaire pour le dock Horaire
+void SaveXmlFile::onDemandeCHToPlainText(CondHoraire *CondH)
+{
+    InstanceActive()->DemndeLectureCH(CondH);
 }

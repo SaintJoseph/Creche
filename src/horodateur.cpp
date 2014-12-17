@@ -243,7 +243,7 @@ void Horodateur::ChangeType(int index)
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //On récupère la valeur de la comboBox et on caste suivant Type (enum)
-    Type Select = static_cast<Type>(ComboBoxSelect->itemData(index).toInt());
+    TypeCondHoraire Select = static_cast<TypeCondHoraire>(ComboBoxSelect->itemData(index).toInt());
 
     switch(Select)
     {
@@ -295,7 +295,7 @@ void Horodateur::ChangeType(int index)
             ButtonDelete->setVisible(true);
             TextView->clear();
             TextView->moveCursor(QTextCursor::End);
-            TextView->insertPlainText(SaveXmlFile::ReturneCondHoraire());
+            emit DemandeCHstring(TextView);
         }
         else
         {
@@ -322,9 +322,10 @@ void Horodateur::PrepareToSend()
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //On récupère la valeur de la comboBox et on caste suivant Type (enum)
-    Type Select = static_cast<Type>(ComboBoxSelect->itemData(ComboBoxSelect->currentIndex()).toInt());
+    TypeCondHoraire Select = static_cast<TypeCondHoraire>(ComboBoxSelect->itemData(ComboBoxSelect->currentIndex()).toInt());
     //Initialisation des variables
     CondHoraire *CondH = new CondHoraire{0,0,0,0,0,0,0,0,0,0};
+    CondH->Type = Select;
     switch(Select)
     {
     case Periode:
@@ -385,7 +386,8 @@ void Horodateur::BouttonDeleteClick()
     emit DemandeSuppCondHoraire();
     TextView->clear();
     TextView->moveCursor(QTextCursor::End);
-    TextView->insertPlainText(SaveXmlFile::ReturneCondHoraire());
+    //Le slot se charge de modifier le contenu du TextView
+    emit DemandeCHstring(TextView);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

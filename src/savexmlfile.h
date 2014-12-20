@@ -28,8 +28,6 @@ public:
     char ActiveMode();
     //Fonction qui ajoute un state dans l'arbre des états mais pas les entrées du state, et renvois l'id créé
     bool addState(int id, int pause = 0);
-    //Fonction qui ajoute un Progressif dans l'arbre des états pour un state donné, et renvois l'id + 1 si le progressif est bien créé
-    bool addProgressif(Compilation::LedColor id, int idState, int level, const QString &Nom, const QString &Description = QString::null);
     //Fonction qui ajoute un ensemble TOR dans l'arbre des états pour un state donné, et renvois l'id + 1 si le ensemble TOR est bien créé
     bool addTOR(int idState, bool tor[16], const QString &Nom, const QString &Description);
     //Fonction qui li et compile les donnes d'eclairage
@@ -42,18 +40,20 @@ signals:
     void NouveauModeCreer();
     //Signal que l'utilisateur change de mode
     void ChangeActiveMode();
+    //Signal pour le dock horodateur
+    void HoroCheckUpDate(CondHoraire);
 
 public slots:
     void SupprimerUneInstance(Compilation *Instance = NULL);
     //Fonction qui ajoute une condition horaire a un mode existant
-    void addCondition(CondHoraire *CondH);
+    void addCondition(CondHoraire *CondH, int indice);
     //Fonction pour supprimer les conditions horaire
     void SupprimerCondHoraire();
     //Retourne un pointeur vers le mode actif
     Compilation* InstanceActive();
     //Sur demande des condition Horaire
     void onDemandeCHToPlainText(QPlainTextEdit *ZoneDeTexte);
-    void onDemandeCHToPlainText(CondHoraire *CondH);
+    void onDemandeCHToPlainText(CondHoraire CondH, int indice);
 
 private slots:
     //Créeation d'une nouvelle instance de compilation
@@ -62,6 +62,8 @@ private slots:
     void DeleteMode();
     //Changement de mode actif
     void ChangeModeActif(int Instance);
+    //Horodateur Update
+    void onHoroCheckUpdate(CondHoraire CondH);
 
 private:
     QVBoxLayout *MainLayout, *LayoutBase;

@@ -159,6 +159,7 @@ void SaveXmlFile::NewMode()
             //On connect les signaux avec l'instance
             connect(LeNouveauMode, SIGNAL(MouseClickEvent(int)), SLOT(ChangeModeActif(int)));
             connect(LeNouveauMode, SIGNAL(DeleteMe(Compilation*)), SLOT(SupprimerUneInstance(Compilation*)));
+            connect(LeNouveauMode, SIGNAL(HoroCheckUpDate()), SLOT(onHoroCheckUpdate()));
             //Signal au mains que l'utilisateur à créé une instance X
             emit NouveauModeCreer();
 #ifdef DEBUG_COMANDSAVE
@@ -260,14 +261,14 @@ void SaveXmlFile::ChangeModeActif(int Instance)
 }
 
 //Fonction qui ajoute une condition horaire a un mode existant
-void SaveXmlFile::addCondition(CondHoraire *CondH)
+void SaveXmlFile::addCondition(CondHoraire *CondH, int indice)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //Ici l'égalité est une recopie, on test le pointeur recopié
     if (Compilation *comp = Compilation::ReturnInstance(ActiveModeNum))
-        comp->addCondition(CondH);
+        comp->addCondition(CondH, indice);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -280,15 +281,6 @@ bool SaveXmlFile::addState(int id, int pause)
     std::cout << func_name << "/" << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     return Compilation::ReturnInstance(ActiveModeNum)->addState(id, pause);
-}
-
-//Fonction qui ajoute un Progressif dans l'arbre des états pour un state donné, et renvois l'id + 1 si le progressif est bien créé
-bool SaveXmlFile::addProgressif(Compilation::LedColor id, int idState, int level, const QString &Nom, const QString &Description)
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << "/" << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    return Compilation::ReturnInstance(ActiveModeNum)->addProgressif(id, idState, level, Nom, Description);
 }
 
 //Fonction qui ajoute un ensemble TOR dans l'arbre des états pour un state donné, et renvois l'id + 1 si le ensemble TOR est bien créé
@@ -383,11 +375,35 @@ void SaveXmlFile::retranslate(QString lang)
 //Sur demande des condition Horaire pour le dock Horaire
 void SaveXmlFile::onDemandeCHToPlainText(QPlainTextEdit *ZoneDeTexte)
 {
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
     InstanceActive()->DemndeLectureCH(ZoneDeTexte);
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
 }
 
 //Sur demande des condition Horaire pour le dock Horaire
-void SaveXmlFile::onDemandeCHToPlainText(CondHoraire *CondH)
+void SaveXmlFile::onDemandeCHToPlainText(CondHoraire CondH, int indice)
 {
-    InstanceActive()->DemndeLectureCH(CondH);
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    InstanceActive()->DemndeLectureCH(CondH, indice);
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Slot pour les instances compiles qui envois a l'horodateur un check update
+void SaveXmlFile::onHoroCheckUpdate(CondHoraire CondH)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    emit HoroCheckUpDate(CondH);
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
 }

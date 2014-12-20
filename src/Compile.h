@@ -66,14 +66,14 @@ class Compilation : public QWidget
 public:
     explicit Compilation(QWidget *parent = 0);
     ~Compilation();
-    //Liste pour les couleurs de led Progressives
-    enum LedColor {Blanc1Progressif = 1, Blanc2Progressif, Blanc3Progressif, RougeProgressif, OrangeProgressif, BleuProgressif};
+    //Liste pour les les types de fonctionnement les
+    enum LedType {TOR, Progressif, ProgressifDebut, ClignotantFranc, ClignotantProgr, Vacillement};
     //Fonction qui ajoute une condition horaire a un mode existant
-    bool addCondition(CondHoraire *CondH);
+    bool addCondition(CondHoraire *CondH, int indice);
     //Fonction qui ajoute un state dans l'arbre des états mais pas les entrées du state, et renvois l'id créé
     bool addState(int id = 0, int pause = 0);
     //Fonction qui ajoute un Progressif dans l'arbre des états pour un state donné, et renvois l'id + 1 si le progressif est bien créé
-    bool addProgressif(LedColor id, int idState, int level, const QString &Nom, const QString &Description = QString::null);
+    bool addLed(int id, QString Module, LedType type, QByteArray param = "", const QString &Description = QString::null);
     //Fonction qui ajoute un ensemble TOR dans l'arbre des états pour un state donné, et renvois l'id + 1 si le ensemble TOR est bien créé
     bool addTOR(int id,int idState, bool tor[16], const QString &Nom, const QString &Description);
     //Fonction qui ajoute une validation de synchronisation a un state donné (Maximum 4 validations / mode et 1 synchronisation / mode)
@@ -109,6 +109,8 @@ signals:
     void MouseClickEvent(int);
     //Signal pour une instance qui demande a être supprimée
     void DeleteMe(Compilation *);
+    //Signal pour le dock horodateur
+    void HoroCheckUpDate(CondHoraire);
 
 public slots:
     void initialisationNouveauDom(QString Nom, QString Description, QString FichierNom, int idMode, int priorite);
@@ -116,7 +118,7 @@ public slots:
     void ProposeID();
     void showNewModeDialog();
     //Retourne les condition Horaire sous forme de structure ou de texte
-    void DemndeLectureCH(CondHoraire *CondH);
+    void DemndeLectureCH(CondHoraire CondH, int indice);
     void DemndeLectureCH(QPlainTextEdit *CondH);
 
 protected:

@@ -33,18 +33,22 @@ public:
     void ResetAffichage();
     //Fonction pour appliquer et réappliquer les labels suite a une demande de traduction
     void retranslate();
+    //Enum pour la navigation
+    enum Navigation {Right, Left, First, NewOne};
 
 signals:
     //Envois des conditions horaires
-    void SendCondHoraire(CondHoraire *);
+    void SendCondHoraire(CondHoraire*, int);
     //Demande pour supprimer condition horaire
     void DemandeSuppCondHoraire();
     //Demande des conditions Horaire en Qstring
     void DemandeCHstring(QPlainTextEdit*);
     //Demande des conditions Horaire en struct
-    void DemandeCHstring(CondHoraire*);
+    void DemandeCHstring(CondHoraire, int);
 
 public slots:
+    //Demande de checker et updater l'affichage courrant
+    void onHoroCheckUpDate(CondHoraire CondH);
 
 private slots:
     //Slot pour choisir un type de condition horaire
@@ -53,22 +57,24 @@ private slots:
     void PrepareToSend();
     //Slot pour le boutton delete
     void BouttonDeleteClick();
+    //Slot pour les bouton de navigation
+    void onNavigClick(Navigation Side);
+    void onNavigClickRG();
+    void onNavigClickLF();
 
 protected:
 
 private:
-
     QVBoxLayout *MainLayout, *LayoutDateEdite, *LayoutJourSelect, *LayoutBase, *LayoutTimeEdit;
-    QHBoxLayout *LayoutStartDate, *LayoutEndDate;
-    QLabel *LabelStartDate, *LabelEndDate, *LabelJourSelect, *LabelTimeStart, *LabelTimeEnd;
-    QPushButton *ButtonStartDate, *ButtonEndDate, *ButtonValider, *ButtonDelete;
+    QHBoxLayout *LayoutStartDate, *LayoutEndDate, *LayoutNavig;
+    QLabel *LabelStartDate, *LabelEndDate, *LabelJourSelect, *LabelTimeStart, *LabelTimeEnd, *LabelIndex;
+    QPushButton *ButtonStartDate, *ButtonEndDate, *ButtonValider, *ButtonDelete, *ButtonNavigLf, *ButtonNavigRg;
     QScrollArea *ScrollArea;
     QWidget *Base, *DateEdite, *SelectJour, *TimeEdit, *WidgetScrollArea;
     QComboBox *ComboBoxSelect, *JourSelect;
     QDateEdit *DateEditeStart, *DateEditeEnd;
     QTimeEdit *TimeEditStart, *TimeEditEnd;
     QPlainTextEdit *TextView;
-    CondHoraire *ConditionRetour;
 
 };
 

@@ -70,7 +70,7 @@ EditeurProg::EditeurProg(QWidget *parent) :
     connect(GenCommande, SIGNAL(Commande(QByteArray)),SLOT(onTextCome(QByteArray)));
     connect(BPEnregistrer, SIGNAL(clicked()), SLOT(onSaveButton()));
     //A chaque fois que le texte est modifier on adapte la mise en forme
-    //connect(ZoneEdition, SIGNAL(textChanged()), SLOT(onTextChange()));
+    connect(ZoneEdition, SIGNAL(textChanged()), SLOT(onTextChange()));
 
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
@@ -110,8 +110,12 @@ void EditeurProg::retranslate(QString lang)
 void EditeurProg::onTextCome(QByteArray message)
 {
     ZoneEdition->moveCursor(QTextCursor::End);
-    ZoneEdition->insertPlainText(message);
-    ZoneEdition->insertPlainText("\n");
+    if (message.contains("<"))
+        message.replace("<", "&#60;");
+    if (message.contains(">"))
+        message.replace(">", "&#62;");
+    message.append("\n");
+    ZoneEdition->insertHtml(message);
 }
 
 //Traitement du fichier et sauvegarde de celui-ci
@@ -160,30 +164,22 @@ void EditeurProg::onTextChange()
 {
     //On déconnecte le changement du text, on apporte le nouveau formatage
     //Puis on reconnecte le changement de text
-    QTextCursor tc = ZoneEdition->textCursor();
-    tc.select(QTextCursor::LineUnderCursor);
-    QString word = tc.selectedText();
     ZoneEdition->disconnect();
-    if (word.contains("#")) {
-        tc.removeSelectedText();
-        word.prepend("<span style=\"color: blue\">");
-        word.append("</span>");
-        tc.insertHtml(word);
-        tc.movePosition(QTextCursor::WordLeft);
-    }
-    else if (word.contains("<")) {
-        tc.removeSelectedText();
-        word.prepend("<span style=\"color: green\"><d>");
-        word.append("</b></span>");
-        tc.insertHtml(word);
-        tc.movePosition(QTextCursor::WordLeft);
+    QTextCursor tcmov = ZoneEdition->textCursor(), tcligne = ZoneEdition->textCursor();
+    tcmov.select(QTextCursor::WordUnderCursor);
+    tcligne.select(QTextCursor::LineUnderCursor);
+    QString word = tcmov.selectedText(), ligne = tcligne.selectedText();
+    if (ligne.contains("#")) {
+        ligne.prepend("<font color=blue>");
+        ligne.append("</font>");
+        tcligne.removeSelectedText();
+        tcligne.insertHtml(ligne);
     }
     else {
-        tc.removeSelectedText();
-        word.prepend("<span style=\"color: red\"><i>");
-        word.append("</i></span>");
-        tc.insertHtml(word);
-        tc.movePosition(QTextCursor::WordLeft);
+        word.append("</font></i>");
+        word.prepend("<i><font color=red>");
+        tcmov.removeSelectedText();
+        tcmov.insertHtml(word);
     }
     connect(ZoneEdition, SIGNAL(textChanged()), SLOT(onTextChange()));
 }

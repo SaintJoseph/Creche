@@ -13,6 +13,7 @@
 #include <QTime>
 #include <QFileDialog>
 #include <QTextCursor>
+#include <QRegExp>
 
 class EditeurProg : public QWidget
 {

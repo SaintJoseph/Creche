@@ -44,6 +44,15 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     LayoutTimeEdit->setContentsMargins(1,1,1,1);
     LayoutTimeEdit->setSpacing(1);
     LayoutTimeEdit->setAlignment(Qt::AlignJustify);
+    //Layout Pour la navigation
+    LayoutNavig = new QHBoxLayout;
+    LayoutNavig->setContentsMargins(0,0,0,0);
+    LayoutNavig->setSpacing(5);
+    LayoutNavig->setAlignment(Qt::AlignHCenter);
+    //Label Index
+    LabelIndex = new QLabel("0");
+    LabelIndex->setFont(font);
+    LabelIndex->setFixedHeight(20);
     //Label date début
     LabelStartDate = new QLabel("");
     LabelStartDate->setFont(font);
@@ -64,6 +73,14 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     LabelTimeEnd = new QLabel("");
     LabelTimeEnd->setFont(font);
     LabelTimeEnd->setFixedHeight(20);
+    //Bouton Navigation gauche
+    ButtonNavigLf = new QPushButton("<-");
+    ButtonNavigLf->setFixedHeight(20);
+    ButtonNavigLf->setFixedWidth(22);
+    //Boutton Navigation droite
+    ButtonNavigRg = new QPushButton("->");
+    ButtonNavigRg->setFixedHeight(20);
+    ButtonNavigRg->setFixedWidth(22);
     //Boutton pour ouvrir la fenètre de sélection de date start
     ButtonStartDate = new QPushButton("...");
     ButtonStartDate->setFont(font);
@@ -146,6 +163,10 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     TextView->setReadOnly(true);
     TextView->setFont(font);
 
+    //Parti navigation entre les condition horaires
+    LayoutNavig->addWidget(ButtonNavigLf);
+    LayoutNavig->addWidget(LabelIndex);
+    LayoutNavig->addWidget(ButtonNavigRg);
     //Ajout des widgets et layout pour l'ensemble Date
     LayoutStartDate->addWidget(DateEditeStart);
     LayoutStartDate->addWidget(ButtonStartDate);
@@ -180,6 +201,7 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     WidgetScrollArea->setLayout(MainLayout);
     //Application au layout de base
     ScrollArea->setWidget(WidgetScrollArea);
+    LayoutBase->addLayout(LayoutNavig);
     LayoutBase->addWidget(ComboBoxSelect);
     LayoutBase->addWidget(ScrollArea);
     //Application au dock
@@ -190,10 +212,14 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     ResetAffichage();
     //On place tous les labels
     retranslate();
+    //Initialise la navigation
+    onNavigClick(First);
 
     connect(ComboBoxSelect, SIGNAL(currentIndexChanged(int)), SLOT(ChangeType(int)));
     connect(ButtonValider, SIGNAL(clicked()), SLOT(PrepareToSend()));
     connect(ButtonDelete, SIGNAL(clicked()), SLOT(BouttonDeleteClick()));
+    connect(ButtonNavigLf, SIGNAL(clicked()), SLOT(onNavigClickLF()));
+    connect(ButtonNavigRg, SIGNAL(clicked()), SLOT(onNavigClickRG()));
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -218,6 +244,10 @@ Horodateur::~Horodateur()
     delete LabelStartDate;
     delete LabelTimeEnd;
     delete LabelTimeStart;
+    delete LabelIndex;
+    delete ButtonNavigLf;
+    delete ButtonNavigRg;
+    delete LayoutNavig;
     delete LayoutStartDate;
     delete LayoutEndDate;
     delete LayoutDateEdite;
@@ -361,7 +391,7 @@ void Horodateur::PrepareToSend()
 #ifdef DEBUG_COMANDSAVE
     qDebug() << "Condition horaire:" << CondH->DMois << CondH->EMois << CondH->DJour << CondH->EJour << CondH->DJourSem << CondH->EJourSem << CondH->DHeure << CondH->EHeure << CondH->DMinute << CondH->EMinute;
 #endif /* DEBUG_COMANDSAVE */
-    emit SendCondHoraire(CondH);
+    emit SendCondHoraire(CondH, LabelIndex->text().toInt());
     //Normalement CondH est supprimé après sa lecture, on le delete seulement s'il n'a pas été correctement supprimé
     if (!CondH)
 #ifdef DEBUG_COMANDSAVE
@@ -432,6 +462,108 @@ void Horodateur::retranslate()
     JourSelect->setItemText(4,tr("Vendredi"));
     JourSelect->setItemText(5,tr("Samedi"));
     JourSelect->setItemText(6,tr("Dimanche"));
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Slot pour les bouton de navigation
+void Horodateur::onNavigClick(Navigation Side)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //Initialisation des variables
+    CondHoraire CondH = CondHoraire{0,0,0,0,0,0,0,0,0,0};
+    CondH.Type = View;
+    if (Side == First) {
+        LabelIndex->setText("0");
+    }
+    if (Side == Left && LabelIndex->text().toInt() > 0) {
+        LabelIndex->setText(QString::number(LabelIndex->text().toInt() - 1));
+    }
+    if (Side == Right && LabelIndex->text().toInt() < 10) {
+        LabelIndex->setText(QString::number(LabelIndex->text().toInt() + 1));
+    }
+    if (LabelIndex->text().toInt() == 0) {
+        ButtonNavigLf->setEnabled(false);
+    }
+    else
+        ButtonNavigLf->setEnabled(true);
+    if (LabelIndex->text().toInt() == 10) {
+        ButtonNavigRg->setEnabled(false);
+    }
+    else
+        ButtonNavigRg->setEnabled(true);
+    //On fait une requete pour connaitre le type et les valeurs de condition horaire pour l'index
+    emit DemandeCHstring(CondH, LabelIndex->text().toInt());
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Navig Left
+void Horodateur::onNavigClickLF()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    onNavigClick(Left);
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Navig Right
+void Horodateur::onNavigClickRG()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    onNavigClick(Right);
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Demande de checker et updater l'affichage courrant
+void Horodateur::onHoroCheckUpDate(CondHoraire CondH)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //On commence par sélection le bon type de condition
+    ComboBoxSelect->setCurrentIndex((int)CondH.Type);
+/*        switch(CondH.Type)
+        {
+        case Periode:
+            ComboBoxSelect->setCurrentIndex(1);
+            break;
+        case Vide:
+            ComboBoxSelect->setCurrentIndex(0);
+            break;
+        case Hebdomadaire:
+            ComboBoxSelect->setCurrentIndex(3);
+            break;
+        case Journalier:
+            ComboBoxSelect->setCurrentIndex(2);
+            break;
+        case View:
+            ComboBoxSelect->setCurrentIndex(4);
+        }
+*/
+        JourSelect->setCurrentIndex(CondH.DJourSem);
+        QDate DateStart, DateEnd;
+        QTime TimeStart, TimeEnd;
+/*        DateStart.setDate(QDate::currentDate().year(), ConditionRetour->DMois, ConditionRetour->DJour);
+        DateEnd.setDate(QDate::currentDate().year(), ConditionRetour->EMois, ConditionRetour->EJour);
+        TimeStart.setHMS(ConditionRetour->DHeure, ConditionRetour->DMinute, 0);
+        TimeEnd.setHMS(ConditionRetour->EHeure, ConditionRetour->EMinute, 0);
+        DateEditeStart->setDate(DateStart);
+        DateEditeEnd->setDate(DateEnd);
+        TimeEditStart->setTime(TimeStart);
+        TimeEditEnd->setTime(TimeEnd);
+    */
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

@@ -330,9 +330,6 @@ ComArduino::~ComArduino()
 //Fonction de mise à jour de l'heure
 void ComArduino::onTimeUpdate()
 {
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
     QFont font("Verdana", 9);
     dateEtHeure->setDate(QDate::currentDate());
     dateEtHeure->setTime(QTime::currentTime());
@@ -344,9 +341,6 @@ void ComArduino::onTimeUpdate()
     onPortAddedOrRemoved();
     if (!port->isOpen() && PortBox->count() > 0) onOpenCloseButtonClicked(OPEN_PORT);
     if (port->isOpen() && PortBox->count() == 0) onOpenCloseButtonClicked(CLOSE_PORT);
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
 }
 
 void ComArduino::onPortNameChanged(const QString & )
@@ -553,9 +547,6 @@ void ComArduino::onReadyRead()
 //Fonction qui met a jour la liste des ports disponibles
 void ComArduino::onPortAddedOrRemoved()
 {
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
     QString current = PortBox->currentText();
     //Création d'une lite vide que l'on va remplir avec tout les modules arduino connecté
     QStringList PortArduino;
@@ -585,9 +576,6 @@ void ComArduino::onPortAddedOrRemoved()
 
     }
     PortBox->blockSignals(false);
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
 }
 
 //Fonction Globale pour les const QString

@@ -44,11 +44,11 @@ signals:
     //Demande des conditions Horaire en Qstring
     void DemandeCHstring(QPlainTextEdit*);
     //Demande des conditions Horaire en struct
-    void DemandeCHstring(CondHoraire, int);
+    void DemandeCHstring(CondHoraire*, int);
 
 public slots:
-    //Demande de checker et updater l'affichage courrant
-    void onHoroCheckUpDate(CondHoraire CondH);
+    //Mise a jour de l'affichage pour un nouveau mode
+    void onModeUpdate();
 
 private slots:
     //Slot pour choisir un type de condition horaire

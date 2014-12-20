@@ -631,13 +631,14 @@ void Compilation::ControleCompilation()
     }
     else
         LedCond->setColor(QColor(180,0,0));
+    emit CompilationUpdated();
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
 }
 
 //Demande de lecture des conditions horaire
-void Compilation::DemndeLectureCH(CondHoraire CondH, int indice)
+void Compilation::DemndeLectureCH(CondHoraire *CondH, int indice)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
@@ -650,19 +651,19 @@ void Compilation::DemndeLectureCH(CondHoraire CondH, int indice)
             if (qde.hasAttribute(ATTRIBUT_TYPE)) {
                 switch (qde.attribute(ATTRIBUT_TYPE).mid(0,1).toInt()) {
                 case Periode:
-                    CondH.Type = Periode;
+                    CondH->Type = Periode;
                     break;
                 case Journalier:
-                    CondH.Type = Journalier;
+                    CondH->Type = Journalier;
                     break;
                 case Hebdomadaire:
-                    CondH.Type = Hebdomadaire;
+                    CondH->Type = Hebdomadaire;
                     break;
                 case Vide:
-                    CondH.Type = Vide;
+                    CondH->Type = Vide;
                     break;
                 case View:
-                    CondH.Type = View;
+                    CondH->Type = View;
                     break;
                 default:
                     break;
@@ -675,15 +676,15 @@ void Compilation::DemndeLectureCH(CondHoraire CondH, int indice)
                     for(QDomElement qdeac = qdea.firstChildElement(); !qdeac.isNull(); qdeac = qdeac.nextSiblingElement())
                     {
                         if (qdeac.tagName() == TAG_MOIS)
-                            CondH.DMois = qdeac.text().toInt();
+                            CondH->DMois = qdeac.text().toInt();
                         if (qdeac.tagName() == TAG_JOUR)
-                            CondH.DJour = qdeac.text().toInt();
+                            CondH->DJour = qdeac.text().toInt();
                         if (qdeac.tagName() == TAG_JOURSEM)
-                            CondH.DJourSem = qdeac.text().toInt();
+                            CondH->DJourSem = qdeac.text().toInt();
                         if (qdeac.tagName() == TAG_HEURE)
-                            CondH.DHeure = qdeac.text().toInt();
+                            CondH->DHeure = qdeac.text().toInt();
                         if (qdeac.tagName() == TAG_MIN)
-                            CondH.DMinute = qdeac.text().toInt();
+                            CondH->DMinute = qdeac.text().toInt();
                     }
                 }
                 if (qdea.tagName() == TAG_ENDTIME)
@@ -691,22 +692,21 @@ void Compilation::DemndeLectureCH(CondHoraire CondH, int indice)
                     for(QDomElement qdeac = qdea.firstChildElement(); !qdeac.isNull(); qdeac = qdeac.nextSiblingElement())
                     {
                         if (qdeac.tagName() == TAG_MOIS)
-                            CondH.EMois = qdeac.text().toInt();
+                            CondH->EMois = qdeac.text().toInt();
                         if (qdeac.tagName() == TAG_JOUR)
-                            CondH.EJour = qdeac.text().toInt();
+                            CondH->EJour = qdeac.text().toInt();
                         if (qdeac.tagName() == TAG_JOURSEM)
-                            CondH.EJourSem = qdeac.text().toInt();
+                            CondH->EJourSem = qdeac.text().toInt();
                         if (qdeac.tagName() == TAG_HEURE)
-                            CondH.EHeure = qdeac.text().toInt();
+                            CondH->EHeure = qdeac.text().toInt();
                         if (qdeac.tagName() == TAG_MIN)
-                            CondH.EMinute = qdeac.text().toInt();
+                            CondH->EMinute = qdeac.text().toInt();
                     }
                 }
             }
         }
     }
     //On emet toujour le signal de check UpDate Pour que l'affichage soit adapté
-    emit HoroCheckUpDate(CondH);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

@@ -40,8 +40,9 @@ signals:
     void NouveauModeCreer();
     //Signal que l'utilisateur change de mode
     void ChangeActiveMode();
-    //Signal pour le dock horodateur
-    void HoroCheckUpDate(CondHoraire);
+    //Le mode actif envois un signal de mise a jour
+    void CompilationUpdated();
+
 
 public slots:
     void SupprimerUneInstance(Compilation *Instance = NULL);
@@ -53,7 +54,7 @@ public slots:
     Compilation* InstanceActive();
     //Sur demande des condition Horaire
     void onDemandeCHToPlainText(QPlainTextEdit *ZoneDeTexte);
-    void onDemandeCHToPlainText(CondHoraire CondH, int indice);
+    void onDemandeCHToPlainText(CondHoraire *CondH, int indice);
 
 private slots:
     //Créeation d'une nouvelle instance de compilation
@@ -62,8 +63,8 @@ private slots:
     void DeleteMode();
     //Changement de mode actif
     void ChangeModeActif(int Instance);
-    //Horodateur Update
-    void onHoroCheckUpdate(CondHoraire CondH);
+    //Le mode actif envois un signal de mise a jour
+    void onCompilationUpdated();
 
 private:
     QVBoxLayout *MainLayout, *LayoutBase;

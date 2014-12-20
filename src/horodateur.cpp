@@ -474,8 +474,8 @@ void Horodateur::onNavigClick(Navigation Side)
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //Initialisation des variables
-    CondHoraire CondH = CondHoraire{0,0,0,0,0,0,0,0,0,0};
-    CondH.Type = View;
+    CondHoraire *CondH = new CondHoraire{0,0,0,0,0,0,0,0,0,0};
+    CondH->Type = Vide;
     if (Side == First) {
         LabelIndex->setText("0");
     }
@@ -485,18 +485,50 @@ void Horodateur::onNavigClick(Navigation Side)
     if (Side == Right && LabelIndex->text().toInt() < 10) {
         LabelIndex->setText(QString::number(LabelIndex->text().toInt() + 1));
     }
+    //On fait une requete pour connaitre le type et les valeurs de condition horaire pour l'index
+    emit DemandeCHstring(CondH, LabelIndex->text().toInt());
+    //On adapte l'affichage
+    switch(CondH->Type)
+    {
+    case Periode:
+        ComboBoxSelect->setCurrentIndex(1);
+        break;
+    case Vide:
+        ComboBoxSelect->setCurrentIndex(0);
+        break;
+    case Hebdomadaire:
+        ComboBoxSelect->setCurrentIndex(3);
+        break;
+    case Journalier:
+        ComboBoxSelect->setCurrentIndex(2);
+        break;
+    case View:
+        ComboBoxSelect->setCurrentIndex(4);
+    }
+    JourSelect->setCurrentIndex(JourSelect->findData(CondH->DJourSem));
+    QDate DateStart, DateEnd;
+    QTime TimeStart, TimeEnd;
+    DateStart.setDate(QDate::currentDate().year(), CondH->DMois, CondH->DJour);
+    DateEnd.setDate(QDate::currentDate().year(), CondH->EMois, CondH->EJour);
+    TimeStart.setHMS(CondH->DHeure, CondH->DMinute, 0);
+    TimeEnd.setHMS(CondH->EHeure, CondH->EMinute, 0);
+    DateEditeStart->setDate(DateStart);
+    DateEditeEnd->setDate(DateEnd);
+    TimeEditStart->setTime(TimeStart);
+    TimeEditEnd->setTime(TimeEnd);
+    //On met jour les boutton (actif ou inactif)
     if (LabelIndex->text().toInt() == 0) {
         ButtonNavigLf->setEnabled(false);
     }
     else
         ButtonNavigLf->setEnabled(true);
-    if (LabelIndex->text().toInt() == 10) {
+    if (LabelIndex->text().toInt() == 10 || CondH->Type == Vide) {
         ButtonNavigRg->setEnabled(false);
     }
     else
         ButtonNavigRg->setEnabled(true);
-    //On fait une requete pour connaitre le type et les valeurs de condition horaire pour l'index
-    emit DemandeCHstring(CondH, LabelIndex->text().toInt());
+    //finalement on supprime l'objet qui a permi la mise a jour de l'affichage
+    delete CondH;
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -526,45 +558,7 @@ void Horodateur::onNavigClickRG()
 #endif /* DEBUG_COMANDSAVE */
 }
 
-//Demande de checker et updater l'affichage courrant
-void Horodateur::onHoroCheckUpDate(CondHoraire CondH)
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    //On commence par sélection le bon type de condition
-    ComboBoxSelect->setCurrentIndex((int)CondH.Type);
-/*        switch(CondH.Type)
-        {
-        case Periode:
-            ComboBoxSelect->setCurrentIndex(1);
-            break;
-        case Vide:
-            ComboBoxSelect->setCurrentIndex(0);
-            break;
-        case Hebdomadaire:
-            ComboBoxSelect->setCurrentIndex(3);
-            break;
-        case Journalier:
-            ComboBoxSelect->setCurrentIndex(2);
-            break;
-        case View:
-            ComboBoxSelect->setCurrentIndex(4);
-        }
-*/
-        JourSelect->setCurrentIndex(CondH.DJourSem);
-        QDate DateStart, DateEnd;
-        QTime TimeStart, TimeEnd;
-/*        DateStart.setDate(QDate::currentDate().year(), ConditionRetour->DMois, ConditionRetour->DJour);
-        DateEnd.setDate(QDate::currentDate().year(), ConditionRetour->EMois, ConditionRetour->EJour);
-        TimeStart.setHMS(ConditionRetour->DHeure, ConditionRetour->DMinute, 0);
-        TimeEnd.setHMS(ConditionRetour->EHeure, ConditionRetour->EMinute, 0);
-        DateEditeStart->setDate(DateStart);
-        DateEditeEnd->setDate(DateEnd);
-        TimeEditStart->setTime(TimeStart);
-        TimeEditEnd->setTime(TimeEnd);
-    */
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
+//Mise a jour de l'affichage pour un nouveau mode
+void Horodateur::onModeUpdate() {
+    onNavigClick(First);
 }

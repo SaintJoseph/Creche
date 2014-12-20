@@ -109,8 +109,8 @@ signals:
     void MouseClickEvent(int);
     //Signal pour une instance qui demande a être supprimée
     void DeleteMe(Compilation *);
-    //Signal pour le dock horodateur
-    void HoroCheckUpDate(CondHoraire);
+    //Mise a jour du mode
+    void CompilationUpdated();
 
 public slots:
     void initialisationNouveauDom(QString Nom, QString Description, QString FichierNom, int idMode, int priorite);
@@ -118,7 +118,7 @@ public slots:
     void ProposeID();
     void showNewModeDialog();
     //Retourne les condition Horaire sous forme de structure ou de texte
-    void DemndeLectureCH(CondHoraire CondH, int indice);
+    void DemndeLectureCH(CondHoraire *CondH, int indice);
     void DemndeLectureCH(QPlainTextEdit *CondH);
 
 protected:

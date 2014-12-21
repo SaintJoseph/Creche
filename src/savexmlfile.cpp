@@ -275,22 +275,21 @@ void SaveXmlFile::addCondition(CondHoraire *CondH, int indice)
 }
 
 //Fonction qui ajoute un state dans l'arbre des états mais pas les entrées du state, et renvois l'id créé
-bool SaveXmlFile::addState(int id, int pause)
+bool SaveXmlFile::addKey(int id, int led, QString Module, int pause, Compilation::LedType Type, QString parametre)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << "/" << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    return Compilation::ReturnInstance(ActiveModeNum)->addState(id, pause);
+    return Compilation::InstanceActive()->addkey(id, led, Module, pause, Type, parametre);
 }
 
-//Fonction qui ajoute un ensemble TOR dans l'arbre des états pour un state donné, et renvois l'id + 1 si le ensemble TOR est bien créé
-bool SaveXmlFile::addTOR(int idState, bool tor[16], const QString &Nom, const QString &Description)
+//Fonction qui ajoute une led dans l'arbre des états
+bool SaveXmlFile::addLed(int id, QString Module, const QString &Description)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << "/" << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    //Id des TOR = 7
-    return Compilation::ReturnInstance(ActiveModeNum)->addTOR(7, idState, tor, Nom, Description);
+    return Compilation::InstanceActive()->addLed(id, Module, Description);
 }
 
 //Fonction qui ajoute une synchronisation

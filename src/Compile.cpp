@@ -113,17 +113,6 @@ bool Compilation::addCondition(CondHoraire *CondH, int ValeurID)
     return true;
 }
 
-//Fonction qui lit toute les conditions d'un mode pour envois vers Arduino
-QByteArray Compilation::LireConditions()
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-}
-
 //Constructeur
 Compilation::Compilation(QWidget *parent) : QWidget(parent)
 {
@@ -344,39 +333,79 @@ void Compilation::initialisationFichierDom()
 }
 
 //Fonction qui ajoute un state dans l'arbre des états mais pas les entrées du state, et renvois l'id + 1 si le state est bien créé
-bool Compilation::addState(int id, int pause)
+bool Compilation::addkey(int id, int led, QString Module, int pause, LedType Type, QString param)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-
+    bool test = false;
+    QDomElement element = doc->documentElement();
+    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
+    {
+        if (qde.tagName() == TAG_DATA)
+        {
+            for(QDomElement qdea = qde.firstChildElement(); !qdea.isNull(); qdea = qdea.nextSiblingElement())
+            {
+                if (qdea.tagName() == TAG_LED && qdea.attribute(ATTRIBUT_MODULE) == Module && qdea.attribute(ATTRIBUT_ID).toInt() == led)
+                {
+                    QDomElement setkey = addElement(doc, qdea, TAG_STATE, QString::null);
+                    setkey.setAttribute(ATTRIBUT_ID, id);
+                    addElement(doc,setkey, TAG_PAUSE, QString::number(pause));
+                    switch (Type) {
+                    case TOR :
+                        setkey.setAttribute(ATTRIBUT_TYPE, QString::number(Type) + " TOR");
+                        break;
+                    case Progressif :
+                        setkey.setAttribute(ATTRIBUT_TYPE, QString::number(Type) + " Progressif");
+                        break;
+                    case ProgressifDebut :
+                        setkey.setAttribute(ATTRIBUT_TYPE, QString::number(Type) + " ProgressifDebut");
+                        break;
+                    case ClignotantFranc :
+                        setkey.setAttribute(ATTRIBUT_TYPE, QString::number(Type) + " ClignotantFranc");
+                        break;
+                    case ClignotantProgr :
+                        setkey.setAttribute(ATTRIBUT_TYPE, QString::number(Type) + " ClignotantProgr");
+                        break;
+                    case Vacillement :
+                        setkey.setAttribute(ATTRIBUT_TYPE, QString::number(Type) + " Vacillement");
+                        break;
+                    }
+                    addElement(doc,setkey, TAG_PARAMETRE, param);
+                    test = true;
+                }
+            }
+        }
+    }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+    return test;
 }
 
 //Fonction qui ajoute une led dans l'arbre des données
-bool Compilation::addLed(int id, QString Module, LedType type, QByteArray param, const QString &Description)
+bool Compilation::addLed(int id, QString Module, const QString &Description)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-
+    bool test = false;
+    QDomElement element = doc->documentElement();
+    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
+    {
+        if (qde.tagName() == TAG_DATA)
+        {
+            QDomElement setled = addElement(doc, qde, TAG_LED, QString::null);
+            setled.setAttribute(ATTRIBUT_ID, id);
+            setled.setAttribute(ATTRIBUT_MODULE, Module);
+            addElement(doc, setled, TAG_DESCRIPTION, Description);
+            test = true;
+        }
+    }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-}
-
-//Fonction qui ajoute un ensemble TOR dans l'arbre des états pour un state donné, et renvois l'id + 1 si le ensemble TOR est bien créé
-bool Compilation::addTOR(int id, int idState, bool tor[], const QString &Nom, const QString &Description)
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
+    return test;
 }
 
 //Fonction qui renvois une valeur ID pour le mode, proposition faite à l'utilisateur,
@@ -459,29 +488,6 @@ void Compilation::showNewModeDialog()
 #endif /* DEBUG_COMANDSAVE */
     NewMode->open();
     NewMode->setModal(true);
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-}
-
-//Fonction qui li et compiles les données d'un mode
-QByteArray Compilation::LireData()
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-}
-
-QByteArray Compilation::LireToutData()
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

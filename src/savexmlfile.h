@@ -26,10 +26,10 @@ public:
     ~SaveXmlFile();
     //Renvois le mode actif
     char ActiveMode();
-    //Fonction qui ajoute un state dans l'arbre des états mais pas les entrées du state, et renvois l'id créé
-    bool addState(int id, int pause = 0);
-    //Fonction qui ajoute un ensemble TOR dans l'arbre des états pour un state donné, et renvois l'id + 1 si le ensemble TOR est bien créé
-    bool addTOR(int idState, bool tor[16], const QString &Nom, const QString &Description);
+    //Fonction qui ajoute un Key pour une led donnée dans l'arbre des états
+    bool addKey(int id, int led, QString Module, int pause, Compilation::LedType Type, QString parametre = "");
+    //Fonction qui ajoute une led dans l'arbre des états
+    bool addLed(int id, QString Module, const QString &Description = QString::null);
     //Fonction qui li et compile les donnes d'eclairage
     bool addValidation(int idState, bool Validation, bool Synchronisation);
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire

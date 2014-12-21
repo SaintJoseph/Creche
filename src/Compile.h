@@ -35,6 +35,7 @@
 #define TAG_LED "Led"
 #define TAG_NOM "Nom"
 #define TAG_MODULE "Module"
+#define TAG_PARAMETRE "Parametre"
 #define ATTRIBUT_SYNC "Sync"
 #define ATTRIBUT_VALID "Validation"
 #define ATTRIBUT_MODULE "Module"
@@ -71,21 +72,13 @@ public:
     //Fonction qui ajoute une condition horaire a un mode existant
     bool addCondition(CondHoraire *CondH, int indice);
     //Fonction qui ajoute un state dans l'arbre des états mais pas les entrées du state, et renvois l'id créé
-    bool addState(int id = 0, int pause = 0);
+    bool addkey(int id, int led, QString Module, int pause, LedType Type, QString param = "");
     //Fonction qui ajoute un Progressif dans l'arbre des états pour un state donné, et renvois l'id + 1 si le progressif est bien créé
-    bool addLed(int id, QString Module, LedType type, QByteArray param = "", const QString &Description = QString::null);
+    bool addLed(int id, QString Module, const QString &Description = QString::null);
     //Fonction qui ajoute un ensemble TOR dans l'arbre des états pour un state donné, et renvois l'id + 1 si le ensemble TOR est bien créé
-    bool addTOR(int id,int idState, bool tor[16], const QString &Nom, const QString &Description);
-    //Fonction qui ajoute une validation de synchronisation a un state donné (Maximum 4 validations / mode et 1 synchronisation / mode)
     bool addValidation(int idState, bool Validation, bool Synchronisation);
     //Fonction qui retourne la valeur de l'instance
     int InstanceValue();
-    //Fonction qui li et compile toutes les conditions de toutes les instances existante du programme
-    //En sortie on peu directement l'écrire sur le port de l'Arduino (après synchronisation)
-    static QByteArray LireToutesConditions();
-    //Fonction qui li et compile toutes les conditions de toutes les instances existante du programme
-    //En sortie on peu directement l'écrire sur le port de l'Arduino (après synchronisation)
-    static QByteArray LireToutData();
     //Fonction qui propose un ID pour un nouveau mode(recherche un ID pas encore utilise
     static int NouvelId();
     //Les deux fonctions statics suivante permettent à l'aide d'une boucle de détruire toute les instances existance
@@ -155,10 +148,6 @@ private:
     QString DomDocument();
     //Fonction utiliser par la compilation des data, lecture des level et des rampes
     bool compileProgressif(QByteArray *byteArray, QDomElement *element, int *position);
-    //Fonction qui li et compile les donnes d'eclairage
-    QByteArray LireData();
-    //Fonction qui lit et compile toute les conditions d'un mode pour envois vers Arduino
-    QByteArray LireConditions();
 };
 
 #endif // COMPILE_H

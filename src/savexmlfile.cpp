@@ -344,14 +344,14 @@ QString SaveXmlFile::Const_QString(int type)
 }
 
 //Fonction pour supprimer les conditions horaire
-void SaveXmlFile::SupprimerCondHoraire()
+void SaveXmlFile::SupprimerCondHoraire(int ValeurID)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << "/" << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //Ici l'égalité est une recopie, on test le pointeur recopié
     if (Compilation *comp = Compilation::ReturnInstance(ActiveModeNum))
-        comp->SupprimeCondHoraire();
+        comp->SupprimeCondHoraire(ValeurID);
 }
 
 //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire

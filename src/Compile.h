@@ -72,7 +72,7 @@ public:
     //Fonction qui ajoute une condition horaire a un mode existant
     bool addCondition(CondHoraire *CondH, int indice);
     //Fonction qui ajoute un state dans l'arbre des états mais pas les entrées du state, et renvois l'id créé
-    bool addkey(int id, int led, QString Module, int pause, LedType Type, QString param = "");
+    bool addkey(int led, QString Module, int pause, LedType Type, QString param = "");
     //Fonction qui ajoute un Progressif dans l'arbre des états pour un state donné, et renvois l'id + 1 si le progressif est bien créé
     bool addLed(int id, QString Module, const QString &Description = QString::null);
     //Fonction qui ajoute un ensemble TOR dans l'arbre des états pour un state donné, et renvois l'id + 1 si le ensemble TOR est bien créé
@@ -92,7 +92,7 @@ public:
     //Fonction qui allume et eteint les LED
     void TurneLedOn(bool On = true);
     //Fonction qui supprime les condition Horaire
-    void SupprimeCondHoraire();
+    void SupprimeCondHoraire(int ValeurID);
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
     void retranslate(QString lang);
 
@@ -146,8 +146,6 @@ private:
     void delElement(QDomDocument *doc, const QString &tag, const QString &attribu = QString::null, int val = 0);
     //Fonction qui retourne l'arbre Xml sous forme de qstring
     QString DomDocument();
-    //Fonction utiliser par la compilation des data, lecture des level et des rampes
-    bool compileProgressif(QByteArray *byteArray, QDomElement *element, int *position);
 };
 
 #endif // COMPILE_H

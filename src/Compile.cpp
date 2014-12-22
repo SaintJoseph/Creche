@@ -333,7 +333,7 @@ void Compilation::initialisationFichierDom()
 }
 
 //Fonction qui ajoute un state dans l'arbre des états mais pas les entrées du state, et renvois l'id + 1 si le state est bien créé
-bool Compilation::addkey(int id, int led, QString Module, int pause, LedType Type, QString param)
+bool Compilation::addkey(int led, QString Module, int pause, LedType Type, QString param)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
@@ -348,6 +348,16 @@ bool Compilation::addkey(int id, int led, QString Module, int pause, LedType Typ
             {
                 if (qdea.tagName() == TAG_LED && qdea.attribute(ATTRIBUT_MODULE) == Module && qdea.attribute(ATTRIBUT_ID).toInt() == led)
                 {
+                    int ID = 0;
+                    for(QDomElement qdeab = qdea.firstChildElement(); !qdeab.isNull(); qdeab = qdeab.nextSiblingElement())
+                    {
+                        if (qdeab.tagName() == TAG_STATE && qdeab.attribute(ATTRIBUT_ID).toInt() > ID)
+                        {
+                            ID = qdeab.attribute(ATTRIBUT_ID).toInt();
+                        }
+                    }
+                    //ID prend le numéro de la key que l'on va ajouter maintenant
+                    ID++;
                     QDomElement setkey = addElement(doc, qdea, TAG_STATE, QString::null);
                     setkey.setAttribute(ATTRIBUT_ID, id);
                     addElement(doc,setkey, TAG_PAUSE, QString::number(pause));
@@ -391,15 +401,26 @@ bool Compilation::addLed(int id, QString Module, const QString &Description)
 #endif /* DEBUG_COMANDSAVE */
     bool test = false;
     QDomElement element = doc->documentElement();
-    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
+    //Controle du module référencé
+    for(QDomElement qqde = element.firstChildElement(); !qqde.isNull(); qqde = qqde.nextSiblingElement())
     {
-        if (qde.tagName() == TAG_DATA)
+        if (qqde.tagName() == TAG_MODULE)
         {
-            QDomElement setled = addElement(doc, qde, TAG_LED, QString::null);
-            setled.setAttribute(ATTRIBUT_ID, id);
-            setled.setAttribute(ATTRIBUT_MODULE, Module);
-            addElement(doc, setled, TAG_DESCRIPTION, Description);
-            test = true;
+            if (qqde.text() == Module){
+                //Ajout de la led indiquée
+                for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
+                {
+                    if (qde.tagName() == TAG_DATA)
+                    {
+                        QDomElement setled = addElement(doc, qde, TAG_LED, QString::null);
+                        setled.setAttribute(ATTRIBUT_ID, id);
+                        setled.setAttribute(ATTRIBUT_MODULE, Module);
+                        addElement(doc, setled, TAG_DESCRIPTION, Description);
+                        test = true;
+                    }
+                }
+                break;
+            }
         }
     }
 #ifdef DEBUG_COMANDSAVE
@@ -752,12 +773,33 @@ void Compilation::DemndeLectureCH(QPlainTextEdit *CondH)
 }
 
 //Fonction qui supprime les condition Horaire
-void Compilation::SupprimeCondHoraire()
+void Compilation::SupprimeCondHoraire(int ValeurID)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    delElement(doc, TAG_CONDITION);
+    delElement(doc, TAG_CONDITION, ATTRIBUT_ID, ValeurID);
+    QDomElement element = doc->documentElement();
+    ValeurID = 0;
+    for (int i = 0; i < 11; i++) {
+        for(QDomNode n = element.firstChild(); !n.isNull(); n = n.nextSibling())
+        {
+            QDomElement qde = n.toElement();
+            if (!n.isNull())
+            {
+                if (qde.tagName() == TAG_CONDITION)
+                {
+                    if (qde.hasAttribute(ATTRIBUT_ID)) {
+                        if (i == qde.attribute(ATTRIBUT_ID).toInt()){
+                            QDomAttr AttributID = qde.attributeNode(ATTRIBUT_ID);
+                            AttributID.setValue(QString::number(ValeurID++));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
     ControleCompilation();
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;

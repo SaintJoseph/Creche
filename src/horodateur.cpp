@@ -278,16 +278,16 @@ void Horodateur::ChangeType(int index)
     switch(Select)
     {
     case Periode:
-        WidgetScrollArea->setFixedHeight(107);
+        WidgetScrollArea->setFixedHeight(129);
         DateEdite->setVisible(true);
         SelectJour->setVisible(false);
         TimeEdit->setVisible(false);
         ButtonValider->setVisible(true);
         TextView->setVisible(false);
-        ButtonDelete->setVisible(false);
+        ButtonDelete->setVisible(true);
         break;
     case Vide:
-        WidgetScrollArea->setFixedHeight(20);
+        WidgetScrollArea->setFixedHeight(42);
         DateEdite->setVisible(false);
         SelectJour->setVisible(false);
         TimeEdit->setVisible(false);
@@ -296,22 +296,22 @@ void Horodateur::ChangeType(int index)
         ButtonDelete->setVisible(false);
         break;
     case Hebdomadaire:
-        WidgetScrollArea->setFixedHeight(150);
+        WidgetScrollArea->setFixedHeight(172);
         DateEdite->setVisible(false);
         SelectJour->setVisible(true);
         TimeEdit->setVisible(true);
         ButtonValider->setVisible(true);
         TextView->setVisible(false);
-        ButtonDelete->setVisible(false);
+        ButtonDelete->setVisible(true);
         break;
     case Journalier:
-        WidgetScrollArea->setFixedHeight(107);
+        WidgetScrollArea->setFixedHeight(129);
         DateEdite->setVisible(false);
         SelectJour->setVisible(false);
         TimeEdit->setVisible(true);
         ButtonValider->setVisible(true);
         TextView->setVisible(false);
-        ButtonDelete->setVisible(false);
+        ButtonDelete->setVisible(true);
         break;
     case View:
         if (Compilation::NbInstance() > 0)
@@ -322,14 +322,14 @@ void Horodateur::ChangeType(int index)
             TimeEdit->setVisible(false);
             ButtonValider->setVisible(false);
             TextView->setVisible(true);
-            ButtonDelete->setVisible(true);
+            ButtonDelete->setVisible(false);
             TextView->clear();
             TextView->moveCursor(QTextCursor::End);
             emit DemandeCHstring(TextView);
         }
         else
         {
-            WidgetScrollArea->setFixedHeight(20);
+            WidgetScrollArea->setFixedHeight(42);
             DateEdite->setVisible(false);
             SelectJour->setVisible(false);
             TimeEdit->setVisible(false);
@@ -413,7 +413,7 @@ void Horodateur::BouttonDeleteClick()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    emit DemandeSuppCondHoraire();
+    emit DemandeSuppCondHoraire(LabelIndex->text().toInt());
     TextView->clear();
     TextView->moveCursor(QTextCursor::End);
     //Le slot se charge de modifier le contenu du TextView

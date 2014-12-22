@@ -49,7 +49,7 @@ public slots:
     //Fonction qui ajoute une condition horaire a un mode existant
     void addCondition(CondHoraire *CondH, int indice);
     //Fonction pour supprimer les conditions horaire
-    void SupprimerCondHoraire();
+    void SupprimerCondHoraire(int ValeurID);
     //Retourne un pointeur vers le mode actif
     Compilation* InstanceActive();
     //Sur demande des condition Horaire

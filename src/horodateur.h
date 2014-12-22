@@ -40,7 +40,7 @@ signals:
     //Envois des conditions horaires
     void SendCondHoraire(CondHoraire*, int);
     //Demande pour supprimer condition horaire
-    void DemandeSuppCondHoraire();
+    void DemandeSuppCondHoraire(int);
     //Demande des conditions Horaire en Qstring
     void DemandeCHstring(QPlainTextEdit*);
     //Demande des conditions Horaire en struct

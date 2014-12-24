@@ -359,7 +359,7 @@ bool Compilation::addkey(int led, QString Module, int pause, LedType Type, QStri
                     //ID prend le numéro de la key que l'on va ajouter maintenant
                     ID++;
                     QDomElement setkey = addElement(doc, qdea, TAG_STATE, QString::null);
-                    setkey.setAttribute(ATTRIBUT_ID, id);
+                    setkey.setAttribute(ATTRIBUT_ID, ID);
                     addElement(doc,setkey, TAG_PAUSE, QString::number(pause));
                     switch (Type) {
                     case TOR :
@@ -851,6 +851,61 @@ void Compilation::retranslate(QString lang)
     LabelId->setToolTip(tr("ID attribué à ce mode pour un fonctionnement multi mode"));
     if (NewMode)
         NewMode->retranslate(lang);
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Fonction pour la compilation des conditions Horaire
+bool Compilation::CompilationCH(DonneFichier *DataToFill)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+/*
+<Condition id="0" Type="0 Periode">
+<StartTime>
+<Mois>8</Mois>
+<Jour>16</Jour>
+<Heure>0</Heure>
+<Min>0</Min>
+</StartTime>
+<EndTime>
+<Mois>9</Mois>
+<Jour>2</Jour>
+<Heure>0</Heure>
+<Min>0</Min>
+</EndTime>
+</Condition>
+
+DEVIENT :
+
+variable de testAttribute mis a zero
+variable 1er jour (sur 1 an)
+enregistre le mois courant
+si mois 1 < mois courant -> saut fin des mois
+opération 1er jour + 31
+si mois 2 < mois courant -> saut fin des mois
+opération 1er jour + 28
+...
+...
+enregistre le jour courant
+opération jour courant sur 1er Jour
+(recommence pour le jour fin idem)
+...
+...
+comparaison entre jour début et jour fin (base 365)
+Valider la conditions
+
+(recommencer la même logique entre les heures et les minutes)
+...
+...
+Valider la condition
+
+test sur le jour -> saut condition suivante
+
+
+*/
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

@@ -323,8 +323,12 @@ void EcritureVariable () {
        //Format "MHHAA\AHHHHVHHHH"
        saveRAM(rxCmd.substring(2));
        break;
+    case 'W' : case 'w' :
+       //Message reçu: <(Ecriture)(Adresse radio)(Temporaire/Permanent)(Adresse)>
+       //Format "A99"
+       break;
     default:
-      CmdError("E Type d'ecriture (D.R)");
+      CmdError("E Type d'ecriture (D.R.W)");
   }
 }
 
@@ -341,6 +345,7 @@ void LectureVariable() {
      *Permet d'introduire des conditions sur les varibles de tous le système
   */
   word address = 0;
+  word JourAnnee, MinuteJournee;
   switch (rxCmd[1])
   {
     case 'M' : case 'm' :
@@ -384,8 +389,20 @@ void LectureVariable() {
           case 'S': case 's' : //Seconde
              saveRAM("M01ASA" + rxCmd.substring(3,7) + "V00" + ByteToString(date.secondes));
              break;
+          case 'X': case 'x' : //Jour dans l'année
+             JourAnnee = date.jour;
+             //permet de calculer le nombre de jours des mois passés, jusqu'au mois actuel
+             for (int i = 1; i < date.mois; i++)
+                JourAnnee = JourAnnee + nbjourmois(i);
+             saveRAM("M01AXA" + rxCmd.substring(3,7) + "V" + WordToString(JourAnnee));
+             break;
+          case 'Z': case 'z' : //Minute dans la journée
+             MinuteJournee = date.minutes;
+             MinuteJournee = MinuteJournee + date.heures * 60;
+             saveRAM("M01AZA" + rxCmd.substring(3,7) + "V" + WordToString(MinuteJournee));
+             break;
           default :
-             CmdError("Date erroné (D.M.Y.W.H.N.S)");
+             CmdError("Date erroné (D.M.Y.W.H.N.S.X.Z)");
        }
        break ;
     case 'O' : case 'o' :
@@ -406,8 +423,8 @@ void LectureVariable() {
        //ATTENTION le module d'envois le type et la commande sont celle enregistrer, pas les valeurs réelle
        StringToWord(address, rxCmd, 2);
        address *= 5; //Caque variable est stokée sur 2 bytes
-       address += 3;
-       if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+       address += 9;
+       if (address > 13 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
           txCmd = "M00M" + ByteToString((byte)spiRam.read_byte((int)address)) + (char)spiRam.read_byte((int)address + 1) + (char)spiRam.read_byte((int)address + 2) + ByteToString((byte)spiRam.read_byte((int)address + 3)) + ByteToString((byte)spiRam.read_byte((int)address + 4));
           Send(Module);
        }
@@ -431,8 +448,13 @@ void LectureVariable() {
           txCmd = txCmd + "RA0";
        Send(Module);
        break;
+    case 'W' : case 'w' :
+       //Message reçu: <(Lecture)(Adresse radio)>
+       //Format "HHHH"
+       //Format "MHHAA\AHHHHVHHHH"
+       break;
     default:   
-      CmdError("L Type lecture (M.U.D.O.S.R.A)");
+      CmdError("L Type lecture (M.U.D.O.S.R.A.W)");
   } 
 }
 
@@ -636,8 +658,8 @@ void saveRAM(String mesg) {
    //Sauvegarde dans la RAM
    //Chaque variable comprend 1 byte pour identifier le module + typeCmd + Cmd + variable sur 2 bytes => 5B
    address *= 5;
-   address += 3;
-   if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+   address += 9;
+   if (address > 13 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
       spiRam.write_byte((int)address, module);
       spiRam.write_byte((int)address + 1, typeCmd);
       spiRam.write_byte((int)address + 2, Cmd);
@@ -722,13 +744,13 @@ void modifExecutable () {
        //On compare normalement une valeur a une adresse mémoire par défaut : rxCmd[7] == 'V'
        if (rxCmd[7] == 'A') { //On compare des valeurs entre 2 adresses mémoire
           value *= 5; //Chaque variable est stokée sur 5 bytes
-          value += 3;
-          if (value > 7 && value < 0x7FFA)
+          value += 9;
+          if (value > 13 && value < 0x7FFA)
              value = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
        }
        address *= 5; //Chaque variable est stokée sur 5 bytes
-       address += 3;
-       if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+       address += 9;
+       if (address > 13 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
           time = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
           switch(rxCmd[6]) {
              case 'E':
@@ -786,20 +808,20 @@ void modifExecutable () {
        //On compare normalement une valeur a une adresse mémoire par défaut : rxCmd[7] == 'V'
        if (rxCmd[7] == 'A') { //On compare des valeurs entre 2 adresses mémoire
           value *= 5; //Chaque variable est stokée sur 5 bytes
-          value += 3;
-          if (value > 7 && value < 0x7FFA)
+          value += 9;
+          if (value > 13 && value < 0x7FFA)
              value = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
        }
        //On accède normalement à la ligne, sauf si le num de ligne est a une adresse mémoire : rxCmd[12] == 'L'
        if (rxCmd[12] == 'A') { //On compare des valeurs entre 2 adresses mémoire
           ligne *= 5; //Chaque variable est stokée sur 5 bytes
-          ligne += 3;
-          if (ligne > 7 && ligne < 0x7FFA)
+          ligne += 9;
+          if (ligne > 13 && ligne < 0x7FFA)
              ligne = word((byte)spiRam.read_byte((int)ligne + 3), (byte)spiRam.read_byte((int)ligne + 4));
        }
        address *= 5; //Chaque variable est stokée sur 5 bytes
-       address += 3;
-       if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+       address += 9;
+       if (address > 13 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
           time = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
           switch(rxCmd[6]) {
              case 'E':
@@ -858,14 +880,14 @@ void modifExecutable () {
        StringToWord(value, rxCmd, 8);
        //On compare normalement une valeur a une adresse mémoire par défaut : rxCmd[2] == 'V'
        address *= 5; //Chaque variable est stokée sur 5 bytes
-       address += 3;
-       if (address > 7 && address < 0x7FFA)
+       address += 9;
+       if (address > 13 && address < 0x7FFA)
           ligne = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
        //On compare normalement une valeur a une adresse mémoire par défaut : rxCmd[8] == 'V'
        if (rxCmd[7] == 'A') { //On compare des valeurs entre 2 adresses mémoire
           value *= 5; //Chaque variable est stokée sur 5 bytes
-          value += 3;
-          if (value > 7 && value < 0x7FFA)
+          value += 9;
+          if (value > 13 && value < 0x7FFA)
              value = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
        }
        switch(rxCmd[6]) {
@@ -882,7 +904,7 @@ void modifExecutable () {
              ligne *= value;
              break;
        }
-       if (address > 7 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
+       if (address > 13 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
           //On recopie le résultat dans la RAM
           spiRam.write_byte((int)address + 4, ligne & 0x00FF);
           spiRam.write_byte((int)address + 3, (ligne >> 8) & 0x00FF);

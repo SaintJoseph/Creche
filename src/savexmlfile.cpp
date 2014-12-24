@@ -275,12 +275,12 @@ void SaveXmlFile::addCondition(CondHoraire *CondH, int indice)
 }
 
 //Fonction qui ajoute un state dans l'arbre des états mais pas les entrées du state, et renvois l'id créé
-bool SaveXmlFile::addKey(int id, int led, QString Module, int pause, Compilation::LedType Type, QString parametre)
+bool SaveXmlFile::addKey(int led, QString Module, int pause, Compilation::LedType Type, QString parametre)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << "/" << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    return Compilation::InstanceActive()->addkey(id, led, Module, pause, Type, parametre);
+    return Compilation::InstanceActive()->addkey(led, Module, pause, Type, parametre);
 }
 
 //Fonction qui ajoute une led dans l'arbre des états

@@ -481,28 +481,30 @@ void ComArduino::onSendButtonClicked(QByteArray commandeToSend)
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //1er cas on envois le message introduit par l'utilisateur
-    if (port->isOpen() && commandeToSend == "")
-    {
-        //Si il n'y a pas d'instruction manuel et pas de commandeToSend alors on regarde les messages système
-        port->write(InstructionManuel->text().toLatin1());
-        TerminalUSBSerial->moveCursor(QTextCursor::End);
-        TerminalUSBSerial->insertPlainText(InstructionManuel->text().toLatin1());
-        TerminalUSBSerial->moveCursor(QTextCursor::End);
-        TerminalUSBSerial->insertPlainText("\n");
-        TerminalUSBSerial->moveCursor(QTextCursor::End);
-        TerminalUSBSerial->insertPlainText(WidgetEnvoisRecep->Interpretation(InstructionManuel->text()));
-        InstructionManuel->clear();
+    if (port->isOpen()){
+        if (commandeToSend == "")
+        {
+            //Si il n'y a pas d'instruction manuel et pas de commandeToSend alors on regarde les messages système
+            port->write(InstructionManuel->text().toLatin1());
+            TerminalUSBSerial->moveCursor(QTextCursor::End);
+            TerminalUSBSerial->insertPlainText(InstructionManuel->text().toLatin1());
+            TerminalUSBSerial->moveCursor(QTextCursor::End);
+            TerminalUSBSerial->insertPlainText("\n");
+            TerminalUSBSerial->moveCursor(QTextCursor::End);
+            TerminalUSBSerial->insertPlainText(WidgetEnvoisRecep->Interpretation(InstructionManuel->text()));
+            InstructionManuel->clear();
 
-    }
-    //2ieme cas on envois une commande venant d'une autre fonction
-    else {
-        port->write(commandeToSend.data());
-        TerminalUSBSerial->moveCursor(QTextCursor::End);
-        TerminalUSBSerial->insertPlainText(commandeToSend);
-        TerminalUSBSerial->moveCursor(QTextCursor::End);
-        TerminalUSBSerial->insertPlainText("\n");
-        TerminalUSBSerial->moveCursor(QTextCursor::End);
-        TerminalUSBSerial->insertPlainText(WidgetEnvoisRecep->Interpretation(QString(commandeToSend)));
+        }
+        //2ieme cas on envois une commande venant d'une autre fonction
+        else {
+            port->write(commandeToSend.data());
+            TerminalUSBSerial->moveCursor(QTextCursor::End);
+            TerminalUSBSerial->insertPlainText(commandeToSend);
+            TerminalUSBSerial->moveCursor(QTextCursor::End);
+            TerminalUSBSerial->insertPlainText("\n");
+            TerminalUSBSerial->moveCursor(QTextCursor::End);
+            TerminalUSBSerial->insertPlainText(WidgetEnvoisRecep->Interpretation(QString(commandeToSend)));
+        }
     }
     port->flush();
     InstructionManuel->clear();

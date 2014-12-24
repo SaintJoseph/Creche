@@ -61,7 +61,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>
          </Commande>
          <Commande Nom:fr="Date et Heure" Nom:en="Date and Hour" Nom:nl="Datum en Uur" Cmd="D" Hexa="true" Format="AHHHH">
-            <Parametre Aide:fr="Day Mois Year Week Heure miNute Seconde, Adresse" Aide:nl="Dag Maand Year Week Hour miNuut Seconde, Adres" Aide:en="Day Month Year Week Hour miNute Second, Address" Hexa="true" Format="AHHHH"/>
+            <Parametre Aide:fr="Day Mois Year Week Heure miNute Seconde, Adresse, jour année(X), minutes journée(Z)" Aide:nl="Dag Maand Year Week Hour miNuut Seconde, Adres" Aide:en="Day Month Year Week Hour miNute Second, Address" Hexa="true" Format="AHHHH"/>
          </Commande>
          <Commande Nom:fr="Tension Batterie" Nom:en="Battery Voltage" Nom:nl="Batterij Spanning" Cmd="U" Hexa="true" Format="HHHH">
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>
@@ -76,30 +76,33 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom:fr="Exécutant actif" Nom:en="Active performer" Nom:nl="Actieve uitvoerder" Cmd="A" Hexa="true" Format="HHHH">
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>
          </Commande>
+         <Commande Nom:fr="Destinaire Radio" Nom:en="" Nom:nl="" Cmd="W" Hexa="true" Format="HHHH">
+            <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>
+         </Commande>
       </TypeCmd>
       <TypeCmd Nom:fr="Exécutable" Nom:en="Application" Nom:nl="Toepassing" Cmd="R">
-      <Commande Nom:fr="Actif" Nom:en="Active" Nom:nl="Actief" Cmd="A">
-         <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
-      </Commande>
-      <Commande Nom:fr="Validation" Nom:en="Validation" Nom:nl="Bevestiging" Cmd="V">
-         <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
-      </Commande>
-      <Commande Nom:fr="Synchronisation" Nom:en="Timing" Nom:nl="Synchronisatie" Cmd="S">
-         <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
-      </Commande>
-      <Commande Nom:fr="Délai" Nom:en="Delay" Nom:nl="Uitstel" Cmd="D">
-         <Parametre Aide:en="Delay in ms" Aide:nl="Uitstel in ms" Aide:fr="Délai en ms" Hexa="true" Format="HHHH"/>
-      </Commande>
-      <Commande Nom:fr="Condition ouverture fichier" Nom:en="Condition file opening" Nom:nl="Voorwaarde file opening" Cmd="F">
-         <Parametre Aide:en="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, File" Aide:nl="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, File" Aide:fr="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, File" Hexa="true" Format="HHHHAAHHHHFNN"/>
-      </Commande>
-      <Commande Nom:fr="Condition saut de ligne" Nom:en="Condition line skip" Nom:nl="Voorwaarde lijn sprong" Cmd="G">
-         <Parametre Aide:en="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, line num" Aide:nl="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, line num" Aide:fr="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, line num" Hexa="true" Format="HHHH"/>
-      </Commande>
-      <Commande Nom:fr="Opération sur variable" Nom:en="Operation on variable" Nom:nl="Werking op variabele" Cmd="O">
-         <Parametre Aide:en="Add 1st val, operation (P+ M- D/ X*), 2nd Add or Val" Aide:nl="Add 1st val, operation (P+ M- D/ X*), 2nd Add or Val" Aide:fr="Add 1st val, operation (P+ M- D/ X*), 2nd Add or Val" Hexa="true" Format="HHHHAAHHHH"/>
-      </Commande>
-   </TypeCmd>
+         <Commande Nom:fr="Actif" Nom:en="Active" Nom:nl="Actief" Cmd="A">
+            <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
+         </Commande>
+         <Commande Nom:fr="Validation" Nom:en="Validation" Nom:nl="Bevestiging" Cmd="V">
+            <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
+         </Commande>
+         <Commande Nom:fr="Synchronisation" Nom:en="Timing" Nom:nl="Synchronisatie" Cmd="S">
+            <Parametre Aide:en="1=>On 0=>Off" Aide:nl="1=>On 0=>Off" Aide:fr="1=>On 0=>Off" Hexa="false" Format="B"/>
+         </Commande>
+         <Commande Nom:fr="Délai" Nom:en="Delay" Nom:nl="Uitstel" Cmd="D">
+            <Parametre Aide:en="Delay in ms" Aide:nl="Uitstel in ms" Aide:fr="Délai en ms" Hexa="true" Format="HHHH"/>
+         </Commande>
+         <Commande Nom:fr="Condition ouverture fichier" Nom:en="Condition file opening" Nom:nl="Voorwaarde file opening" Cmd="F">
+            <Parametre Aide:en="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, File" Aide:nl="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, File" Aide:fr="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, File" Hexa="true" Format="HHHHAAHHHHFNN"/>
+         </Commande>
+         <Commande Nom:fr="Condition saut de ligne" Nom:en="Condition line skip" Nom:nl="Voorwaarde lijn sprong" Cmd="G">
+            <Parametre Aide:en="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, line num" Aide:nl="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, line num" Aide:fr="Add 1st val, type cond (=E >S &#60;I !D M T C), 2nd Add or Val, line num" Hexa="true" Format="HHHH"/>
+         </Commande>
+         <Commande Nom:fr="Opération sur variable" Nom:en="Operation on variable" Nom:nl="Werking op variabele" Cmd="O">
+            <Parametre Aide:en="Add 1st val, operation (P+ M- D/ X*), 2nd Add or Val" Aide:nl="Add 1st val, operation (P+ M- D/ X*), 2nd Add or Val" Aide:fr="Add 1st val, operation (P+ M- D/ X*), 2nd Add or Val" Hexa="true" Format="HHHHAAHHHH"/>
+         </Commande>
+      </TypeCmd>
       <TypeCmd Nom:fr="Ecriture donnée" Nom:en="Data writing" Nom:nl="Data schrijven" Cmd="E">
       <Commande Nom:fr="Date et Heure" Nom:en="Date and Hour" Nom:nl="Datum en Uur" Cmd="D" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH">
          <Parametre Aide:en="dd/mm/yyRddHhh:mm:ss" Aide:nl="dd/mm/jjRddHuu:mm:ss" Aide:fr="jj/mm/aaRjjHhh:mm:ss" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH"/>
@@ -322,6 +325,9 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom:fr="Température" Nom:en="Temperature" Nom:nl="Temperatuur" Cmd="T" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="°C" Aide:nl="°C" Aide:fr="°C"/>
          </Commande>
+         <Commande Nom:fr="Destinataire Radio" Nom:en="" Nom:nl="" Cmd="W" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="Adresse nrf.." Aide:nl="" Aide:fr=""/>
+         </Commande>
          <Commande Nom:fr="Propriétés carte SD" Nom:en="Property SD card" Nom:nl="Eigenschap SD kaart" Cmd="S" Hexa="true" Format="NNNNVHHHH" Prov="M01">
             <Parametre Aide:en="Mb" Aide:nl="Mb" Aide:fr="Mb"/>Valeur en Hexa
          </Commande>
@@ -357,7 +363,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom:fr="Année" Nom:en="" Nom:nl="" Cmd="Y" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Année"/>
          </Commande>
-         <Commande Nom:fr="Jour de le semaine" Nom:en="" Nom:nl="" Cmd="W" Hexa="true"  Format="HHHH">
+         <Commande Nom:fr="Jour" Nom:en="" Nom:nl="" Cmd="W" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Jour de le semaine"/>
          </Commande>
          <Commande Nom:fr="Heure" Nom:en="" Nom:nl="" Cmd="H" Hexa="true"  Format="HHHH">
@@ -365,6 +371,12 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          </Commande>
          <Commande Nom:fr="Minute" Nom:en="" Nom:nl="" Cmd="N" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Minute,"/>
+         </Commande>
+         <Commande Nom:fr="Jour" Nom:en="" Nom:nl="" Cmd="X" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Jour de l'année,"/>
+         </Commande>
+         <Commande Nom:fr="Minute" Nom:en="" Nom:nl="" Cmd="Z" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Minute dans la journée"/>
          </Commande>
          <Commande Nom:fr="Seconde" Nom:en="" Nom:nl="" Cmd="S" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Seconde,"/>

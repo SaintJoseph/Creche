@@ -15,6 +15,8 @@
 #include <QPainter>
 #include <QPlainTextEdit>
 #include <QTextStream>
+#include <QHash>
+#include <QHashIterator>
 #include "func_name.h"
 
 #define TAG_MODE "Mode"
@@ -42,14 +44,34 @@
 #define ATTRIBUT_TYPE "Type"
 
 //Enumeration pour le type de condition horaire souhaitée
-enum TypeCondHoraire {Periode = 0, Journalier, Hebdomadaire, Vide, View};
+typedef enum TypeCondHoraire{Periode = 0, Journalier, Hebdomadaire, Vide, View} TypeCondHoraire;
 
 //Structure pour facilité l'échange des données condition Horaire
-struct CondHoraire{
+typedef struct CondHoraire{
     int DMois, DJour, DJourSem, DHeure, DMinute,
         EMois, EJour, EJourSem, EHeure, EMinute;
     TypeCondHoraire Type;
-};
+} CondHoraire;
+
+//Structure avec les infos pour 1 fichier compilé
+typedef struct DonneFichier{
+    //Liste des instructions à la suite dans le fichier, pas de numéro de ligne, pas de commentaire
+    QStringList ListeIstruction;
+    //Instruction avec un commentaire associé, a insérer dans le fichier compilé
+    QHash<QString, QString> Commentaire;
+    //Description fichier, nom complet du mode
+    QString ModeNom;
+} DonneFichier;
+
+//Structure avec toutes les donnée pour finaliser une compilation
+typedef struct CompilationPreAssemblage{
+    //Table Hash avec les noms de fichiers associé aux données de fichier compilés
+    QHash <QString, DonneFichier*> DonneDesFichiers;
+    //Index des adresses mémoire utilsé pour éviter la sur-écriture et éventuellement les doublons ("0001", "M02TL") => adresse 1, température alu, module 2
+    QHash<QString, QString> TableUsedRAM;
+    //Liste des modules utilisé
+    QStringList ListeModules;
+} CompilationPreAssemblage;
 
 //Class personnalisée pour le traitement des fichier Xml généré, lu et enregistré
 /*Chaque instance est prévue pour contenir les données d'un mode "Effet lumineux" entier.
@@ -95,6 +117,8 @@ public:
     void SupprimeCondHoraire(int ValeurID);
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
     void retranslate(QString lang);
+    //Fonction qui compile les conditions horaires
+    bool CompilationCH(DonneFichier *DataToFill);
 
 signals:
     void IDproposer(int);

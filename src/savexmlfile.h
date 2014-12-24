@@ -27,7 +27,7 @@ public:
     //Renvois le mode actif
     char ActiveMode();
     //Fonction qui ajoute un Key pour une led donnée dans l'arbre des états
-    bool addKey(int id, int led, QString Module, int pause, Compilation::LedType Type, QString parametre = "");
+    bool addKey(int led, QString Module, int pause, Compilation::LedType Type, QString parametre = "");
     //Fonction qui ajoute une led dans l'arbre des états
     bool addLed(int id, QString Module, const QString &Description = QString::null);
     //Fonction qui li et compile les donnes d'eclairage

@@ -30,7 +30,7 @@ public:
     explicit Horodateur(const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0);
     ~Horodateur();
     //Fonction pour remettre a zero les conditions horaires
-    void ResetAffichage();
+    void AffichageOnChangeMode();
     //Fonction pour appliquer et réappliquer les labels suite a une demande de traduction
     void retranslate();
     //Enum pour la navigation

@@ -34,12 +34,17 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     ButtonNewMode = new QPushButton(tr("New Mode"));
     ButtonNewMode->setFont(font);
     ButtonNewMode->setStyleSheet("QPushButton { width: 45px}");
-    ButtonNewMode->setFixedHeight(18);
+    ButtonNewMode->setFixedHeight(20);
     //Bouton supression d'un mode
     ButtonDelete = new QPushButton(tr("Enreg. et Fermer", "Espace limité pour écrire \"Enregistrer et Fermer\" en entier."));
     ButtonDelete->setFont(font);
     ButtonDelete->setStyleSheet("QPushButton { width: 45px}");
-    ButtonDelete->setFixedHeight(18);
+    ButtonDelete->setFixedHeight(20);
+    //Bouton pour lancer la compilation
+    ButtonCompiler = new QPushButton(tr("Compiler..."));
+    ButtonCompiler->setFont(font);
+    ButtonCompiler->setFixedHeight(20);
+    ButtonCompiler->setStyleSheet("QPushButton { width: 45px}");
     //Label pour la liste des instance de compilation
     LabelListeMode = new QLabel(tr("Liste Modes (max 5)", "Espace limiter pour faire une phrase entière."));
     LabelListeMode->setFont(font);
@@ -57,6 +62,7 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     LayoutBase->addWidget(LabelListeMode);
     //Application du main layout sur le widget main
     LayoutBase->addWidget(ScrollArea);
+    LayoutBase->addWidget(ButtonCompiler);
     //Application du layout au widget
     Base->setLayout(LayoutBase);
     //Application du layout main au Widget scrollArea
@@ -92,6 +98,20 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
         connect(ListeModeOuvertPoint[0], SIGNAL(MouseClickEvent(int)), SLOT(ChangeModeActif(int)));
         connect(ListeModeOuvertPoint[0], SIGNAL(DeleteMe(Compilation*)), SLOT(SupprimerUneInstance(Compilation*)));
     }
+
+    /*********************************************************************
+     * Essais pour le compilateur
+     * ******************************************************************
+    CompilationPreAssemblage test;
+    DonneFichier *donnee = new DonneFichier;
+    test.DonneDesFichiers.insert("00", donnee);
+    Compilation *test2 = new Compilation;
+    test2->CompilationCH(donnee, &test.Table);
+    delete donnee;
+    delete test2;
+    /*********************************************************************
+     * Essais pour le compilateur
+     * ******************************************************************/
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
     affichageqDebug("Fin constructeur");
@@ -159,7 +179,7 @@ void SaveXmlFile::NewMode()
             //On connect les signaux avec l'instance
             connect(LeNouveauMode, SIGNAL(MouseClickEvent(int)), SLOT(ChangeModeActif(int)));
             connect(LeNouveauMode, SIGNAL(DeleteMe(Compilation*)), SLOT(SupprimerUneInstance(Compilation*)));
-            connect(LeNouveauMode, SIGNAL(CompilationUpdated()), SLOT(onCompilationUpdated()));
+            connect(LeNouveauMode, SIGNAL(CompilationUpdated(bool)), SLOT(onCompilationUpdated(bool)));
             //Signal au mains que l'utilisateur à créé une instance X
             emit NouveauModeCreer();
 #ifdef DEBUG_COMANDSAVE
@@ -377,7 +397,9 @@ void SaveXmlFile::onDemandeCHToPlainText(QPlainTextEdit *ZoneDeTexte)
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    InstanceActive()->DemndeLectureCH(ZoneDeTexte);
+    Compilation *CActive = InstanceActive();
+    if (CActive != NULL)
+        CActive->DemndeLectureCH(ZoneDeTexte);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -389,14 +411,46 @@ void SaveXmlFile::onDemandeCHToPlainText(CondHoraire *CondH, int indice)
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    InstanceActive()->DemndeLectureCH(CondH, indice);
+    Compilation *CActive = InstanceActive();
+    if (CActive != NULL)
+        CActive->DemndeLectureCH(CondH, indice);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
 }
 
 //Le mode actif envois un signal de mise a jour
-void SaveXmlFile::onCompilationUpdated()
+void SaveXmlFile::onCompilationUpdated(bool Complet)
 {
     emit CompilationUpdated();
+    //Le boutton de compilation apparait uniquement si le mode est complet
+    ButtonCompiler->setVisible(Complet);
+}
+
+//Lancement de la compilation, fonction qui ordonne les opérations de compilation
+void SaveXmlFile::onCompilationAsked()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //Création de la structure qui va accuillir les données compilées
+    CompilationPreAssemblage *CompilationAssemblage = new CompilationPreAssemblage;
+    //On récupère les modules utilisés par chaque mode, sous la forme de QstringList
+    for (int i = 0; i < 5; i++){
+        Compilation *Instance = ListeModeOuvertPoint[i];
+        if (Instance) {
+            CompilationAssemblage->ListeModules.append(Instance->ListeDesModules());
+        }
+    }
+    //La liste est triée et on enlève les doublons
+    CompilationAssemblage->ListeModules.removeDuplicates();
+    CompilationAssemblage->ListeModules.sort();
+    //Création du fichier 00 et des fichiers de test principaux
+    //Appel des fonction de compilation de chaque mode,
+
+    //Lorsque la compilation pré Assemblage est terminée, on affiche les fichiers qui vont être créé
+    //Puis à la validation des ces fichiers, il s sont enregistrer sur la carte micro SD(ou ailleur)
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
 }

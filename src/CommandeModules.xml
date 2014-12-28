@@ -387,6 +387,9 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom:fr="Présence" Nom:en="" Nom:nl="" Cmd="P" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
          </Commande>
+         <Commande Nom:fr="Résutat complet d'un test" Nom:en="" Nom:nl="" Cmd="A" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
+         </Commande>
       </TypeCmd>
       <TypeCmd Nom:fr="Opérations spéciales" Nom:en="Special operations" Nom:nl="Bijzondere werkingen" Cmd="X">
          <Commande Nom:fr="Variable Présence" Nom:en="" Nom:nl="" Cmd="P" Hexa="true"  Format="HHHH">

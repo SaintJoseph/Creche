@@ -303,6 +303,7 @@ void TreatCommand(String cmd) {
 //Fonction qui permet l'ecriture de certaine variable
 void EcritureVariable () {
   Date date;
+  uint8_t *adresse;
   switch (rxCmd[1])
   {
     case 'D' : case 'd' : //Mise a jour de l'heure système
@@ -325,7 +326,14 @@ void EcritureVariable () {
        break;
     case 'W' : case 'w' :
        //Message reçu: <(Ecriture)(Adresse radio)(Temporaire/Permanent)(Adresse)>
-       //Format "A99"
+       //Format "AHH"
+       StringToByte(adresse, rxCmd, 3);
+       adresse[3] = adresse[0];
+       adresse[4] = adresse[1];
+       adresse[0] = 'n';
+       adresse[1] = 'r';
+       adresse[2] = 'f';
+       Mirf.setTADDR(adresse);
        break;
     default:
       CmdError("E Type d'ecriture (D.R.W)");

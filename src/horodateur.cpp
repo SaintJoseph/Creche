@@ -209,7 +209,7 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     setWidget(Base);
 
     //On met à zero les conditions horaires
-    ResetAffichage();
+    AffichageOnChangeMode();
     //On place tous les labels
     retranslate();
     //Initialise la navigation
@@ -423,15 +423,14 @@ void Horodateur::BouttonDeleteClick()
 #endif /* DEBUG_COMANDSAVE */
 }
 
-//Fonction pour remettre a zero les conditions horaires
-void Horodateur::ResetAffichage()
+//Fonction pour lorsque l'affichage doit changer, pour autre chose qu la nav.
+void Horodateur::AffichageOnChangeMode()
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    //Le reset revient a changer de type et mettre un type "Faire sélection"
-    ChangeType(0);
-    ComboBoxSelect->setCurrentIndex(0);
+    //on utilise la fonction de navigation avec le param de début
+    onNavigClick(First);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

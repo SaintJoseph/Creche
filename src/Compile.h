@@ -63,12 +63,15 @@ typedef struct DonneFichier{
     QString ModeNom;
 } DonneFichier;
 
+//Index des adresses mémoire utilsé pour éviter la sur-écriture et éventuellement les doublons ("0001", "M02TL") => adresse 1, température alu, module 2
+typedef QHash<QString, QString> TableUsedRAM;
+
 //Structure avec toutes les donnée pour finaliser une compilation
 typedef struct CompilationPreAssemblage{
     //Table Hash avec les noms de fichiers associé aux données de fichier compilés
     QHash <QString, DonneFichier*> DonneDesFichiers;
     //Index des adresses mémoire utilsé pour éviter la sur-écriture et éventuellement les doublons ("0001", "M02TL") => adresse 1, température alu, module 2
-    QHash<QString, QString> TableUsedRAM;
+    TableUsedRAM Table;
     //Liste des modules utilisé
     QStringList ListeModules;
 } CompilationPreAssemblage;
@@ -118,7 +121,11 @@ public:
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
     void retranslate(QString lang);
     //Fonction qui compile les conditions horaires
-    bool CompilationCH(DonneFichier *DataToFill);
+    bool CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM);
+    //Fonction pour ajouter l'utilisation d'une adresse RAM
+    QString AddToRamTable(TableUsedRAM *TableRAM, QString Data);
+    //Fonction qui renvois la liste des modules qu'elle utilise
+    QStringList ListeDesModules();
 
 signals:
     void IDproposer(int);
@@ -127,7 +134,7 @@ signals:
     //Signal pour une instance qui demande a être supprimée
     void DeleteMe(Compilation *);
     //Mise a jour du mode
-    void CompilationUpdated();
+    void CompilationUpdated(bool);
 
 public slots:
     void initialisationNouveauDom(QString Nom, QString Description, QString FichierNom, int idMode, int priorite);
@@ -162,7 +169,7 @@ private:
     //Traitement des chaines de carractère
     QString Const_QString(int type);
     //Controle de l'état de montage d'un mode (l'état est enregistrer avec la couleur des LED)
-    void ControleCompilation();
+    bool ControleCompilation();
     //Fonction pour ajouter un élément xml
     QDomElement addElement( QDomDocument *doc, QDomNode *node, const QString &tag, const QString &value);
     QDomElement addElement( QDomDocument *doc, QDomNode node, const QString &tag, const QString &value);

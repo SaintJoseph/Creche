@@ -629,11 +629,14 @@ void Compilation::paintEvent(QPaintEvent * /*event*/)
 #endif /* DEBUG_COMANDSAVE */
 }
 
-void Compilation::ControleCompilation()
+//Fonction de controle, returne true, ssi toutes les test sont positif
+//A COMPLETER
+bool Compilation::ControleCompilation()
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+    bool test = false;
     QDomElement element = doc->documentElement();
     int cond = 0;
     for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
@@ -651,14 +654,21 @@ void Compilation::ControleCompilation()
     }
     if (cond > 0)
     {
-        if (cond % 2 == 0)
+        if (cond % 2 == 0) {
+            //Il y a au moin une condition valable
             LedCond->setColor(QColor(0,231,41));
-        else
+            test = true;
+        }
+        else {
             LedCond->setColor(QColor(255,109,0));
+            test = false;
+        }
     }
-    else
+    else {
         LedCond->setColor(QColor(180,0,0));
-    emit CompilationUpdated();
+        test = false;
+    }
+    emit CompilationUpdated(test);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -857,11 +867,20 @@ void Compilation::retranslate(QString lang)
 }
 
 //Fonction pour la compilation des conditions Horaire
-bool Compilation::CompilationCH(DonneFichier *DataToFill)
+bool Compilation::CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+    //définition du nom du fichier
+    DataToFill->ModeNom = "C";
+    DataToFill->ModeNom.append(QString::number(Instance));
+    //Création d'une variable test de condition
+    DataToFill->ListeIstruction.append("<M01M01ERM01VAA" + AddToRamTable(TableRAM, QString("M01VA")) + "V0000>");
+    //Récupération de la date et l'heure courante ainsi que du jour courant
+    DataToFill->ListeIstruction.append("<M01M01LDX" + AddToRamTable(TableRAM, QString("M01DX")) + ">");
+    DataToFill->ListeIstruction.append("<M01M01LDZ" + AddToRamTable(TableRAM, QString("M01DZ")) + ">");
+    DataToFill->ListeIstruction.append("<M01M01LDW" + AddToRamTable(TableRAM, QString("M01DW")) + ">");
 /*
 <Condition id="0" Type="0 Periode">
 <StartTime>
@@ -878,35 +897,56 @@ bool Compilation::CompilationCH(DonneFichier *DataToFill)
 </EndTime>
 </Condition>
 
-DEVIENT :
-
-variable de testAttribute mis a zero
-variable 1er jour (sur 1 an)
-enregistre le mois courant
-si mois 1 < mois courant -> saut fin des mois
-opération 1er jour + 31
-si mois 2 < mois courant -> saut fin des mois
-opération 1er jour + 28
-...
-...
-enregistre le jour courant
-opération jour courant sur 1er Jour
-(recommence pour le jour fin idem)
-...
-...
-comparaison entre jour début et jour fin (base 365)
-Valider la conditions
-
-(recommencer la même logique entre les heures et les minutes)
-...
-...
-Valider la condition
-
-test sur le jour -> saut condition suivante
-
-
 */
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+}
+
+//Fonction pour ajouter ou retourner une adresse RAM
+QString Compilation::AddToRamTable(TableUsedRAM *TableRAM, QString Data)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    if (Data.length() != 5)
+        return QString("EEEE");
+    QString RamAdresse = TableRAM->value(Data);
+    if (RamAdresse.isEmpty()) {
+        RamAdresse = QString::number(TableRAM->count() + 1,16);
+    if (RamAdresse.length() == 1)
+        RamAdresse.prepend("000");
+    else if (RamAdresse.length() == 2)
+        RamAdresse.prepend("00");
+    else if (RamAdresse.length() == 3)
+        RamAdresse.prepend("0");
+    TableRAM->insert(Data, RamAdresse);
+    }
+    return RamAdresse;
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Fonction pour ajouter ou retourner une adresse RAM
+QStringList Compilation::ListeDesModules()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    QStringList liste;
+    QDomElement element = doc->documentElement();
+    //Controle du module référencé
+    for(QDomElement qqde = element.firstChildElement(); !qqde.isNull(); qqde = qqde.nextSiblingElement())
+    {
+        if (qqde.tagName() == TAG_MODULE)
+        {
+            //Ajout de la led indiquée
+            liste.append(qqde.text());
+        }
+    }
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    return liste;
 }

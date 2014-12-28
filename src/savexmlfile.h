@@ -64,11 +64,13 @@ private slots:
     //Changement de mode actif
     void ChangeModeActif(int Instance);
     //Le mode actif envois un signal de mise a jour
-    void onCompilationUpdated();
+    void onCompilationUpdated(bool Complet);
+    //Lancement de la compilation
+    void onCompilationAsked();
 
 private:
     QVBoxLayout *MainLayout, *LayoutBase;
-    QPushButton *ButtonNewMode, *ButtonDelete;
+    QPushButton *ButtonNewMode, *ButtonDelete, *ButtonCompiler;
     QLabel *LabelListeMode;
     QWidget *Base, *WidgetScrollArea;
     QScrollArea *ScrollArea;

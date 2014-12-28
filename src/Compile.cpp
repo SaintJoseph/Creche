@@ -668,7 +668,8 @@ bool Compilation::ControleCompilation()
         LedCond->setColor(QColor(180,0,0));
         test = false;
     }
-    emit CompilationUpdated(test);
+    ControleInstance = test;
+    emit CompilationUpdated();
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -949,4 +950,10 @@ QStringList Compilation::ListeDesModules()
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     return liste;
+}
+
+//Fonction qui retourne l'état actuel du controle de compilation
+bool Compilation::onControleCompilation()
+{
+    return ControleInstance;
 }

@@ -134,7 +134,7 @@ signals:
     //Signal pour une instance qui demande a être supprimée
     void DeleteMe(Compilation *);
     //Mise a jour du mode
-    void CompilationUpdated(bool);
+    void CompilationUpdated();
 
 public slots:
     void initialisationNouveauDom(QString Nom, QString Description, QString FichierNom, int idMode, int priorite);
@@ -144,6 +144,7 @@ public slots:
     //Retourne les condition Horaire sous forme de structure ou de texte
     void DemndeLectureCH(CondHoraire *CondH, int indice);
     void DemndeLectureCH(QPlainTextEdit *CondH);
+    bool onControleCompilation();
 
 protected:
     //re-implement processing of moue events
@@ -170,6 +171,7 @@ private:
     QString Const_QString(int type);
     //Controle de l'état de montage d'un mode (l'état est enregistrer avec la couleur des LED)
     bool ControleCompilation();
+    bool ControleInstance;
     //Fonction pour ajouter un élément xml
     QDomElement addElement( QDomDocument *doc, QDomNode *node, const QString &tag, const QString &value);
     QDomElement addElement( QDomDocument *doc, QDomNode node, const QString &tag, const QString &value);

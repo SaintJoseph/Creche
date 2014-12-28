@@ -34,6 +34,8 @@ public:
     bool addValidation(int idState, bool Validation, bool Synchronisation);
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
     void retranslate(QString lang);
+    //Fonction pour ajouter ou retourner une adresse RAM
+    QString AddToRamTable(TableUsedRAM *TableRAM, QString Data);
 
 signals:
     //Signal Pour la création d'un nouveau mode
@@ -64,7 +66,7 @@ private slots:
     //Changement de mode actif
     void ChangeModeActif(int Instance);
     //Le mode actif envois un signal de mise a jour
-    void onCompilationUpdated(bool Complet);
+    void onCompilationUpdated();
     //Lancement de la compilation
     void onCompilationAsked();
 

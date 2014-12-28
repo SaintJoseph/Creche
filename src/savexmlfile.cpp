@@ -81,6 +81,8 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     connect(ButtonNewMode, SIGNAL(clicked()), SLOT(NewMode()));
     //connect temporaire pour test
     connect(ButtonDelete, SIGNAL(clicked()), SLOT(DeleteMode()));
+    //Bouton pour lancer la compilation
+    connect(ButtonCompiler, SIGNAL(clicked()), SLOT(onCompilationAsked()));
 
     //Si une instance Compilation existe déjà on la récupère
     Flag1erInstanceNotInitialised = false;
@@ -420,11 +422,27 @@ void SaveXmlFile::onDemandeCHToPlainText(CondHoraire *CondH, int indice)
 }
 
 //Le mode actif envois un signal de mise a jour
-void SaveXmlFile::onCompilationUpdated(bool Complet)
+void SaveXmlFile::onCompilationUpdated()
 {
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
     emit CompilationUpdated();
-    //Le boutton de compilation apparait uniquement si le mode est complet
-    ButtonCompiler->setVisible(Complet);
+    //Le boutton de compilation apparait uniquement si tous les modes ouverts sont complet
+    bool test = true;
+    for (int i = 0; i < 5; i++) {
+        Compilation *Instance = ListeModeOuvertPoint[i];
+        if (Instance) {
+            if (!Instance->onControleCompilation()) {
+                test = false;
+                break;
+            }
+        }
+    }
+    ButtonCompiler->setVisible(test);
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
 }
 
 //Lancement de la compilation, fonction qui ordonne les opérations de compilation
@@ -446,10 +464,36 @@ void SaveXmlFile::onCompilationAsked()
     CompilationAssemblage->ListeModules.removeDuplicates();
     CompilationAssemblage->ListeModules.sort();
     //Création du fichier 00 et des fichiers de test principaux
-    //Appel des fonction de compilation de chaque mode,
+    //Appel des fonctions de compilation de chaque mode,
 
     //Lorsque la compilation pré Assemblage est terminée, on affiche les fichiers qui vont être créé
     //Puis à la validation des ces fichiers, il s sont enregistrer sur la carte micro SD(ou ailleur)
+    delete CompilationAssemblage;
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Fonction pour ajouter ou retourner une adresse RAM
+QString SaveXmlFile::AddToRamTable(TableUsedRAM *TableRAM, QString Data)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    if (Data.length() != 5)
+        return QString("EEEE");
+    QString RamAdresse = TableRAM->value(Data);
+    if (RamAdresse.isEmpty()) {
+        RamAdresse = QString::number(TableRAM->count() + 1,16);
+    if (RamAdresse.length() == 1)
+        RamAdresse.prepend("000");
+    else if (RamAdresse.length() == 2)
+        RamAdresse.prepend("00");
+    else if (RamAdresse.length() == 3)
+        RamAdresse.prepend("0");
+    TableRAM->insert(Data, RamAdresse);
+    }
+    return RamAdresse;
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

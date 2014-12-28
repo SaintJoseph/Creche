@@ -212,8 +212,6 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     AffichageOnChangeMode();
     //On place tous les labels
     retranslate();
-    //Initialise la navigation
-    onNavigClick(First);
 
     connect(ComboBoxSelect, SIGNAL(currentIndexChanged(int)), SLOT(ChangeType(int)));
     connect(ButtonValider, SIGNAL(clicked()), SLOT(PrepareToSend()));
@@ -485,6 +483,7 @@ void Horodateur::onNavigClick(Navigation Side)
         LabelIndex->setText(QString::number(LabelIndex->text().toInt() + 1));
     }
     //On fait une requete pour connaitre le type et les valeurs de condition horaire pour l'index
+    ComboBoxSelect->setCurrentIndex(4);
     emit DemandeCHstring(CondH, LabelIndex->text().toInt());
     //On adapte l'affichage
     switch(CondH->Type)
@@ -502,7 +501,9 @@ void Horodateur::onNavigClick(Navigation Side)
         ComboBoxSelect->setCurrentIndex(2);
         break;
     case View:
-        ComboBoxSelect->setCurrentIndex(4);
+        //On ne met pas le mode View, mais le mode Vide, entre autre pour l'allumage
+        //Le mode view est la uniquement pour le débugage
+        ComboBoxSelect->setCurrentIndex(0);
     }
     JourSelect->setCurrentIndex(JourSelect->findData(CondH->DJourSem));
     QDate DateStart, DateEnd;

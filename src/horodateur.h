@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QPlainTextEdit>
+#include <QCalendarWidget>
 #include "func_name.h"
 
 class Horodateur : public QDockWidget
@@ -34,7 +35,7 @@ public:
     //Fonction pour appliquer et réappliquer les labels suite a une demande de traduction
     void retranslate();
     //Enum pour la navigation
-    enum Navigation {Right, Left, First, NewOne};
+    enum Navigation {Right, Left, First, NewOne, NStartDate, NEndDate};
 
 signals:
     //Envois des conditions horaires
@@ -61,6 +62,13 @@ private slots:
     void onNavigClick(Navigation Side);
     void onNavigClickRG();
     void onNavigClickLF();
+    //Demande d'afficher le calendrier
+    void onCalendarStartAsked();
+    //Demande d'afficher le calendrier
+    void onCalendarEndtAsked();
+    //Le calendrier renvois une date
+    void onCalendarReturn();
+
 
 protected:
 
@@ -72,9 +80,10 @@ private:
     QScrollArea *ScrollArea;
     QWidget *Base, *DateEdite, *SelectJour, *TimeEdit, *WidgetScrollArea;
     QComboBox *ComboBoxSelect, *JourSelect;
-    QDateEdit *DateEditeStart, *DateEditeEnd;
+    QDateEdit *DateEditeStart, *DateEditeEnd, *DateRecup;
     QTimeEdit *TimeEditStart, *TimeEditEnd;
     QPlainTextEdit *TextView;
+    QCalendarWidget *CalendrierActif;
 
 };
 

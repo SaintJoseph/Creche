@@ -139,10 +139,12 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     DateEditeStart = new QDateEdit;
     DateEditeStart->setFont(font);
     DateEditeStart->setFixedHeight(20);
+    DateEditeStart->setDate(QDate::currentDate());
     //Date edit pour la date de fin
     DateEditeEnd = new QDateEdit;
     DateEditeEnd->setFont(font);
     DateEditeEnd->setFixedHeight(20);
+    DateEditeEnd->setDate(QDate::currentDate());
     //Scroll area pour acuellir les layouts avec les champs de travail
     ScrollArea = new QScrollArea;
     ScrollArea->setContentsMargins(0,0,0,0);
@@ -162,6 +164,11 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     TextView = new QPlainTextEdit;
     TextView->setReadOnly(true);
     TextView->setFont(font);
+    //Création du calendrier, il reste cependant caché à l'utilisateur
+    CalendrierActif = new QCalendarWidget;
+    CalendrierActif->setVisible(false);
+    CalendrierActif->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
+    CalendrierActif->setHorizontalHeaderFormat(QCalendarWidget::NoHorizontalHeader);
 
     //Parti navigation entre les condition horaires
     LayoutNavig->addWidget(ButtonNavigLf);
@@ -176,6 +183,7 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     LayoutDateEdite->addLayout(LayoutStartDate);
     LayoutDateEdite->addWidget(LabelEndDate);
     LayoutDateEdite->addLayout(LayoutEndDate);
+    LayoutDateEdite->addWidget(CalendrierActif);
     DateEdite->setLayout(LayoutDateEdite);
     DateEdite->setVisible(false);
     //Ajout de widget pour l'ensemble jour
@@ -207,6 +215,7 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     //Application au dock
     Base->setLayout(LayoutBase);
     setWidget(Base);
+    setMinimumWidth(110);
 
     //On met à zero les conditions horaires
     AffichageOnChangeMode();
@@ -218,6 +227,8 @@ Horodateur::Horodateur(const QString & title, QWidget *parent , Qt::WindowFlags 
     connect(ButtonDelete, SIGNAL(clicked()), SLOT(BouttonDeleteClick()));
     connect(ButtonNavigLf, SIGNAL(clicked()), SLOT(onNavigClickLF()));
     connect(ButtonNavigRg, SIGNAL(clicked()), SLOT(onNavigClickRG()));
+    connect(ButtonStartDate, SIGNAL(clicked()), SLOT(onCalendarStartAsked()));
+    connect(ButtonEndDate, SIGNAL(clicked()), SLOT(onCalendarEndtAsked()));
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -561,4 +572,75 @@ void Horodateur::onNavigClickRG()
 //Mise a jour de l'affichage pour un nouveau mode
 void Horodateur::onModeUpdate() {
     onNavigClick(First);
+}
+
+//Création d'une fenetre de calendrier
+void Horodateur::onCalendarStartAsked()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //On initialise le pointeur vers le bon editeur de date
+    DateRecup = DateEditeStart;
+    CalendrierActif->setSelectedDate(DateRecup->date());
+    connect(CalendrierActif, SIGNAL(selectionChanged()), SLOT(onCalendarReturn()));
+    LabelStartDate->setVisible(false);
+    LabelEndDate->setVisible(false);
+    DateEditeStart->setVisible(false);
+    DateEditeEnd->setVisible(false);
+    ButtonStartDate->setVisible(false);
+    ButtonEndDate->setVisible(false);
+    CalendrierActif->setVisible(true);
+    WidgetScrollArea->setFixedHeight(250);
+    setMinimumWidth(420);
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Création d'une fenetre de calendrier
+void Horodateur::onCalendarEndtAsked()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //On initialise le pointeur vers le bon editeur de date
+    DateRecup = DateEditeEnd;
+    CalendrierActif->setSelectedDate(DateRecup->date());
+    connect(CalendrierActif, SIGNAL(selectionChanged()), SLOT(onCalendarReturn()));
+    LabelStartDate->setVisible(false);
+    LabelEndDate->setVisible(false);
+    DateEditeStart->setVisible(false);
+    DateEditeEnd->setVisible(false);
+    ButtonStartDate->setVisible(false);
+    ButtonEndDate->setVisible(false);
+    CalendrierActif->setVisible(true);
+    WidgetScrollArea->setFixedHeight(250);
+    setMinimumWidth(420);
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Retour d'une date par le calendrier
+void Horodateur::onCalendarReturn()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //On applique la date renvoyé au widget correspondant
+    DateRecup->setDate(CalendrierActif->selectedDate());
+    disconnect(CalendrierActif);
+    LabelStartDate->setVisible(true);
+    LabelEndDate->setVisible(true);
+    DateEditeStart->setVisible(true);
+    DateEditeEnd->setVisible(true);
+    ButtonStartDate->setVisible(true);
+    ButtonEndDate->setVisible(true);
+    CalendrierActif->setVisible(false);
+    WidgetScrollArea->setFixedHeight(129);
+    setMinimumWidth(110);
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
 }

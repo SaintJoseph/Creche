@@ -262,8 +262,6 @@ void Compilation::initialisationNouveauDom(QString Nom, QString Description, QSt
     foreach (QString Module, ListeDesModules) {
         addElement(doc, &setmode, TAG_MODULE, Module);
     }
-    //Led Initialisation turne to green
-    LedIni->setColor(QColor(83,221,0));
     setToolTip(Description);
 
     //Controle et application des couleurs aux led en fonction
@@ -636,11 +634,18 @@ bool Compilation::ControleCompilation()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    bool test = false;
+    bool test;
+    ControleInstance = true;
     QDomElement element = doc->documentElement();
+    //Teste sur l'attribut priorité
+    if (!element.hasAttribute(ATTRIBUT_PRIORITY))
+        test = false;
+    if (ControleInstance)
+        ControleInstance = test;
     int cond = 0;
     for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
     {
+        //Controle sur les condition Horaire
         if (qde.tagName() == TAG_CONDITION && qde.hasAttribute(ATTRIBUT_TYPE))
         {
             for(QDomElement dataElement = qde.firstChildElement(); !dataElement.isNull(); dataElement = dataElement.nextSiblingElement())
@@ -652,6 +657,7 @@ bool Compilation::ControleCompilation()
             }
         }
     }
+    //Début du test des conditions horaire
     if (cond > 0)
     {
         if (cond % 2 == 0) {
@@ -668,7 +674,32 @@ bool Compilation::ControleCompilation()
         LedCond->setColor(QColor(180,0,0));
         test = false;
     }
-    ControleInstance = test;
+    //Fin du test condition horaire
+    if (ControleInstance)
+        ControleInstance = test;
+    //Controle sur les modules
+    test = true;
+    QStringList liste = ListeDesModules();
+    if (liste.contains("M01") && liste.contains("M04")) { //M01 et M04 sont indispensable au fonctionnement du système
+        //M02 et M03 doivent être présent en même temps ou tous les deux absent
+        if (liste.contains("M02")) {
+            if (!liste.contains("M03"))
+                test = false;
+        }
+        if (liste.contains("M03")) {
+            if (!liste.contains("M02"))
+                test = false;
+        }
+    }
+    else
+        test = false;
+    if (test) //Led Initialisation turne to green
+        LedIni->setColor(QColor(83,221,0));
+    else //Led turne to red
+        LedIni->setColor(QColor(255, 0, 0));
+    if (ControleInstance)
+        ControleInstance = test;
+    //Teste sur les leds...
     emit CompilationUpdated();
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;

@@ -14,17 +14,17 @@ TEMPLATE = app
 include(ComAndSavePart.pri)
 
 SOURCES += main.cpp\
-        amainwindow.cpp \
-    lightsdatabase.cpp \
-    keysdatabase.cpp \
-    qcolor_extension.cpp
+        IDE/amainwindow.cpp \
+        IDE/lightsdatabase.cpp \
+        IDE/keysdatabase.cpp \
+        IDE/qcolor_extension.cpp
 
-HEADERS  += amainwindow.h \
-    lightsdatabase.h \
-    keysdatabase.h \
-    settings.h \
-    qcolor_extension.h \
-    qlist_sort.h \
-    autilities.h
+HEADERS  += IDE/amainwindow.h \
+         IDE/lightsdatabase.h \
+         IDE/keysdatabase.h \
+         IDE/settings.h \
+         IDE/qcolor_extension.h \
+         IDE/qlist_sort.h \
+         IDE/autilities.h
 
-FORMS    += amainwindow.ui
+FORMS    += IDE/amainwindow.ui

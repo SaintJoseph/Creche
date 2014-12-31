@@ -253,8 +253,8 @@ void Compilation::initialisationNouveauDom(QString Nom, QString Description, QSt
     QDomComment comm = doc->createComment(tr("Fichier avec le détail des effets lumineux programmé pour la creche de l'Eglise Saint Joseph"));
     doc->appendChild(comm);
     QDomElement setmode = addElement(doc, doc, TAG_MODE , QString::null);
-    setmode.setAttribute(ATTRIBUT_ID, idMode);
-    setmode.setAttribute(ATTRIBUT_PRIORITY, priorite);
+    addElement(doc, &setmode, TAG_PRIORITY, QString::number(priorite));
+    addElement(doc, &setmode, TAG_ID, QString::number(idMode));
     addElement(doc, &setmode, TAG_NOM , Nom);
     addElement(doc, &setmode, TAG_DESCRIPTION , Description);
     addElement(doc, &setmode, TAG_DATA, QString::null);
@@ -303,17 +303,17 @@ void Compilation::initialisationFichierDom()
     file->close();
     delete file;
     //Attribution d'un nouvel id
-    doc->documentElement().setAttribute(ATTRIBUT_ID, NouvelId());
-    LabelId->setText(doc->documentElement().attribute(ATTRIBUT_ID));
+    delElement(doc, TAG_ID);
     //Extraction du nom du mode
     QDomElement element = doc->documentElement();
+    addElement(doc, element, TAG_ID, QString::number(NouvelId()));
+    LabelId->setText(doc->documentElement().attribute(ATTRIBUT_ID));
     for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
     {
         //Prend le nom et vérifie l'initialisation du mode
         if (qde.tagName() == TAG_NOM)
         {
             LabelNom->setText(qde.text());
-            LedIni->setColor(QColor(83,221,0));
         }
         //Extraction de la description
         {
@@ -637,12 +637,8 @@ bool Compilation::ControleCompilation()
     bool test;
     ControleInstance = true;
     QDomElement element = doc->documentElement();
-    //Teste sur l'attribut priorité
-    if (!element.hasAttribute(ATTRIBUT_PRIORITY))
-        test = false;
-    if (ControleInstance)
-        ControleInstance = test;
     int cond = 0;
+    bool prio = false, crtId = false;
     for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
     {
         //Controle sur les condition Horaire
@@ -655,6 +651,12 @@ bool Compilation::ControleCompilation()
                 if (dataElement.tagName() == TAG_ENDTIME)
                     cond++;
             }
+        }
+        if (qde.tagName() == TAG_PRIORITY){
+            prio = true;
+        }
+        if (qde.tagName() == TAG_ID){
+            crtId = true;
         }
     }
     //Début du test des conditions horaire
@@ -680,7 +682,8 @@ bool Compilation::ControleCompilation()
     //Controle sur les modules
     test = true;
     QStringList liste = ListeDesModules();
-    if (liste.contains("M01") && liste.contains("M04")) { //M01 et M04 sont indispensable au fonctionnement du système
+    //Teste les propriétés  priorité et Id
+    if (liste.contains("M01") && liste.contains("M04") && prio && crtId) { //M01 et M04 sont indispensable au fonctionnement du système
         //M02 et M03 doivent être présent en même temps ou tous les deux absent
         if (liste.contains("M02")) {
             if (!liste.contains("M03"))

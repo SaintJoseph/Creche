@@ -1,7 +1,7 @@
-#include "lightsdatabase.h"
+#include "IDE/lightsdatabase.h"
 
 #include <QColor>
-#include "settings.h"
+#include "IDE/settings.h"
 
 #include <cassert>
 #include <stdexcept>

@@ -20,8 +20,8 @@
 #include "func_name.h"
 
 #define TAG_MODE "Mode"
-#define ATTRIBUT_ID "id"
-#define ATTRIBUT_PRIORITY "Priorite"
+#define TAG_ID "id"
+#define TAG_PRIORITY "Priorite"
 #define TAG_DESCRIPTION "Description"
 #define TAG_CONDITION "Condition"
 #define TAG_SARTTIME "StartTime"
@@ -42,6 +42,7 @@
 #define ATTRIBUT_VALID "Validation"
 #define ATTRIBUT_MODULE "Module"
 #define ATTRIBUT_TYPE "Type"
+#define ATTRIBUT_ID "id"
 
 //Enumeration pour le type de condition horaire souhaitée
 typedef enum TypeCondHoraire{Periode = 0, Journalier, Hebdomadaire, Vide, View} TypeCondHoraire;

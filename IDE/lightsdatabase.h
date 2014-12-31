@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QHash>
-#include "qcolor_extension.h"
+#include "IDE/qcolor_extension.h"
 
 struct Light
 {

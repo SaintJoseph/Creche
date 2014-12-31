@@ -45,6 +45,7 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     ButtonCompiler->setFont(font);
     ButtonCompiler->setFixedHeight(20);
     ButtonCompiler->setStyleSheet("QPushButton { width: 45px}");
+    ButtonCompiler->setVisible(false);
     //Label pour la liste des instance de compilation
     LabelListeMode = new QLabel(tr("Liste Modes (max 5)", "Espace limiter pour faire une phrase entière."));
     LabelListeMode->setFont(font);
@@ -181,7 +182,7 @@ void SaveXmlFile::NewMode()
             //On connect les signaux avec l'instance
             connect(LeNouveauMode, SIGNAL(MouseClickEvent(int)), SLOT(ChangeModeActif(int)));
             connect(LeNouveauMode, SIGNAL(DeleteMe(Compilation*)), SLOT(SupprimerUneInstance(Compilation*)));
-            connect(LeNouveauMode, SIGNAL(CompilationUpdated(bool)), SLOT(onCompilationUpdated(bool)));
+            connect(LeNouveauMode, SIGNAL(CompilationUpdated()), SLOT(onCompilationUpdated()));
             //Signal au mains que l'utilisateur à créé une instance X
             emit NouveauModeCreer();
 #ifdef DEBUG_COMANDSAVE
@@ -429,17 +430,21 @@ void SaveXmlFile::onCompilationUpdated()
 #endif /* DEBUG_COMANDSAVE */
     emit CompilationUpdated();
     //Le boutton de compilation apparait uniquement si tous les modes ouverts sont complet
-    bool test = true;
+    bool test = true, mode = false;
     for (int i = 0; i < 5; i++) {
         Compilation *Instance = ListeModeOuvertPoint[i];
         if (Instance) {
+            mode = true;
             if (!Instance->onControleCompilation()) {
                 test = false;
                 break;
             }
         }
     }
-    ButtonCompiler->setVisible(test);
+    if (test && mode)
+        ButtonCompiler->setVisible(true);
+    else
+        ButtonCompiler->setVisible(false);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

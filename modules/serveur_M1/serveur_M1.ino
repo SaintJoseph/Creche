@@ -327,7 +327,7 @@ void EcritureVariable () {
     case 'W' : case 'w' :
        //Message reçu: <(Ecriture)(Adresse radio)(Temporaire/Permanent)(Adresse)>
        //Format "AHH"
-       if (rxCmd[2] == 'T') {
+       if (rxCmd[2] == 'T' || rxCmd[2] == 't') {
          adresse[3] = rxCmd[3];
          adresse[4] = rxCmd[4];
          adresse[0] = 'n';
@@ -335,7 +335,7 @@ void EcritureVariable () {
          adresse[2] = 'f';
          Mirf.setTADDR((uint8_t *) adresse);
        }
-       if (rxCmd[2] == 'P') {
+       if (rxCmd[2] == 'P' || rxCmd[2] == 'p') {
          adresse[3] = rxCmd[3];
          adresse[4] = rxCmd[4];
          adresse[0] = 'n';
@@ -345,10 +345,6 @@ void EcritureVariable () {
          EEPROM.write(0,rxCmd[3]);
          EEPROM.write(1,rxCmd[4]);
        }
-       Serial.print("Valeur lue :");
-       Serial.print(EEPROM.read(0));
-       Serial.print(EEPROM.read(1));
-       Serial.print("\n");
        break;
     default:
       CmdError("E Type d'ecriture (D.R.W)");
@@ -475,7 +471,7 @@ void LectureVariable() {
        //Message reçu: <(Lecture)(Adresse radio)>
        //Format "HHHH"
        //Format "\AHHHHVHHHH"
-       saveRAM("M01LWA" + rxCmd.substring(2,6) + "V00" + EEPROM.read(0) + EEPROM.read(1));
+       saveRAM("M01LWA" + rxCmd.substring(2,6) + "V00" + (char) EEPROM.read(0) + (char) EEPROM.read(1));
        break;
     default:   
       CmdError("L Type lecture (M.U.D.O.S.R.A.W)");
@@ -935,7 +931,7 @@ void setup(){
   Mirf.payload = sizeof(byte); // = 4, ici il faut déclarer la taille du "payload" soit du message qu'on va transmettre, au max 32 octets
   Mirf.config(); // Tout est bon ? Ok let's go !
   Mirf.setRADDR((byte *)"nrf01"); // On définit ici l'adresse du module en question
-  //Lecture de l'adresse d'envois dans la mémoire eeprom et application
+/*  //Lecture de l'adresse d'envois dans la mémoire eeprom et application
   byte *adresse;
   adresse[3] = EEPROM.read(0);
   adresse[4] = EEPROM.read(1);
@@ -943,6 +939,7 @@ void setup(){
   adresse[1] = 'r';
   adresse[2] = 'f';
   Mirf.setTADDR((uint8_t *) adresse);
+*/
 
   //Teste la présence de la RTC sur le bus I²C, si c'est negatif, il y a une boucle infini,
   //qui va faire travailler le watchdog

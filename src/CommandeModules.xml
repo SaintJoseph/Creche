@@ -104,12 +104,15 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          </Commande>
       </TypeCmd>
       <TypeCmd Nom:fr="Ecriture donnée" Nom:en="Data writing" Nom:nl="Data schrijven" Cmd="E">
-      <Commande Nom:fr="Date et Heure" Nom:en="Date and Hour" Nom:nl="Datum en Uur" Cmd="D" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH">
-         <Parametre Aide:en="dd/mm/yyRddHhh:mm:ss" Aide:nl="dd/mm/jjRddHuu:mm:ss" Aide:fr="jj/mm/aaRjjHhh:mm:ss" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH"/>
-      </Commande>
-      <Commande Nom:fr="Donnée dans la RAM" Nom:en="Data in RAM" Nom:nl="Data in RAM" Cmd="R" Hexa="true" Format="MHHAA\AHHHHVHHHH">
-         <Parametre Aide:en="" Aide:nl="" Aide:fr="Modules, Type, Cmd, Adresse, Valeur" Hexa="true" Format="MHHAA\AHHHHVHHHH"/>
-      </Commande>
+         <Commande Nom:fr="Date et Heure" Nom:en="Date and Hour" Nom:nl="Datum en Uur" Cmd="D" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH">
+            <Parametre Aide:en="dd/mm/yyRddHhh:mm:ss" Aide:nl="dd/mm/jjRddHuu:mm:ss" Aide:fr="jj/mm/aaRjjHhh:mm:ss" Hexa="true" Format="HH/HH/HHRHH\HHH:HH:HH"/>
+         </Commande>
+         <Commande Nom:fr="Donnée dans la RAM" Nom:en="Data in RAM" Nom:nl="Data in RAM" Cmd="R" Hexa="true" Format="MHHAA\AHHHHVHHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Modules, Type, Cmd, Adresse, Valeur" Hexa="true" Format="MHHAA\AHHHHVHHHH"/>
+         </Commande>
+         <Commande Nom:fr="Destinaire Radio" Nom:en="" Nom:nl="" Cmd="W" Hexa="true" Format="AHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Temporaire/Permanent, Valeur(HH)" Hexa="true" Format="AHH"/>
+         </Commande>
       </TypeCmd>
       <TypeCmd Nom:fr="Opérations spéciales" Nom:en="Special operations" Nom:nl="Bijzondere werkingen" Cmd="X">
          <Commande Nom:fr="Allumer ou éteindre" Nom:en="" Nom:nl="" Cmd="B">
@@ -120,7 +123,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       </TypeCmd>
       <Reception Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D00"/>
    </Module>
-   <Module Nom:fr="MLI M2" Nom:en="PWM M2" Nom:nl="PWM M2" Cmd="M02" Checked="0">
+   <Module Nom:fr="MLI M2" Nom:en="PWM M2" Nom:nl="PWM M2" Cmd="M02" Checked="0" Led="6">
       <TypeCmd Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
          <Commande Nom:fr="Etat On/Off" Nom:en="Status On/Off" Nom:nl="Status On/Off" Cmd="O" Hexa="true" Format="HHHH">
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>
@@ -263,7 +266,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       </TypeCmd>
       <Reception Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D00"/>
    </Module>
-   <Module Nom:fr="Lanterne M5" Nom:en="" Nom:nl="" Cmd="M05" Checked="0">
+   <Module Nom:fr="Lanterne M5" Nom:en="" Nom:nl="" Cmd="M05" Checked="0" Led="1">
       <TypeCmd Nom:fr="Lecture de la donnée" Nom:en="Data reading" Nom:nl="Data lezing" Cmd="L">
          <Commande Nom:fr="Etat On/Off" Nom:en="Status On/Off" Nom:nl="Status On/Off" Cmd="O" Hexa="true" Format="HHHH">
             <Parametre Aide:en="Address" Aide:nl="Adres" Aide:fr="Adresse" Hexa="true" Format="HHHH"/>

@@ -303,7 +303,7 @@ void TreatCommand(String cmd) {
 //Fonction qui permet l'ecriture de certaine variable
 void EcritureVariable () {
   Date date;
-  uint8_t *adresse;
+  byte *adresse, val;
   switch (rxCmd[1])
   {
     case 'D' : case 'd' : //Mise a jour de l'heure système
@@ -327,13 +327,28 @@ void EcritureVariable () {
     case 'W' : case 'w' :
        //Message reçu: <(Ecriture)(Adresse radio)(Temporaire/Permanent)(Adresse)>
        //Format "AHH"
-       StringToByte(adresse, rxCmd, 3);
-       adresse[3] = adresse[0];
-       adresse[4] = adresse[1];
-       adresse[0] = 'n';
-       adresse[1] = 'r';
-       adresse[2] = 'f';
-       Mirf.setTADDR(adresse);
+       if (rxCmd[2] == 'T') {
+         adresse[3] = rxCmd[3];
+         adresse[4] = rxCmd[4];
+         adresse[0] = 'n';
+         adresse[1] = 'r';
+         adresse[2] = 'f';
+         Mirf.setTADDR((uint8_t *) adresse);
+       }
+       if (rxCmd[2] == 'P') {
+         adresse[3] = rxCmd[3];
+         adresse[4] = rxCmd[4];
+         adresse[0] = 'n';
+         adresse[1] = 'r';
+         adresse[2] = 'f';
+         Mirf.setTADDR((uint8_t *) adresse);
+         EEPROM.write(0,rxCmd[3]);
+         EEPROM.write(1,rxCmd[4]);
+       }
+       Serial.print("Valeur lue :");
+       Serial.print(EEPROM.read(0));
+       Serial.print(EEPROM.read(1));
+       Serial.print("\n");
        break;
     default:
       CmdError("E Type d'ecriture (D.R.W)");
@@ -400,8 +415,8 @@ void LectureVariable() {
           case 'X': case 'x' : //Jour dans l'année
              JourAnnee = date.jour;
              //permet de calculer le nombre de jours des mois passés, jusqu'au mois actuel
-             for (int i = 1; i < date.mois; i++)
-                JourAnnee = JourAnnee + nbjourmois(i);
+             for (byte i = 1; i < date.mois; i++)
+                JourAnnee = JourAnnee + nbjourmois(&i);
              saveRAM("M01AXA" + rxCmd.substring(3,7) + "V" + WordToString(JourAnnee));
              break;
           case 'Z': case 'z' : //Minute dans la journée
@@ -459,7 +474,8 @@ void LectureVariable() {
     case 'W' : case 'w' :
        //Message reçu: <(Lecture)(Adresse radio)>
        //Format "HHHH"
-       //Format "MHHAA\AHHHHVHHHH"
+       //Format "\AHHHHVHHHH"
+       saveRAM("M01LWA" + rxCmd.substring(2,6) + "V00" + EEPROM.read(0) + EEPROM.read(1));
        break;
     default:   
       CmdError("L Type lecture (M.U.D.O.S.R.A.W)");
@@ -502,34 +518,6 @@ void DonneSpeciaux() {
     default:   
       CmdError("X action speciale (R.B.P)");           
   } 
-}
-
-//Ecriture d'un byte dans la mémoire eeprom a l'adresse indiquée
-boolean eepromWrite( unsigned int *eeaddress, byte data, int deviceadd)
-{
-  Wire.beginTransmission(deviceadd);
-  Wire.write((int)(*eeaddress >> 8));    // Address High Byte
-  Wire.write((int)(*eeaddress & 0xFF));  // Address Low Byte
-  Wire.write(data);
-  if(Wire.endTransmission() == 0) return true;
-  else return false;
-}
-
-//Lecture d'un byte dans la mémoire eeprom a l'adresse indiquée
-boolean eepromRead( unsigned int *eeaddress, byte *rdata, int deviceadd)
-{
-  Wire.beginTransmission(deviceadd);
-  Wire.write((int)(*eeaddress >> 8));    // Address High Byte
-  Wire.write((int)(*eeaddress & 0xFF));  // Address Low Byte
-  Wire.endTransmission();
-  Wire.requestFrom(deviceadd,1);
-  //On attend ques des données se présentent sur le bus I²C
-  //après 30 ms si rien ne s'est présenté c'est qu'il y a un défaut et on retourne un false
-  byte i = 0;
-  while (!Wire.available() && i++ != 30) delay(1);
-  *rdata = Wire.read();
-  if(i == 30) return true;
-  else return false;
 }
 
 // Fonction de convertion bcd -> décimal
@@ -947,6 +935,14 @@ void setup(){
   Mirf.payload = sizeof(byte); // = 4, ici il faut déclarer la taille du "payload" soit du message qu'on va transmettre, au max 32 octets
   Mirf.config(); // Tout est bon ? Ok let's go !
   Mirf.setRADDR((byte *)"nrf01"); // On définit ici l'adresse du module en question
+  //Lecture de l'adresse d'envois dans la mémoire eeprom et application
+  byte *adresse;
+  adresse[3] = EEPROM.read(0);
+  adresse[4] = EEPROM.read(1);
+  adresse[0] = 'n';
+  adresse[1] = 'r';
+  adresse[2] = 'f';
+  Mirf.setTADDR((uint8_t *) adresse);
 
   //Teste la présence de la RTC sur le bus I²C, si c'est negatif, il y a une boucle infini,
   //qui va faire travailler le watchdog

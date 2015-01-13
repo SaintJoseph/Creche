@@ -910,13 +910,56 @@ bool Compilation::CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM
     //définition du nom du fichier
     DataToFill->ModeNom = "C";
     DataToFill->ModeNom.append(QString::number(Instance));
-    //Création d'une variable test de condition
+    //Création des variables test de condition
     DataToFill->ListeIstruction.append("<M01M01ERM01VAA" + AddToRamTable(TableRAM, QString("M01VA")) + "V0000>");
-    //Récupération de la date et l'heure courante ainsi que du jour courant
-    DataToFill->ListeIstruction.append("<M01M01LDX" + AddToRamTable(TableRAM, QString("M01DX")) + ">");
-    DataToFill->ListeIstruction.append("<M01M01LDZ" + AddToRamTable(TableRAM, QString("M01DZ")) + ">");
-    DataToFill->ListeIstruction.append("<M01M01LDW" + AddToRamTable(TableRAM, QString("M01DW")) + ">");
-/*
+    int indice = 0;
+    //On récupère les données dans la structure adéquate, pour façiliter les opérations
+    CondHoraire CondH{0,0,0,0,0,0,0,0,0,0};
+    CondH.Type = Vide;
+    DataToFill->ListeIstruction.append("<M01M01ERM01CB" + AddToRamTable(TableRAM, QString("M01CB")) + "V0000");
+    DemndeLectureCH(&CondH, indice++);
+    //Si on a des valeurs retournée
+    if (CondH.Type != Vide) {
+        switch (CondH.Type) {
+        case Periode:
+            //Variable de test
+            DataToFill->ListeIstruction.append("<M01M01ERM01CA" + AddToRamTable(TableRAM, QString("M01CA")) + "V0000>");
+            //Ajout de la condition sur la date
+            CompilationDate(&CondH, DataToFill, TableRAM);
+            //Ajout de la condition sur l"heure (de tel heure à tel heure pendant toute la période)
+            CompilationHeure(&CondH, DataToFill, TableRAM);
+            //Controle du test
+            DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01CA")) + "DV0002L?R+2>");
+            //Validation du test
+            DataToFill->ListeIstruction.append("<M01M01ERM01CB" + AddToRamTable(TableRAM, QString("M01CB")) + "V0001");
+            break;
+        case Journalier:
+            DataToFill->ListeIstruction.append("<M01M01ERM01CA" + AddToRamTable(TableRAM, QString("M01CA")) + "V0000>");
+            //Ajout de la condition sur l"heure (de tel heure à tel heure pendant toute la période)
+            CompilationHeure(&CondH, DataToFill, TableRAM);
+            //Controle du test
+            DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01CA")) + "DV0001L?R+2>");
+            //Validation du test
+            DataToFill->ListeIstruction.append("<M01M01ERM01CB" + AddToRamTable(TableRAM, QString("M01CB")) + "V0001");
+            break;
+        case Hebdomadaire:
+            DataToFill->ListeIstruction.append("<M01M01ERM01CA" + AddToRamTable(TableRAM, QString("M01CA")) + "V0000>");
+            //Ajout de la condition sur le jour de la semaine
+            CompilationSem(&CondH, DataToFill, TableRAM);
+            //Ajout de la condition sur l"heure (de tel heure à tel heure pendant toute la période)
+            CompilationHeure(&CondH, DataToFill, TableRAM);
+            //Controle du test
+            DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01CA")) + "DV0002L?R+2>");
+            //Validation du test
+            DataToFill->ListeIstruction.append("<M01M01ERM01CB" + AddToRamTable(TableRAM, QString("M01CB")) + "V0001");
+            break;
+        default:
+            break;
+        }
+    }
+
+
+    /*
 <Condition id="0" Type="0 Periode">
 <StartTime>
 <Mois>8</Mois>
@@ -938,6 +981,14 @@ bool Compilation::CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM
 #endif /* DEBUG_COMANDSAVE */
 }
 
+//Fonction qui retourne le nombre de jours d'un mois donné
+int Compilation::nbjourmois(int mois){
+  if (mois == 1 || mois == 3 || mois == 5 || mois == 7 || mois == 8 || mois == 10 || mois == 12) return 31;
+  if (mois == 4 || mois == 6 || mois == 9 || mois == 11) return 30;
+  if (mois == 2) return 28;
+  return 0;
+}
+
 //Fonction pour ajouter ou retourner une adresse RAM
 QString Compilation::AddToRamTable(TableUsedRAM *TableRAM, QString Data)
 {
@@ -948,14 +999,7 @@ QString Compilation::AddToRamTable(TableUsedRAM *TableRAM, QString Data)
         return QString("EEEE");
     QString RamAdresse = TableRAM->value(Data);
     if (RamAdresse.isEmpty()) {
-        RamAdresse = QString::number(TableRAM->count() + 1,16);
-    if (RamAdresse.length() == 1)
-        RamAdresse.prepend("000");
-    else if (RamAdresse.length() == 2)
-        RamAdresse.prepend("00");
-    else if (RamAdresse.length() == 3)
-        RamAdresse.prepend("0");
-    TableRAM->insert(Data, RamAdresse);
+        TableRAM->insert(Data, IntToQString(TableRAM->count() + 1));
     }
     return RamAdresse;
 #ifdef DEBUG_COMANDSAVE
@@ -990,4 +1034,122 @@ QStringList Compilation::ListeDesModules()
 bool Compilation::onControleCompilation()
 {
     return ControleInstance;
+}
+
+//Fonction qui converti un nombre en Qstring de 4 carractères
+QString Compilation::IntToQString(int Value)
+{
+    QString StringValeur = QString::number(Value,16);
+    if (StringValeur.length() == 1)
+        StringValeur.prepend("000");
+    else if (StringValeur.length() == 2)
+        StringValeur.prepend("00");
+    else if (StringValeur.length() == 3)
+        StringValeur.prepend("0");
+    return StringValeur;
+}
+
+//Fonction qui compile une condition sur la date
+void Compilation::CompilationDate(CondHoraire *CondH, DonneFichier *DataToFill, TableUsedRAM *TableRAM)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //Date actuelle
+    QString Commande = "<M01M01LDX" + AddToRamTable(TableRAM, QString("M01DX")) + ">";
+    DataToFill->ListeIstruction.append(Commande);
+    DataToFill->Commentaire.insert(Commande, tr("Condition sur la date :") + QString::number(CondH->DJour) + "/" + QString::number(CondH->DMois) + tr(" to ") + QString::number(CondH->EJour) + "/" + QString::number(CondH->EMois));
+    //Date de début
+    for (int i = 1; i < CondH->DMois; i ++)
+        CondH->DJour += nbjourmois(i);
+    DataToFill->ListeIstruction.append("<M01M01ERM01AA" + AddToRamTable(TableRAM, QString("M01AA"))+ "V" + IntToQString(CondH->DJour) + ">");
+    //Date de fin
+    for (int i = 1; i < CondH->EMois; i ++)
+        CondH->EJour += nbjourmois(i);
+    DataToFill->ListeIstruction.append("<M01M01ERM01AB" + AddToRamTable(TableRAM, QString("M01AB"))+ "V" + IntToQString(CondH->EJour) + ">");
+    //Test sur le dépassement
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01AB")) + "SA" + AddToRamTable(TableRAM, QString("M01AA")) + "L?R+4>");
+    //Ajoute 1 année sur la date de fin
+    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01AB")) + "PV016D>");
+    //Test sur le dépassement
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DX")) + "SA" + AddToRamTable(TableRAM, QString("M01AA")) + "L?R+2>");
+    //Ajoute 1 année sur la date actuel
+    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01DX")) + "PV016D>");
+    //1er Test sur la date actuel
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DX")) + "IA" + AddToRamTable(TableRAM, QString("M01AA")) + "L?R+3>");
+    //2eme Test sur la date actuel
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DX")) + "SA" + AddToRamTable(TableRAM, QString("M01AB")) + "L?R+2>");
+    //Test validé, on enregistre le résultat
+    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01CA")) + "PV0001");
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Fonction qui compile une condition sur l'heure
+void Compilation::CompilationHeure(CondHoraire *CondH, DonneFichier *DataToFill, TableUsedRAM *TableRAM)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //Date actuelle
+    QString Commande = "<M01M01LDZ" + AddToRamTable(TableRAM, QString("M01DZ")) + ">";
+    DataToFill->ListeIstruction.append(Commande);
+    DataToFill->Commentaire.insert(Commande, tr("Condition sur l'heure :") + QString::number(CondH->DHeure) + ":" + QString::number(CondH->DMinute) + tr(" to ") + QString::number(CondH->EHeure) + ":" + QString::number(CondH->EMinute));
+    //Heure de début
+    CondH->DMinute += CondH->DHeure * 60;
+    DataToFill->ListeIstruction.append("<M01M01ERM01AE" + AddToRamTable(TableRAM, QString("M01AE"))+ "V" + IntToQString(CondH->DMinute) + ">");
+    //Heure de fin
+    CondH->EMinute += CondH->EHeure * 60;
+    DataToFill->ListeIstruction.append("<M01M01ERM01AF" + AddToRamTable(TableRAM, QString("M01AF"))+ "V" + IntToQString(CondH->EMinute) + ">");
+    //Test sur le dépassement
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01AF")) + "SA" + AddToRamTable(TableRAM, QString("M01AE")) + "L?R+4>");
+    //Ajoute 1 jour sur l'heure de fin
+    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01AF")) + "PV05A0>");
+    //Test sur le dépassement
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DZ")) + "SA" + AddToRamTable(TableRAM, QString("M01AE")) + "L?R+2>");
+    //Ajoute 1 jour sur l'heure actuel
+    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01DZ")) + "PV05A0>");
+    //1er Test sur l'heure actuel
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DZ")) + "IA" + AddToRamTable(TableRAM, QString("M01AE")) + "L?R+3>");
+    //2eme Test sur l'heure actuel
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DZ")) + "SA" + AddToRamTable(TableRAM, QString("M01AF")) + "L?R+2>");
+    //Test validé, on enregistre le résultat
+    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01CA")) + "PV0001");
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Fonction qui compile une condition sur les jours de la semaine
+void Compilation::CompilationSem(CondHoraire *CondH, DonneFichier *DataToFill, TableUsedRAM *TableRAM)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //Date actuelle
+    QString Commande = "<M01M01LDW" + AddToRamTable(TableRAM, QString("M01DW")) + ">";
+    DataToFill->ListeIstruction.append(Commande);
+    DataToFill->Commentaire.insert(Commande, tr("Condition sur le jour de la semaine :") + QString::number(CondH->DJourSem) + tr(" to ") + QString::number(CondH->EJourSem));
+    //semaine de début
+    DataToFill->ListeIstruction.append("<M01M01ERM01AI" + AddToRamTable(TableRAM, QString("M01AI"))+ "V" + IntToQString(CondH->DJourSem) + ">");
+    //semaine de fin
+    DataToFill->ListeIstruction.append("<M01M01ERM01AJ" + AddToRamTable(TableRAM, QString("M01AJ"))+ "V" + IntToQString(CondH->EJourSem) + ">");
+    //Test sur le dépassement
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01AJ")) + "SA" + AddToRamTable(TableRAM, QString("M01AI")) + "L?R+4>");
+    //Ajoute 1 semaine sur la semaine de fin
+    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01AJ")) + "PV0007>");
+    //Test sur le dépassement
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DW")) + "SA" + AddToRamTable(TableRAM, QString("M01AI")) + "L?R+2>");
+    //Ajoute 1 semaine sur la semaine actuel
+    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01DW")) + "PV0007>");
+    //1er Test sur la semaine actuel
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DW")) + "IA" + AddToRamTable(TableRAM, QString("M01AI")) + "L?R+3>");
+    //2eme Test sur la semaine actuel
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DW")) + "SA" + AddToRamTable(TableRAM, QString("M01AJ")) + "L?R+2>");
+    //Test validé, on enregistre le résultat
+    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01CA")) + "PV0001");
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
 }

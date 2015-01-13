@@ -384,6 +384,24 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom:fr="Seconde" Nom:en="" Nom:nl="" Cmd="S" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Seconde,"/>
          </Commande>
+         <Commande Nom:fr="Début d'une condition" Nom:en="" Nom:nl="" Cmd="A" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Jours,"/>
+         </Commande>
+         <Commande Nom:fr="Fin d'une condition" Nom:en="" Nom:nl="" Cmd="B" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Jours,"/>
+         </Commande>
+         <Commande Nom:fr="Début d'une condition" Nom:en="" Nom:nl="" Cmd="E" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Minutes,"/>
+         </Commande>
+         <Commande Nom:fr="Fin d'une condition" Nom:en="" Nom:nl="" Cmd="F" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Minutes,"/>
+         </Commande>
+         <Commande Nom:fr="Début d'une condition" Nom:en="" Nom:nl="" Cmd="I" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Jour de semaine,"/>
+         </Commande>
+         <Commande Nom:fr="Fin d'une condition" Nom:en="" Nom:nl="" Cmd="J" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Jour de semaine,"/>
+         </Commande>
       </TypeCmd>
       <TypeCmd Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D"/>
       <TypeCmd Nom:fr="Variable utilisateur" Nom:en="" Nom:nl="" Cmd="V">
@@ -391,6 +409,14 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
          </Commande>
          <Commande Nom:fr="Résutat complet d'un test" Nom:en="" Nom:nl="" Cmd="A" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
+         </Commande>
+      </TypeCmd>
+      <TypeCmd Nom:fr="Variable conditions" Nom:en="" Nom:nl="" Cmd="C">
+         <Commande Nom:fr="Test intermediaire" Nom:en="" Nom:nl="" Cmd="A" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
+         </Commande>
+         <Commande Nom:fr="Test global de conditions" Nom:en="" Nom:nl="" Cmd="B" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
          </Commande>
       </TypeCmd>

@@ -398,7 +398,7 @@ QString LECommandeModules::Interpretation(QString Message)
     for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
     {
         //On compare les commandes
-        if (qde.attribute("Cmd") == ValeurAcomparer)
+        if (qde.attribute("Cmd") == ValeurAcomparer && (qde.tagName() == "Module" || qde.tagName() == "ProgrammePC"))
         {
             Destination.append(qde.attribute("Nom:" + indLangue));
             for(QDomElement qdea = qde.firstChildElement(); !qdea.isNull(); qdea = qdea.nextSiblingElement())
@@ -446,7 +446,7 @@ QString LECommandeModules::Interpretation(QString Message)
     for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
     {
         //On compare les commandes
-        if (qde.attribute("Cmd") == ValeurAcomparer)
+        if (qde.attribute("Cmd") == ValeurAcomparer && (qde.tagName() == "Module" || qde.tagName() == "ProgrammePC"))
         {
             Provenance.append(qde.attribute("Nom:" + indLangue));
         }

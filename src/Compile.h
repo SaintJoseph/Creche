@@ -180,6 +180,17 @@ private:
     void delElement(QDomDocument *doc, const QString &tag, const QString &attribu = QString::null, int val = 0);
     //Fonction qui retourne l'arbre Xml sous forme de qstring
     QString DomDocument();
+    //Fonction qui retourne le nombre de jours d'un mois donné
+    int nbjourmois(int mois);
+    //Fonction qui converti un nombre en Qstring de 4 carractères
+    QString IntToQString(int Value);
+    //Fonction qui compile une condition sur la date
+    void CompilationDate(CondHoraire *CondH, DonneFichier *DataToFill, TableUsedRAM *TableRAM);
+    //Fonction qui compile une condition sur l'heure
+    void CompilationHeure(CondHoraire *CondH, DonneFichier *DataToFill, TableUsedRAM *TableRAM);
+    //Fonction qui compile une condition sur les jours de la semaine
+    void CompilationSem(CondHoraire *CondH, DonneFichier *DataToFill, TableUsedRAM *TableRAM);
+
 };
 
 #endif // COMPILE_H

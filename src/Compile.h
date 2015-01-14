@@ -128,6 +128,9 @@ public:
     //Fonction qui renvois la liste des modules qu'elle utilise
     QStringList ListeDesModules();
 
+    //Sauvegarde automatique active
+    bool saveAuto = true;
+
 signals:
     void IDproposer(int);
     //Signal emit lors d'un click sur le widget

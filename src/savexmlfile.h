@@ -16,7 +16,10 @@
 #include <QFont>
 #include "Compile.h"
 #include <QScrollArea>
+#include <QProgressBar>
+#include <QListView>
 #include "func_name.h"
+#include "editeurprog.h"
 
 class SaveXmlFile : public QDockWidget
 {
@@ -72,11 +75,17 @@ private slots:
 
 private:
     QVBoxLayout *MainLayout, *LayoutBase;
+    QHBoxLayout *LayoutCompilation;
     QPushButton *ButtonNewMode, *ButtonDelete, *ButtonCompiler;
-    QLabel *LabelListeMode;
+    QLabel *LabelListeMode, *LabelFichiersCree;
     QWidget *Base, *WidgetScrollArea;
     QScrollArea *ScrollArea;
+    QProgressBar *ProgressBarre;
+    QListView *FichierCree;
+    EditeurProg *Editeur;
     bool Flag1erInstanceNotInitialised;
+    //Mode compilation actif
+    bool CompileMode = false;
 
     //Tableau avec les instances de compilations ouvertes
     static int ListeModeOuvert[5];
@@ -86,7 +95,8 @@ private:
 
     //Fonction Globale pour les const QString
     QString static Const_QString(int type);
-
+    //Fonction pour changer l'affichage du dock en fonction si on est en édition ou en compilation
+    void ChangeDockAffichage(bool mode);
     //Fonction de debugage
 #ifdef DEBUG_COMANDSAVE
     void affichageqDebug(QString text);

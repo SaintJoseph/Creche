@@ -215,16 +215,26 @@ Compilation::~Compilation()
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
         QFile file(Nomfichier);
-        if (!file.exists())
-            enregistrer->setInformativeText(tr("<font color=\"#FF2A2A\"><b>Xml file:</b> %1</font>").arg(file.fileName()));
-        else
-            enregistrer->setInformativeText(tr("<font color=\"#FF2A2A\">Le fichier Xml:<br><b> %1 </b><br><font align=\"left\">existe déjà</font></font><br>The systeme is going to replace it").arg(file.fileName()));
-        if (enregistrer->exec() == QMessageBox::Save)
-        {
-            file.open(QIODevice::WriteOnly | QIODevice::Text);
-            QTextStream out(&file);
-            out << DomDocument();
-            file.close();
+        if (!saveAuto) {
+            if (!file.exists())
+                enregistrer->setInformativeText(tr("<font color=\"#FF2A2A\"><b>Xml file:</b> %1</font>").arg(file.fileName()));
+            else
+                enregistrer->setInformativeText(tr("<font color=\"#FF2A2A\">Le fichier Xml:<br><b> %1 </b><br><font align=\"left\">existe déjà</font></font><br>The systeme is going to replace it").arg(file.fileName()));
+            if (enregistrer->exec() == QMessageBox::Save)
+            {
+                file.open(QIODevice::WriteOnly | QIODevice::Text);
+                QTextStream out(&file);
+                out << DomDocument();
+                file.close();
+            }
+        }
+        else {
+            if (!file.exists()) {
+                file.open(QIODevice::WriteOnly | QIODevice::Text);
+                QTextStream out(&file);
+                out << DomDocument();
+                file.close();
+            }
         }
     delete doc;
     if (!NewMode)
@@ -914,12 +924,15 @@ bool Compilation::CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM
     DataToFill->ListeIstruction.append("<M01M01ERM01VAA" + AddToRamTable(TableRAM, QString("M01VA")) + "V0000>");
     int indice = 0;
     //On récupère les données dans la structure adéquate, pour façiliter les opérations
-    CondHoraire CondH{0,0,0,0,0,0,0,0,0,0};
-    CondH.Type = Vide;
+    CondHoraire CondH;
     DataToFill->ListeIstruction.append("<M01M01ERM01CB" + AddToRamTable(TableRAM, QString("M01CB")) + "V0000");
-    DemndeLectureCH(&CondH, indice++);
     //Si on a des valeurs retournée
-    if (CondH.Type != Vide) {
+    while (indice < 10) {
+        CondH = {0,0,0,0,0,0,0,0,0,0};
+        CondH.Type = Vide;
+        DemndeLectureCH(&CondH, indice++);
+        if (CondH.Type == Vide)
+            break;
         switch (CondH.Type) {
         case Periode:
             //Variable de test
@@ -957,7 +970,6 @@ bool Compilation::CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM
             break;
         }
     }
-
 
     /*
 <Condition id="0" Type="0 Periode">

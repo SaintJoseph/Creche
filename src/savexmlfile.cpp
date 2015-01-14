@@ -22,6 +22,10 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     LayoutBase = new QVBoxLayout;
     LayoutBase->setContentsMargins(1,1,1,1);
     LayoutBase->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    //Layout Horizontale pour l'éditeur de compilation
+    LayoutCompilation = new QHBoxLayout;
+    LayoutCompilation->setContentsMargins(1,1,1,1);
+    LayoutCompilation->setAlignment(Qt::AlignTop);
     //Scroll Widget
     ScrollArea = new QScrollArea;
     ScrollArea->setContentsMargins(0,0,0,0);
@@ -46,15 +50,25 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     ButtonCompiler->setFixedHeight(20);
     ButtonCompiler->setStyleSheet("QPushButton { width: 45px}");
     ButtonCompiler->setVisible(false);
+    ButtonCompiler->setToolTip(tr("Lancer la compilation de tous les modes d'éclairage ouvert"));
     //Label pour la liste des instance de compilation
     LabelListeMode = new QLabel(tr("Liste Modes (max 5)", "Espace limiter pour faire une phrase entière."));
     LabelListeMode->setFont(font);
     LabelListeMode->setFixedHeight(18);
+    //Label pour la liste des fichier crée
+    LabelFichiersCree = new QLabel(tr("Fichier Compilé"));
+    LabelFichiersCree->setFont(font);
+    LabelFichiersCree->setFixedHeight(18);
     //Widget de base pour accuellir le layout principale
     Base = new QWidget;
     //Widget de taille fixe pour accuellir le main layout dans le srollArea
     WidgetScrollArea = new QWidget;
     WidgetScrollArea->setFixedHeight(10);
+    //Affichage de la liste des fichiers crée
+    FichierCree = new QListView;
+    //Editeur de fichier compilé
+    Editeur = new EditeurProg;
+
 
     //Ajout des bouttons au layout principale
     LayoutBase->addWidget(ButtonNewMode);
@@ -63,20 +77,28 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     LayoutBase->addWidget(LabelListeMode);
     //Application du main layout sur le widget main
     LayoutBase->addWidget(ScrollArea);
+    //Application du bouton compiler au scrollArea
     LayoutBase->addWidget(ButtonCompiler);
     //Application du layout au widget
-    Base->setLayout(LayoutBase);
+    LayoutCompilation->addLayout(LayoutBase);
+    LayoutCompilation->addWidget(Editeur);
+    Base->setLayout(LayoutCompilation);
     //Application du layout main au Widget scrollArea
     WidgetScrollArea->setLayout(MainLayout);
     //Application du widget au scrollArea
     ScrollArea->setWidget(WidgetScrollArea);
+    //Ajout du label au layout compilation
+    LayoutBase->addWidget(LabelFichiersCree);
+    //Ajout de la liste au layout compilation
+    LayoutBase->addWidget(FichierCree);
+    //Ajout du layout compilation
+
     //Application du widget au dock
     setWidget(Base);
     //Application du font au dock
     setFont(font);
-    //Restriction dimensionnelles
-    setMinimumWidth(100);
-    setMaximumWidth(150);
+
+    ChangeDockAffichage(false);
 
     //Lors de l'appuis sur le boutton on fait un nouveau mode
     connect(ButtonNewMode, SIGNAL(clicked()), SLOT(NewMode()));
@@ -210,6 +232,8 @@ void SaveXmlFile::SupprimerUneInstance(Compilation * Instance)
         MainLayout->removeWidget(Instance);
         int taille = WidgetScrollArea->height();
         WidgetScrollArea->setFixedHeight(taille - 45);
+        //Désactive la sauvegarde automatique
+        Instance->saveAuto = false;
         //On supprime l'instance
         delete Instance;
         //On met a jours la liste de référence
@@ -456,6 +480,8 @@ void SaveXmlFile::onCompilationAsked()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+    if (QMessageBox::warning(this, tr("Lancement de la compilation"), tr("<font color=\"#FF2A2A\"><b>ATTENTION:</b></font><br>Tous les modes d'éclairage ouvert, seront compilé.<br>Après confirmation il ne sera plus possible de modifier les données. Il sera possible d'éditer les fichiers compiler avant leur sauvegarde."), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) return;
+    ChangeDockAffichage(true);
     //Création de la structure qui va accuillir les données compilées
     CompilationPreAssemblage *CompilationAssemblage = new CompilationPreAssemblage;
     //On récupère les modules utilisés par chaque mode, sous la forme de QstringList
@@ -470,9 +496,19 @@ void SaveXmlFile::onCompilationAsked()
     CompilationAssemblage->ListeModules.sort();
     //Création du fichier 00 et des fichiers de test principaux
     //Appel des fonctions de compilation de chaque mode,
+    for (int i = 0; i < 5; i++){
+        Compilation *Instance = ListeModeOuvertPoint[i];
+        if (Instance) {
+            DonneFichier *Fichier = new DonneFichier;
+            Instance->CompilationCH(Fichier, &CompilationAssemblage->Table);
+            CompilationAssemblage->DonneDesFichiers.insert(Fichier->ModeNom, Fichier);
+        }
+    }
 
     //Lorsque la compilation pré Assemblage est terminée, on affiche les fichiers qui vont être créé
-    //Puis à la validation des ces fichiers, il s sont enregistrer sur la carte micro SD(ou ailleur)
+    //Puis à la validation des ces fichiers, il sont enregistrer sur la carte micro SD(ou ailleur)
+    QStringListModel ListeModel(QStringList (CompilationAssemblage->DonneDesFichiers.keys()));
+    FichierCree->setModel(&ListeModel);
     delete CompilationAssemblage;
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
@@ -499,6 +535,41 @@ QString SaveXmlFile::AddToRamTable(TableUsedRAM *TableRAM, QString Data)
     TableRAM->insert(Data, RamAdresse);
     }
     return RamAdresse;
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Fonction pour changer l'affichage du dock en fonction si on est en édition ou en compilation
+void SaveXmlFile::ChangeDockAffichage(bool mode)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    CompileMode = mode;
+    if (!CompileMode) {
+        ButtonCompiler->setVisible(true);
+        ButtonDelete->setVisible(true);
+        ButtonNewMode->setVisible(true);
+        LabelListeMode->setVisible(true);
+        ScrollArea->setVisible(true);
+        //Restriction dimensionnelles
+        setMinimumWidth(100);
+        setMaximumWidth(150);
+        LabelFichiersCree->setVisible(false);
+        FichierCree->setVisible(false);
+        Editeur->setVisible(false);
+    }
+    else {
+        ButtonCompiler->setVisible(false);
+        ButtonDelete->setVisible(false);
+        ButtonNewMode->setVisible(false);
+        LabelListeMode->setVisible(false);
+        ScrollArea->setVisible(false);
+        LabelFichiersCree->setVisible(true);
+        FichierCree->setVisible(true);
+        Editeur->setVisible(false);
+    }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

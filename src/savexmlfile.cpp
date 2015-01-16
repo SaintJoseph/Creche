@@ -49,8 +49,13 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     ButtonCompiler->setFont(font);
     ButtonCompiler->setFixedHeight(20);
     ButtonCompiler->setStyleSheet("QPushButton { width: 45px}");
-    ButtonCompiler->setVisible(false);
     ButtonCompiler->setToolTip(tr("Lancer la compilation de tous les modes d'éclairage ouvert"));
+    //Boutton Pour valider la compilation
+    ButtonValider = new QPushButton(tr("Valider"));
+    ButtonValider->setFont(font);
+    ButtonValider->setFixedHeight(20);
+    ButtonValider->setStyleSheet("QPushButton { width: 45px}");
+    ButtonValider->setToolTip(tr("Valider l'ensemble des fichiers compilé, sélectionez le dossier de destination."));
     //Label pour la liste des instance de compilation
     LabelListeMode = new QLabel(tr("Liste Modes (max 5)", "Espace limiter pour faire une phrase entière."));
     LabelListeMode->setFont(font);
@@ -66,9 +71,7 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     WidgetScrollArea->setFixedHeight(10);
     //Affichage de la liste des fichiers crée
     FichierCree = new QListView;
-    //Editeur de fichier compilé
-    Editeur = new EditeurProg;
-
+    FichierCree->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     //Ajout des bouttons au layout principale
     LayoutBase->addWidget(ButtonNewMode);
@@ -81,7 +84,6 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     LayoutBase->addWidget(ButtonCompiler);
     //Application du layout au widget
     LayoutCompilation->addLayout(LayoutBase);
-    LayoutCompilation->addWidget(Editeur);
     Base->setLayout(LayoutCompilation);
     //Application du layout main au Widget scrollArea
     WidgetScrollArea->setLayout(MainLayout);
@@ -92,6 +94,7 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     //Ajout de la liste au layout compilation
     LayoutBase->addWidget(FichierCree);
     //Ajout du layout compilation
+    LayoutBase->addWidget(ButtonValider);
 
     //Application du widget au dock
     setWidget(Base);
@@ -106,6 +109,10 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
     connect(ButtonDelete, SIGNAL(clicked()), SLOT(DeleteMode()));
     //Bouton pour lancer la compilation
     connect(ButtonCompiler, SIGNAL(clicked()), SLOT(onCompilationAsked()));
+    //Double clic sur un nom de fichier dans la liste des fichier compilés
+    connect(FichierCree, SIGNAL(doubleClicked(QModelIndex)), SLOT(onEditionRequested(QModelIndex)));
+    //Bouton valider pour enregistrer les fichier compilé
+    connect(ButtonValider, SIGNAL(clicked()), SLOT(onValidationClicked()));
 
     //Si une instance Compilation existe déjà on la récupère
     Flag1erInstanceNotInitialised = false;
@@ -145,6 +152,13 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
 
 SaveXmlFile::~SaveXmlFile()
 {
+    if (Editeur)
+        delete Editeur;
+    delete ButtonCompiler;
+    delete ButtonDelete;
+    delete ButtonNewMode;
+    delete ButtonValider;
+
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << "/" << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -410,6 +424,10 @@ void SaveXmlFile::retranslate(QString lang)
     LabelListeMode->setText(tr("Liste Modes (max 5)", "Espace limiter pour faire une phrase entière."));
     ButtonDelete->setText(tr("Enreg. et Fermer", "Espace limité pour écrire \"Enregistrer et Fermer\" en entier."));
     ButtonNewMode->setText(tr("New Mode"));
+    ButtonValider->setToolTip(tr("Valider l'ensemble des fichiers compilé, sélectionez le dossier de destination."));
+    ButtonCompiler->setToolTip(tr("Lancer la compilation de tous les modes d'éclairage ouvert"));
+    ButtonCompiler->setText(tr("Compiler..."));
+    ButtonValider->setText(tr("Valider"));
     for (int i = 0; i < 5; i++)
         if(ListeModeOuvertPoint[i])
             ListeModeOuvertPoint[i]->retranslate(lang);
@@ -483,7 +501,7 @@ void SaveXmlFile::onCompilationAsked()
     if (QMessageBox::warning(this, tr("Lancement de la compilation"), tr("<font color=\"#FF2A2A\"><b>ATTENTION:</b></font><br>Tous les modes d'éclairage ouvert, seront compilé.<br>Après confirmation il ne sera plus possible de modifier les données. Il sera possible d'éditer les fichiers compiler avant leur sauvegarde."), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) return;
     ChangeDockAffichage(true);
     //Création de la structure qui va accuillir les données compilées
-    CompilationPreAssemblage *CompilationAssemblage = new CompilationPreAssemblage;
+    CompilationAssemblage = new CompilationPreAssemblage;
     //On récupère les modules utilisés par chaque mode, sous la forme de QstringList
     for (int i = 0; i < 5; i++){
         Compilation *Instance = ListeModeOuvertPoint[i];
@@ -507,9 +525,8 @@ void SaveXmlFile::onCompilationAsked()
 
     //Lorsque la compilation pré Assemblage est terminée, on affiche les fichiers qui vont être créé
     //Puis à la validation des ces fichiers, il sont enregistrer sur la carte micro SD(ou ailleur)
-    QStringListModel ListeModel(QStringList (CompilationAssemblage->DonneDesFichiers.keys()));
-    FichierCree->setModel(&ListeModel);
-    delete CompilationAssemblage;
+    ListeModel = new QStringListModel(QStringList (CompilationAssemblage->DonneDesFichiers.keys()));
+    FichierCree->setModel(ListeModel);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -548,7 +565,6 @@ void SaveXmlFile::ChangeDockAffichage(bool mode)
 #endif /* DEBUG_COMANDSAVE */
     CompileMode = mode;
     if (!CompileMode) {
-        ButtonCompiler->setVisible(true);
         ButtonDelete->setVisible(true);
         ButtonNewMode->setVisible(true);
         LabelListeMode->setVisible(true);
@@ -558,7 +574,23 @@ void SaveXmlFile::ChangeDockAffichage(bool mode)
         setMaximumWidth(150);
         LabelFichiersCree->setVisible(false);
         FichierCree->setVisible(false);
-        Editeur->setVisible(false);
+        ButtonValider->setVisible(false);
+        //Le boutton de compilation apparait uniquement si tous les modes ouverts sont complet
+        bool test = true, mode = false;
+        for (int i = 0; i < 5; i++) {
+            Compilation *Instance = ListeModeOuvertPoint[i];
+            if (Instance) {
+                mode = true;
+                if (!Instance->onControleCompilation()) {
+                    test = false;
+                    break;
+                }
+            }
+        }
+        if (test && mode)
+            ButtonCompiler->setVisible(true);
+        else
+            ButtonCompiler->setVisible(false);
     }
     else {
         ButtonCompiler->setVisible(false);
@@ -568,7 +600,81 @@ void SaveXmlFile::ChangeDockAffichage(bool mode)
         ScrollArea->setVisible(false);
         LabelFichiersCree->setVisible(true);
         FichierCree->setVisible(true);
-        Editeur->setVisible(false);
+        ButtonValider->setVisible(true);
+        setMaximumWidth(600);
+    }
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Edition d'un fichier compilé
+void SaveXmlFile::onEditionRequested(QModelIndex index)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    if (!Editeur) {
+        QVariant File = ListeModel->data(index, Qt::DisplayRole);
+        DonneFichier *Donnee = CompilationAssemblage->DonneDesFichiers.value(File.toString());
+        Editeur = new EditeurProg(Donnee);
+        LayoutCompilation->addWidget(Editeur);
+    }
+    else {
+        QVariant File = ListeModel->data(index, Qt::DisplayRole);
+        DonneFichier *Donnee = CompilationAssemblage->DonneDesFichiers.value(File.toString());
+        Editeur->setDonneeFichier(Donnee);
+    }
+
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Validation de la compilation
+void SaveXmlFile::onValidationClicked()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    QString PathToSDCard = QFileDialog::getExistingDirectory(this, tr("Sauvegarde sur la carte micro SD"));
+    QFile File;
+    QString TextFinal;
+    DonneFichier *FileData;
+    foreach (QString FileNom, ListeModel->stringList()) {
+        FileData = CompilationAssemblage->DonneDesFichiers.value(FileNom);
+        TextFinal = "#Fichier Exe_" + LigneFile->text() + ".cre\n#Créé le " + QDate::currentDate().toString() + " T " + QTime::currentTime().toString() + "\n";
+        int CompteurLigne = 1;
+
+        foreach (QString Ligne, FileData->ListeIstruction) {
+           if (!Ligne.isEmpty()) {
+               if (Ligne.at(0) == QChar('#')) {
+                   TextFinal.append(Ligne + QString("\n\0"));
+               }
+               else if (Ligne.contains("#")) {
+                   TextFinal.append(Ligne.mid(Ligne.indexOf('#')) + QString("\n"));
+               }
+               else if (Ligne.contains("<") && Ligne.contains(">")) {
+                   QString NumLigne = QString::number(CompteurLigne, 16).toUpper();
+                   int taille = NumLigne.size();
+                   //Numero de la ligne
+                   while (taille < 3) {
+                       taille = NumLigne.size();
+                       NumLigne.prepend(QString("0"));
+                   }
+                   //Identification des saut de lignes
+                   if (Ligne.contains(QChar('?'))) {
+                       int index = Ligne.indexOf('?');
+
+                   }
+                   TextFinal.append(NumLigne + QString(" ") + Ligne.mid(Ligne.indexOf('<')).remove(QChar(' '), Qt::CaseSensitive) + QString("\n"));
+                   CompteurLigne += 2;
+               }
+               else {
+                   TextFinal.append(QString("#") + Ligne + QString("\n\0"));
+               }
+           }
+        }
     }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;

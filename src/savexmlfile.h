@@ -72,17 +72,23 @@ private slots:
     void onCompilationUpdated();
     //Lancement de la compilation
     void onCompilationAsked();
+    //Edition d'un fichier compilé
+    void onEditionRequested(QModelIndex index);
+    //Validation de la compilation
+    void onValidationClicked();
 
 private:
     QVBoxLayout *MainLayout, *LayoutBase;
     QHBoxLayout *LayoutCompilation;
-    QPushButton *ButtonNewMode, *ButtonDelete, *ButtonCompiler;
+    QPushButton *ButtonNewMode, *ButtonDelete, *ButtonCompiler, *ButtonValider;
     QLabel *LabelListeMode, *LabelFichiersCree;
     QWidget *Base, *WidgetScrollArea;
     QScrollArea *ScrollArea;
     QProgressBar *ProgressBarre;
     QListView *FichierCree;
     EditeurProg *Editeur;
+    QStringListModel *ListeModel;
+    CompilationPreAssemblage *CompilationAssemblage;
     bool Flag1erInstanceNotInitialised;
     //Mode compilation actif
     bool CompileMode = false;

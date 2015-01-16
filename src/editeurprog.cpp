@@ -1,6 +1,6 @@
 #include "editeurprog.h"
 
-EditeurProg::EditeurProg(QWidget *parent) :
+EditeurProg::EditeurProg(DonneFichier *Fichier, QWidget *parent) :
     QWidget(parent)
 {
 #ifdef DEBUG_COMANDSAVE
@@ -65,12 +65,21 @@ EditeurProg::EditeurProg(QWidget *parent) :
     LayoutPrinc->addWidget(ZoneEdition);
     setLayout(LayoutPrinc);
 
+    if (Fichier) {
+        setDonneeFichier(Fichier);
+    }
+    else {
+        FichierDonne = new DonneFichier;
+    }
+
     retranslate("fr");
 
     connect(GenCommande, SIGNAL(Commande(QByteArray)),SLOT(onTextCome(QByteArray)));
     connect(BPEnregistrer, SIGNAL(clicked()), SLOT(onSaveButton()));
     //A chaque fois que le texte est modifier on adapte la mise en forme
     connect(ZoneEdition, SIGNAL(textChanged()), SLOT(onTextChange()));
+    //Fermer sans enregistrer
+    connect(BPFermer, SIGNAL(clicked()), SLOT(hide()));
 
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
@@ -123,8 +132,6 @@ void EditeurProg::onSaveButton()
 {
     //On parcour le fichier ligne par ligne pour les traiters et les compléter dans l'ordre
     QStringList LigneParLigne = ZoneEdition->toPlainText().split("\n");
-    QString TextFinal = "#Fichier Exe_" + LigneFile->text() + ".cre\n#Créé le " + QDate::currentDate().toString() + " T " + QTime::currentTime().toString() + "\n";
-    int CompteurLigne = 1;
     foreach (QString Ligne, LigneParLigne) {
        if (!Ligne.isEmpty()) {
            if (Ligne.at(0) == QChar('#')) {
@@ -157,6 +164,7 @@ void EditeurProg::onSaveButton()
         out << TextFinal;
         file.close();
     }
+    hide();
 }
 
 //Fonction qui formate le text affiché
@@ -182,4 +190,27 @@ void EditeurProg::onTextChange()
         tcmov.insertHtml(word);
     }
     connect(ZoneEdition, SIGNAL(textChanged()), SLOT(onTextChange()));
+}
+
+//Fonction de chargement d'un nouveau fichier compilé
+void EditeurProg::setDonneeFichier(DonneFichier *Fichier)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    ZoneEdition->clear();
+    LigneFile->clear();
+    setVisible(true);
+    FichierDonne = Fichier;
+    LigneFile->setText(Fichier->ModeNom);
+    foreach (QString Ligne, Fichier->ListeIstruction) {
+        if (!Fichier->Commentaire.value(Ligne, QString ("")).isEmpty()) {
+            ZoneEdition->insertPlainText("#" + Fichier->Commentaire.value(Ligne) + "\n\0");
+        }
+        ZoneEdition->insertPlainText(Ligne + "\n\0");
+    }
+
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
 }

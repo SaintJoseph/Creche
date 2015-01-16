@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "lecommandemodules.h"
+#include "Compile.h"
 #include <QPushButton>
 #include <QLayout>
 #include <QLabel>
@@ -20,10 +21,12 @@ class EditeurProg : public QWidget
     Q_OBJECT
 
 public:
-    EditeurProg(QWidget * parent = 0);
+    EditeurProg(DonneFichier *Fichier = NULL, QWidget * parent = 0);
     ~EditeurProg();
     //Fonction pour appliquer et réappliquer tous les labels en fonction des demande de traduction
     void retranslate(QString lang);
+    //Fonction de chargement d'un nouveau fichier compilé
+    void setDonneeFichier(DonneFichier *Fichier);
 
 signals:
 
@@ -43,6 +46,7 @@ private:
     QTextEdit *ZoneEdition;
     QLabel *LabelNomFile, *extFile;
     QLineEdit *LigneFile;
+    DonneFichier *FichierDonne;
 
 };
 

@@ -176,8 +176,8 @@ void EditeurProg::onSaveButton()
         out << TextFinal;
         file.close();
     }
+*/
     hide();
-    */
 }
 
 //Fonction qui formate le text affiché

@@ -107,7 +107,8 @@ private:
 #ifdef DEBUG_COMANDSAVE
     void affichageqDebug(QString text);
 #endif /* DEBUG_COMANDSAVE */
-    
+    //Fonction qui converti un nombre en Qstring de 4 carractères
+    QString IntToQString(int Value);
 };
 
 #endif // SAVEXMLFILE_H

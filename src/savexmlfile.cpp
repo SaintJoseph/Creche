@@ -639,15 +639,19 @@ void SaveXmlFile::onValidationClicked()
 #endif /* DEBUG_COMANDSAVE */
     QString PathToSDCard = QFileDialog::getExistingDirectory(this, tr("Sauvegarde sur la carte micro SD"));
     QFile File;
-    QString TextFinal;
+    QString TextFinal, Comment;
     DonneFichier *FileData;
     foreach (QString FileNom, ListeModel->stringList()) {
         FileData = CompilationAssemblage->DonneDesFichiers.value(FileNom);
         TextFinal = "#Fichier Exe_" + FileNom + ".cre\n#Créé le " + QDate::currentDate().toString() + " T " + QTime::currentTime().toString() + "\n";
         int CompteurLigne = 1;
-
+        File.setFileName(PathToSDCard + "/Exe_" + FileNom + ".cre");
         foreach (QString Ligne, FileData->ListeIstruction) {
            if (!Ligne.isEmpty()) {
+               Comment = FileData->Commentaire.value(Ligne, QString("123"));
+               if (Comment != "123") {
+                   TextFinal.append("#" + Comment + "\n\0");
+               }
                if (Ligne.at(0) == QChar('#')) {
                    TextFinal.append(Ligne + QString("\n\0"));
                }
@@ -655,19 +659,42 @@ void SaveXmlFile::onValidationClicked()
                    TextFinal.append(Ligne.mid(Ligne.indexOf('#')) + QString("\n"));
                }
                else if (Ligne.contains("<") && Ligne.contains(">")) {
-                   QString NumLigne = QString::number(CompteurLigne, 16).toUpper();
-                   int taille = NumLigne.size();
-                   //Numero de la ligne
-                   while (taille < 3) {
-                       taille = NumLigne.size();
-                       NumLigne.prepend(QString("0"));
-                   }
                    //Identification des saut de lignes
                    if (Ligne.contains(QChar('?'))) {
-                       int index = Ligne.indexOf('?');
-
+                       int index = Ligne.indexOf('?'), LigneSaut;
+                       bool MoreNine = false;
+                       switch (Ligne.at(index+1).toLatin1()) {
+                       case 'R': //Saut de ligne relatif
+                           if (Ligne.at(index+2).toLatin1() == '+') { //Saut en avant
+                               if (Ligne.at(index+4).toLatin1() >= '0' && Ligne.at(index+4).toLatin1() <= '9') {
+                                   LigneSaut = Ligne.mid(index+3, 2).toInt();
+                                   MoreNine = true;
+                               }
+                               else {
+                                   LigneSaut = Ligne.mid(index+3, 1).toInt();
+                               }
+                               LigneSaut = CompteurLigne + LigneSaut * 2;
+                           }
+                           if (Ligne.at(index+2).toLatin1() == '-') { //Saut en arrière
+                               if (Ligne.at(index+4).toLatin1() >= '0' && Ligne.at(index+4).toLatin1() <= '9') {
+                                   LigneSaut = Ligne.mid(index+3, 2).toInt();
+                                   MoreNine = true;
+                               }
+                               else {
+                                   LigneSaut = Ligne.mid(index+3, 1).toInt();
+                               }
+                               LigneSaut = CompteurLigne - LigneSaut * 2;
+                           }
+                           break;
+                       default:
+                           break;
+                       }
+                       if (MoreNine)
+                           Ligne.replace(index, 5, IntToQString(LigneSaut));
+                       else
+                           Ligne.replace(index, 4, IntToQString(LigneSaut));
                    }
-                   TextFinal.append(NumLigne + QString(" ") + Ligne.mid(Ligne.indexOf('<')).remove(QChar(' '), Qt::CaseSensitive) + QString("\n"));
+                   TextFinal.append(IntToQString(CompteurLigne).toUpper() + QString(" ") + Ligne.mid(Ligne.indexOf('<')).remove(QChar(' '), Qt::CaseSensitive).toUpper() + QString("\n"));
                    CompteurLigne += 2;
                }
                else {
@@ -675,8 +702,26 @@ void SaveXmlFile::onValidationClicked()
                }
            }
         }
+        File.open(QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream out(&File);
+        out << TextFinal;
+        File.close();
     }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+}
+
+//Fonction qui converti un nombre en Qstring de 4 carractères
+
+QString SaveXmlFile::IntToQString(int Value)
+{
+    QString StringValeur = QString::number(Value,16);
+    if (StringValeur.length() == 1)
+        StringValeur.prepend("000");
+    else if (StringValeur.length() == 2)
+        StringValeur.prepend("00");
+    else if (StringValeur.length() == 3)
+        StringValeur.prepend("0");
+    return StringValeur;
 }

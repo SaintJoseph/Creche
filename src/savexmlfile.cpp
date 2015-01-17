@@ -643,7 +643,7 @@ void SaveXmlFile::onValidationClicked()
     DonneFichier *FileData;
     foreach (QString FileNom, ListeModel->stringList()) {
         FileData = CompilationAssemblage->DonneDesFichiers.value(FileNom);
-        TextFinal = "#Fichier Exe_" + LigneFile->text() + ".cre\n#Créé le " + QDate::currentDate().toString() + " T " + QTime::currentTime().toString() + "\n";
+        TextFinal = "#Fichier Exe_" + FileNom + ".cre\n#Créé le " + QDate::currentDate().toString() + " T " + QTime::currentTime().toString() + "\n";
         int CompteurLigne = 1;
 
         foreach (QString Ligne, FileData->ListeIstruction) {

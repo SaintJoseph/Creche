@@ -132,13 +132,20 @@ void EditeurProg::onSaveButton()
 {
     //On parcour le fichier ligne par ligne pour les traiters et les compléter dans l'ordre
     QStringList LigneParLigne = ZoneEdition->toPlainText().split("\n");
+    bool comment = false;
+    QString CommentTxt;
+    FichierDonne->ListeIstruction.clear();
+    FichierDonne->Commentaire.clear();
+    int CompteurLigne = 1;
     foreach (QString Ligne, LigneParLigne) {
        if (!Ligne.isEmpty()) {
            if (Ligne.at(0) == QChar('#')) {
-               TextFinal.append(Ligne + QString("\n\0"));
+               CommentTxt = Ligne.remove('#') + QString("\n\0");
+               comment = true;
            }
            else if (Ligne.contains("#")) {
-               TextFinal.append(Ligne.mid(Ligne.indexOf('#')) + QString("\n"));
+               CommentTxt = Ligne.mid(Ligne.indexOf('#') + 1) + QString("\n");
+               comment = true;
            }
            else if (Ligne.contains("<") && Ligne.contains(">")) {
                QString NumLigne = QString::number(CompteurLigne, 16).toUpper();
@@ -147,15 +154,20 @@ void EditeurProg::onSaveButton()
                    taille = NumLigne.size();
                    NumLigne.prepend(QString("0"));
                }
-               TextFinal.append(NumLigne + QString(" ") + Ligne.mid(Ligne.indexOf('<')).remove(QChar(' '), Qt::CaseSensitive) + QString("\n"));
+               FichierDonne->ListeIstruction.append(Ligne.mid(Ligne.indexOf('<')).remove(QChar(' '), Qt::CaseSensitive));
+               if (comment) {
+                   FichierDonne->Commentaire.insert(Ligne.mid(Ligne.indexOf('<')).remove(QChar(' '), Qt::CaseSensitive), CommentTxt);
+                   comment = false;
+               }
                CompteurLigne += 2;
            }
            else {
-               TextFinal.append(QString("#") + Ligne + QString("\n\0"));
+               CommentTxt = Ligne.remove('#') + QString("\n\0");
+               comment = true;
            }
        }
     }
-    QString Nomfichier =  QFileDialog::getSaveFileName(this, tr("Enregistrer un fichier 'Effet lumineux Creche' "), "./Exe_" + LigneFile->text() + ".cre", tr("cre Files (*.cre);;Text Files (*.txt, *.xml, *.Xml, *.XML);;All Files (*.*)"));
+/*    QString Nomfichier =  QFileDialog::getSaveFileName(this, tr("Enregistrer un fichier 'Effet lumineux Creche' "), "./Exe_" + LigneFile->text() + ".cre", tr("cre Files (*.cre);;Text Files (*.txt, *.xml, *.Xml, *.XML);;All Files (*.*)"));
     if (Nomfichier != "")
     {
         QFile file(Nomfichier);
@@ -165,6 +177,7 @@ void EditeurProg::onSaveButton()
         file.close();
     }
     hide();
+    */
 }
 
 //Fonction qui formate le text affiché

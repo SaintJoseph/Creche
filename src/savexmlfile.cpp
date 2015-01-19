@@ -246,8 +246,6 @@ void SaveXmlFile::SupprimerUneInstance(Compilation * Instance)
         MainLayout->removeWidget(Instance);
         int taille = WidgetScrollArea->height();
         WidgetScrollArea->setFixedHeight(taille - 45);
-        //Désactive la sauvegarde automatique
-        Instance->saveAuto = false;
         //On supprime l'instance
         delete Instance;
         //On met a jours la liste de référence
@@ -266,7 +264,7 @@ void SaveXmlFile::SupprimerUneInstance(Compilation * Instance)
         }
 #ifdef DEBUG_COMANDSAVE
         std::cout << "/" << func_name << std::endl;
-        affichageqDebug("apres supp");
+        //affichageqDebug("apres supp");
 #endif /* DEBUG_COMANDSAVE */
     }
     else
@@ -285,6 +283,8 @@ void SaveXmlFile::DeleteMode()
     //permet de déterminer l'instance active à supprimer
     if (ListeModeOuvertPoint[ListeModeOuvert[ActiveModeNum]] != NULL)
     {
+        //Désactive la sauvegarde automatique
+        ListeModeOuvertPoint[ListeModeOuvert[ActiveModeNum]]->saveAuto = false;
         //Supprime l'instance avec l'id
         SupprimerUneInstance(ListeModeOuvertPoint[ListeModeOuvert[ActiveModeNum]]);
     }
@@ -513,6 +513,9 @@ void SaveXmlFile::onCompilationAsked()
     CompilationAssemblage->ListeModules.removeDuplicates();
     CompilationAssemblage->ListeModules.sort();
     //Création du fichier 00 et des fichiers de test principaux
+    DonneFichier *Fichier = new DonneFichier;
+    CompilationFichierCommun(Fichier, &CompilationAssemblage->Table);
+    CompilationAssemblage->DonneDesFichiers.insert(Fichier->ModeNom, Fichier);
     //Appel des fonctions de compilation de chaque mode,
     for (int i = 0; i < 5; i++){
         Compilation *Instance = ListeModeOuvertPoint[i];
@@ -673,7 +676,7 @@ void SaveXmlFile::onValidationClicked()
                                else {
                                    LigneSaut = Ligne.mid(index+3, 1).toInt();
                                }
-                               LigneSaut = CompteurLigne + LigneSaut * 2;
+                               LigneSaut = CompteurLigne + LigneSaut * PROGLIGNEITERATOR;
                            }
                            if (Ligne.at(index+2).toLatin1() == '-') { //Saut en arrière
                                if (Ligne.at(index+4).toLatin1() >= '0' && Ligne.at(index+4).toLatin1() <= '9') {
@@ -683,7 +686,7 @@ void SaveXmlFile::onValidationClicked()
                                else {
                                    LigneSaut = Ligne.mid(index+3, 1).toInt();
                                }
-                               LigneSaut = CompteurLigne - LigneSaut * 2;
+                               LigneSaut = CompteurLigne - LigneSaut * PROGLIGNEITERATOR;
                            }
                            break;
                        default:
@@ -695,7 +698,7 @@ void SaveXmlFile::onValidationClicked()
                            Ligne.replace(index, 4, IntToQString(LigneSaut));
                    }
                    TextFinal.append(IntToQString(CompteurLigne).toUpper() + QString(" ") + Ligne.mid(Ligne.indexOf('<')).remove(QChar(' '), Qt::CaseSensitive).toUpper() + QString("\n"));
-                   CompteurLigne += 2;
+                   CompteurLigne += PROGLIGNEITERATOR;
                }
                else {
                    TextFinal.append(QString("#") + Ligne + QString("\n\0"));
@@ -707,13 +710,22 @@ void SaveXmlFile::onValidationClicked()
         out << TextFinal;
         File.close();
     }
+    //Retour vers l'état de démarrage
+    ChangeDockAffichage(false);
+    for (int i = 0; i < 5; i++) {
+        if (ListeModeOuvertPoint[i]) {
+            //Sauvegarde automatique sauvegardé, et fermeture
+            ListeModeOuvertPoint[i]->saveAuto = true;
+            //Dans ce cas on supprime toutes les instances existantes, avec forçage, car il y a 1 nouveau mode de créé
+            SupprimerUneInstance(ListeModeOuvertPoint[i]);
+        }
+    }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
 }
 
 //Fonction qui converti un nombre en Qstring de 4 carractères
-
 QString SaveXmlFile::IntToQString(int Value)
 {
     QString StringValeur = QString::number(Value,16);
@@ -724,4 +736,16 @@ QString SaveXmlFile::IntToQString(int Value)
     else if (StringValeur.length() == 3)
         StringValeur.prepend("0");
     return StringValeur;
+}
+
+//Fonction qui génère le fichier de base 00, lors de la compilation
+void SaveXmlFile::CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRAM *TableRAM)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
 }

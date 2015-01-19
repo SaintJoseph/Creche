@@ -21,6 +21,9 @@
 #include "func_name.h"
 #include "editeurprog.h"
 
+
+#define PROGLIGNEITERATOR 2
+
 class SaveXmlFile : public QDockWidget
 {
     Q_OBJECT
@@ -109,6 +112,7 @@ private:
 #endif /* DEBUG_COMANDSAVE */
     //Fonction qui converti un nombre en Qstring de 4 carractères
     QString IntToQString(int Value);
+    void CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRAM *TableRAM);
 };
 
 #endif // SAVEXMLFILE_H

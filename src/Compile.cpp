@@ -970,24 +970,8 @@ bool Compilation::CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM
             break;
         }
     }
+    DataToFill->ListeIstruction.append("<M01M01RA0>");
 
-    /*
-<Condition id="0" Type="0 Periode">
-<StartTime>
-<Mois>8</Mois>
-<Jour>16</Jour>
-<Heure>0</Heure>
-<Min>0</Min>
-</StartTime>
-<EndTime>
-<Mois>9</Mois>
-<Jour>2</Jour>
-<Heure>0</Heure>
-<Min>0</Min>
-</EndTime>
-</Condition>
-
-*/
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

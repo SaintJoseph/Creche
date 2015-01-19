@@ -167,16 +167,6 @@ void EditeurProg::onSaveButton()
            }
        }
     }
-/*    QString Nomfichier =  QFileDialog::getSaveFileName(this, tr("Enregistrer un fichier 'Effet lumineux Creche' "), "./Exe_" + LigneFile->text() + ".cre", tr("cre Files (*.cre);;Text Files (*.txt, *.xml, *.Xml, *.XML);;All Files (*.*)"));
-    if (Nomfichier != "")
-    {
-        QFile file(Nomfichier);
-        file.open(QIODevice::WriteOnly | QIODevice::Text);
-        QTextStream out(&file);
-        out << TextFinal;
-        file.close();
-    }
-*/
     hide();
 }
 

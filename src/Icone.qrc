@@ -9,5 +9,7 @@
         <file alias="nl_be.qm">ComAndSavePart_nl.qm</file>
         <file alias="jp_jp.qm">ComAndSavePart_jp.qm</file>
         <file alias="cmd.xml">CommandeModules.xml</file>
+        <file alias="Comm">iconearduino.png</file>
+        <file alias="CHoraire">CHoraire.png</file>
     </qresource>
 </RCC>

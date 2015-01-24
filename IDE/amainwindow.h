@@ -25,6 +25,14 @@ public:
 public slots:
 
 private slots:
+    //Slot pour affiche ou cacher le dock Horodateur
+    void AfficherDockHorodateur();
+    //Slot pour afficher ou cacher le dock Communication
+    void AfficherDockComm();
+    //Slot lors du lancement ou fin de la compilation
+    void CompilationStarted(bool Start);
+    //Slot lors de la connection d'un module Arduino
+    void onArduinoConnected();
 
 signals:
 
@@ -39,7 +47,8 @@ private:
     //Surchage de ChangeEvent(QEvent *event)
     void changeEvent(QEvent* event);
     // store translated widgets as members
-    QMenu* languages;
+    QMenu *Menulanguages, *MenuVisbilite;
+    QAction *ActionHorodateur, *ActionComm;
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
     void retranslate();
 };

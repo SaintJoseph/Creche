@@ -50,6 +50,8 @@ signals:
     void ChangeActiveMode();
     //Le mode actif envois un signal de mise a jour
     void CompilationUpdated();
+    //L'utilisateur lance la compilation
+    void CompilationStart(bool);
 
 
 public slots:
@@ -63,6 +65,8 @@ public slots:
     //Sur demande des condition Horaire
     void onDemandeCHToPlainText(QPlainTextEdit *ZoneDeTexte);
     void onDemandeCHToPlainText(CondHoraire *CondH, int indice);
+    //Edition autorisée
+    bool onEditionRequested();
 
 private slots:
     //Créeation d'une nouvelle instance de compilation

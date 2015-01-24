@@ -530,6 +530,7 @@ void SaveXmlFile::onCompilationAsked()
     //Puis à la validation des ces fichiers, il sont enregistrer sur la carte micro SD(ou ailleur)
     ListeModel = new QStringListModel(QStringList (CompilationAssemblage->DonneDesFichiers.keys()));
     FichierCree->setModel(ListeModel);
+    emit CompilationStart(true);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -720,6 +721,7 @@ void SaveXmlFile::onValidationClicked()
             SupprimerUneInstance(ListeModeOuvertPoint[i]);
         }
     }
+    emit CompilationStart(false);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -748,4 +750,20 @@ void SaveXmlFile::CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRA
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+}
+
+//Autorisation d'éditer les effets lumineux
+bool SaveXmlFile::onEditionRequested()
+{
+    bool test = false;
+    for (int i = 0; i < 5; i++) {
+        if (ListeModeOuvertPoint[i]) {
+            test = true;
+            break;
+        }
+    }
+    if (!CompileMode && test)
+        return true;
+    else
+        return false;
 }

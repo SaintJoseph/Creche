@@ -621,3 +621,9 @@ void ComArduino::retranslate(QString lang)
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
 }
+
+//Retourne si le dock est connecté à un module arduino
+bool ComArduino::isConnected()
+{
+    return port->isOpen();
+}

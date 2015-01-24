@@ -10,6 +10,30 @@ AMainWindow::AMainWindow(QWidget *parent) :
 
     //Fonction qui initialise les dock et qui réalise la liste des langues (QAction)
     fillLanguages();
+
+    MenuVisbilite = ui->menuBar->addMenu(tr("Fenêtre"));
+    ActionComm = MenuVisbilite->addAction(tr("Communication USB/Serial"));
+    ActionComm->setCheckable(true);
+    ActionComm->setIcon(QIcon(":Comm"));
+// ALEXIS -> Ajouter ActionComm à la barre d'outil
+    connect(ActionComm, SIGNAL(triggered()), SLOT(AfficherDockComm()));
+    ActionHorodateur = MenuVisbilite->addAction(tr("Horodateur"));
+    ActionHorodateur->setCheckable(true);
+    ActionHorodateur->setIcon(QIcon(":CHoraire"));
+// ALEXIS -> Ajouter ActionHorodateur à la barre d'outil
+    connect(ActionHorodateur, SIGNAL(triggered()), SLOT(AfficherDockHorodateur()));
+
+    //Dock pour la communication
+    DockArduino = new ComArduino(tr("Communication Arduino"), this);
+    AfficherDockComm();
+    addDockWidget(Qt::BottomDockWidgetArea, DockArduino);
+    //Dock pour l'enregistrement
+    DockSave = new SaveXmlFile(tr("Liste des modes"), this);
+    addDockWidget(Qt::LeftDockWidgetArea, DockSave);
+    //Dock pour les condition horaire
+    DockHorodateur = new Horodateur(tr("Condition horaire"), this);
+    AfficherDockHorodateur();
+    addDockWidget(Qt::LeftDockWidgetArea, DockHorodateur);
 }
 
 AMainWindow::~AMainWindow()
@@ -23,7 +47,7 @@ AMainWindow::~AMainWindow()
 //Fonction qui initialise les dock et qui réalise la liste des langues (QAction)
 void AMainWindow::fillLanguages()
 {
-    languages = ui->menuBar->addMenu(tr("Langues"));
+    Menulanguages = ui->menuBar->addMenu(tr("Langues"));
 
     // make a group of language actions
     QActionGroup* actions = new QActionGroup(this);
@@ -38,18 +62,11 @@ void AMainWindow::fillLanguages()
         QString name = language + " (" + country + ")";
 
         // construct an action
-        QAction* action = languages->addAction(name);
+        QAction *action = Menulanguages->addAction(name);
         action->setData(avail);
         action->setCheckable(true);
         actions->addAction(action);
     }
-
-    //Dock pour la communication
-    DockArduino = new ComArduino(tr("Communication Arduino"), this);
-    //Dock pour l'enregistrement
-    DockSave = new SaveXmlFile(tr("Liste des modes"), this);
-    //Dock pour les condition horaire
-    DockHorodateur = new Horodateur(tr("Condition horaire"), this);
 
     //Signaux a connecter définitivement entre les docks
     connect(DockHorodateur, SIGNAL(SendCondHoraire(CondHoraire*, int)), DockSave, SLOT(addCondition(CondHoraire*, int)));
@@ -59,6 +76,8 @@ void AMainWindow::fillLanguages()
     connect(DockHorodateur, SIGNAL(DemandeCHstring(QPlainTextEdit*)), DockSave, SLOT(onDemandeCHToPlainText(QPlainTextEdit*)));
     connect(DockHorodateur, SIGNAL(DemandeCHstring(CondHoraire*, int)), DockSave, SLOT(onDemandeCHToPlainText(CondHoraire*, int)));
     connect(DockSave, SIGNAL(CompilationUpdated()), DockHorodateur, SLOT(onModeUpdate()));
+    //Lors du lancement de la compilation
+    connect(DockSave, SIGNAL(CompilationStart(bool)), SLOT(CompilationStarted(bool)));
 }
 
 //Fonction qui lance le changement de langue
@@ -91,7 +110,8 @@ void AMainWindow::changeEvent(QEvent* event)
 //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
 void AMainWindow::retranslate()
 {
-    languages->setTitle(tr("Language"));
+    Menulanguages->setTitle(tr("Language"));
+    MenuVisbilite->setTitle(tr("Fenêtre"));
     DockHorodateur->setWindowTitle(tr("Condition horaire"));
     DockArduino->setWindowTitle(tr("Communication Arduino"));
     DockSave->setWindowTitle(tr("Liste des modes"));
@@ -102,4 +122,48 @@ void AMainWindow::OnModeChange()
 {
     //On reset l'affichage du dock condition horaire
     DockHorodateur->AffichageOnChangeMode();
+}
+
+//Slot pour affiche ou cacher le dock Horodateur
+void AMainWindow::AfficherDockHorodateur()
+{
+    if (ActionHorodateur->isChecked() && DockSave->onEditionRequested()) {
+        DockHorodateur->setVisible(true);
+    }
+    else {
+        DockHorodateur->setVisible(false);
+        ActionHorodateur->setChecked(false);
+    }
+}
+
+//Slot pour afficher ou cacher le dock Communication
+void AMainWindow::AfficherDockComm()
+{
+    if (!ActionComm->isChecked() && !DockArduino->isConnected()) {
+        DockArduino->setVisible(false);
+    }
+    else {
+        DockArduino->setVisible(true);
+        ActionComm->setChecked(true);
+    }
+}
+
+//Slot lors du lancement ou fin de la compilation
+void AMainWindow::CompilationStarted(bool Start)
+{
+    if (Start) {
+        ActionHorodateur->setChecked(false);
+        AfficherDockHorodateur();
+// ALEXIS -> désactive ou cache le widget d'edition des effets lumineux
+    }
+    else {
+// ALEXIS -> activer ou afficher le widget d'edition des effets lumineux
+    }
+}
+
+//Slot lors de la connection d'un module Arduino
+void AMainWindow::onArduinoConnected()
+{
+    ActionComm->setChecked(true);
+    AfficherDockComm();
 }

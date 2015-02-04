@@ -78,6 +78,8 @@ void AMainWindow::fillLanguages()
     connect(DockSave, SIGNAL(CompilationUpdated()), DockHorodateur, SLOT(onModeUpdate()));
     //Lors du lancement de la compilation
     connect(DockSave, SIGNAL(CompilationStart(bool)), SLOT(CompilationStarted(bool)));
+    //Signal lorsqu'une carte arduino est branchée sur le port USB du PC
+    connect(DockArduino, SIGNAL(ConnectEvent()), SLOT(onArduinoConnected()));
 }
 
 //Fonction qui lance le changement de langue

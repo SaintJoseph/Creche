@@ -95,7 +95,6 @@ void NewModeDialog::IDAdapter(int id)
     //on deconnecte en même temps le signal source pour éviter
     //de multiple tentative d'adapter l'id
     disconnect(ui->NomMode,0,0,0);
-
 }
 
 //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire

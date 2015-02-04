@@ -447,6 +447,7 @@ void ComArduino::onOpenCloseButtonClicked(char action)
             {
                 port->setPortName(PortBox->currentText());
                 port->open(QIODevice::ReadWrite);
+                emit ConnectEvent();
             }
         }
         else

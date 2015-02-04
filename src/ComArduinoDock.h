@@ -43,6 +43,7 @@ class ComArduino : public QDockWidget
 
 signals:
     void genereOpenCloseEvent();
+    void ConnectEvent();
 
 public slots:
     //Test si on est connecté à un module arduino

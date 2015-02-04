@@ -214,6 +214,7 @@ Compilation::~Compilation()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+        delete NewMode;
         QFile file(Nomfichier);
         if (!saveAuto) {
             if (!file.exists())
@@ -277,7 +278,6 @@ void Compilation::initialisationNouveauDom(QString Nom, QString Description, QSt
     //Controle et application des couleurs aux led en fonction
     ControleCompilation();
 
-    delete NewMode;
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -333,8 +333,6 @@ void Compilation::initialisationFichierDom()
     }
     //Controle et application des couleurs aux led en fonction
     ControleCompilation();
-
-    delete NewMode;
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -899,13 +897,15 @@ void Compilation::retranslate(QString lang)
     LedIni->setToolTip(tr("Initialisation du mode"));
     LedCond->setToolTip(tr("Conditions horaire programmée"));
     LedState->setToolTip(tr("Effet lumineux (1 ou plus)"));
-    enregistrer->setWindowTitle(tr("Enregistrer fichier Xml", "Titre fenetre"));
-    enregistrer->setText(tr("<font color=\"#FF2A2A\">Voulez-vous sauvegarder le fichier suivant:<font>"));
-    enregistrer->setButtonText(QMessageBox::Save,tr("Enregistrer"));
-    enregistrer->setButtonText(QMessageBox::Discard, tr("Ne pas enregistrer"));
+    if (enregistrer) {
+        enregistrer->setWindowTitle(tr("Enregistrer fichier Xml", "Titre fenetre"));
+        enregistrer->setText(tr("<font color=\"#FF2A2A\">Voulez-vous sauvegarder le fichier suivant:<font>"));
+        enregistrer->setButtonText(QMessageBox::Save,tr("Enregistrer"));
+        enregistrer->setButtonText(QMessageBox::Discard, tr("Ne pas enregistrer"));
+    }
     LabelId->setToolTip(tr("ID attribué à ce mode pour un fonctionnement multi mode"));
-    if (NewMode)
-        NewMode->retranslate(lang);
+ //   if (NewMode)
+ //       NewMode->retranslate(lang);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

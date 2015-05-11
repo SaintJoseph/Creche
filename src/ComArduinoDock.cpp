@@ -320,7 +320,6 @@ ComArduino::~ComArduino()
     delete TerminalZone;
     delete LayoutPrincH;
     delete Base;
-    delete docCommandeModule;
 
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;

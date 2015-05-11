@@ -128,3 +128,4 @@ QStringList NewModeDialog::askeModules()
     }
     return liste;
 }
+

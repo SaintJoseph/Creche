@@ -127,6 +127,14 @@ public:
     QString AddToRamTable(TableUsedRAM *TableRAM, QString Data);
     //Fonction qui renvois la liste des modules qu'elle utilise
     QStringList ListeDesModules();
+    //Retourne la priorité d'un mode
+    int InstancePriorite();
+    //Retourne L'indice d'un mode
+    int InstanceIndice();
+    //Retourne le nom d'un mode
+    QString InstanceNom();
+    //Retourne La description d'un mode
+    QString InstanceDescription();
 
     //Sauvegarde automatique active
     bool saveAuto = true;
@@ -149,6 +157,10 @@ public slots:
     void DemndeLectureCH(CondHoraire *CondH, int indice);
     void DemndeLectureCH(QPlainTextEdit *CondH);
     bool onControleCompilation();
+    //Fonction pour modifier la priorité d'un mode
+    void setPriorite(int Priorite);
+    //Fonction pour modifier l'id d'un mode
+    void setIndice(int Indice);
 
 protected:
     //re-implement processing of moue events

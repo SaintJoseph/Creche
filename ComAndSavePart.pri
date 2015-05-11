@@ -39,7 +39,7 @@ SOURCES                += $$PWD/src/qextserialport.cpp \
                           $$PWD/src/application.cpp \
                           $$PWD/src/convertisseurdechexa.cpp \
                           $$PWD/src/lecommandemodules.cpp \
-                          $$PWD/src/editeurprog.cpp \
+                          $$PWD/src/editeurprog.cpp
 
 unix {
     SOURCES            += $$PWD/src/qextserialport_unix.cpp
@@ -63,7 +63,7 @@ macx:LIBS              += -framework IOKit -framework CoreFoundation
 win32:LIBS             += -lsetupapi -ladvapi32 -luser32
 
 FORMS    += \
-    $$PWD/src/newmodedialog.ui
+                        $$PWD/src/newmodedialog.ui
 
 # moc doesn't detect Q_OS_LINUX correctly, so add this to make it work
 linux*:DEFINES += __linux__

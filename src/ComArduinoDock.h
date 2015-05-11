@@ -83,7 +83,6 @@ private:
     QLineEdit *InstructionManuel;
     QComboBox *BaudeRate, *ParityBox, *DataBitBox, *StopBitBox, *QueryModeBox, *PortBox;
     QSpinBox *TimeOutBox;
-    QDomDocument *docCommandeModule;
     QString CommandeRecu;
     LECommandeModules *WidgetEnvoisRecep;
     bool CommandeEnCours;

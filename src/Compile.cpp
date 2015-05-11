@@ -274,6 +274,7 @@ void Compilation::initialisationNouveauDom(QString Nom, QString Description, QSt
         addElement(doc, &setmode, TAG_MODULE, Module);
     }
     setToolTip(Description);
+    NewMode->hide();
 
     //Controle et application des couleurs aux led en fonction
     ControleCompilation();
@@ -288,51 +289,57 @@ void Compilation::initialisationFichierDom()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    while (Nomfichier == NULL)
+    Nomfichier = QFileDialog::getOpenFileName(this, tr("Ouvrir un fichier 'Effet lumineux Creche' "), "./", tr("Xml Files (*.Xml);;Text Files (*.txt);;All Files (*.*)"));
+    if (Nomfichier == NULL){
+        showNewModeDialog();
+    }
+    else
     {
-        Nomfichier = QFileDialog::getOpenFileName(this, tr("Ouvrir un fichier 'Effet lumineux Creche' "), "./", tr("Xml Files (*.Xml);;Text Files (*.txt);;All Files (*.*)"));
-    }
-    if (!Nomfichier.contains(".xml"))
-        if (!Nomfichier.contains(".XML"))
-            if (!Nomfichier.contains(".Xml"))
-                Nomfichier.append(".Xml");
-    QFile* file = new QFile(Nomfichier);
-    /* If we can't open it, let's show an error message. */
-    if (!file->open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::critical(this, tr("Erreur a l'ouverture du fichier"),tr("Une erreur est survenue lors de l'ouverture du fichier."),QMessageBox::Ok);
-        delete enregistrer;
-        emit DeleteMe(this);
-    }
+        //On cache la fenètre de paramétrisation
+        NewMode->hide();
+        //On controle le fichier a ouvrir
+        if (!Nomfichier.contains(".xml"))
+            if (!Nomfichier.contains(".XML"))
+                if (!Nomfichier.contains(".Xml"))
+                    Nomfichier.append(".Xml");
+        QFile* file = new QFile(Nomfichier);
+        /* If we can't open it, let's show an error message. */
+        if (!file->open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QMessageBox::critical(this, tr("Erreur a l'ouverture du fichier"),tr("Une erreur est survenue lors de l'ouverture du fichier."),QMessageBox::Ok);
+            delete enregistrer;
+            emit DeleteMe(this);
+        }
 
-    if (!doc->setContent(file))
-    {
-        QMessageBox::critical(this, tr("Erreur a la lecture du fichier"),tr("Une erreur est survenue pendant la lecture du fichier."),QMessageBox::Ok);
-        delete enregistrer;
-        emit DeleteMe(this);
-    }
-    file->close();
-    delete file;
-    //Attribution d'un nouvel id
-    delElement(doc, TAG_ID);
-    //Extraction du nom du mode
-    QDomElement element = doc->documentElement();
-    addElement(doc, element, TAG_ID, QString::number(NouvelId()));
-    LabelId->setText(doc->documentElement().attribute(ATTRIBUT_ID));
-    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-    {
-        //Prend le nom et vérifie l'initialisation du mode
-        if (qde.tagName() == TAG_NOM)
+        if (!doc->setContent(file))
         {
-            LabelNom->setText(qde.text());
+            QMessageBox::critical(this, tr("Erreur a la lecture du fichier"),tr("Une erreur est survenue pendant la lecture du fichier."),QMessageBox::Ok);
+            delete enregistrer;
+            emit DeleteMe(this);
         }
-        //Extraction de la description
+        file->close();
+        delete file;
+        //Attribution d'un nouvel id
+        delElement(doc, TAG_ID);
+        //Extraction du nom du mode
+        QDomElement element = doc->documentElement();
+        addElement(doc, element, TAG_ID, QString::number(NouvelId()));
+        LabelId->setText(doc->documentElement().attribute(ATTRIBUT_ID));
+        for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
         {
-            if (qde.tagName() == TAG_DESCRIPTION)
-                setToolTip(qde.text());
+            //Prend le nom et vérifie l'initialisation du mode
+            if (qde.tagName() == TAG_NOM)
+            {
+                LabelNom->setText(qde.text());
+            }
+            //Extraction de la description
+            {
+                if (qde.tagName() == TAG_DESCRIPTION)
+                    setToolTip(qde.text());
+            }
         }
+        //Controle et application des couleurs aux led en fonction
+        ControleCompilation();
     }
-    //Controle et application des couleurs aux led en fonction
-    ControleCompilation();
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -489,7 +496,7 @@ int Compilation::NbInstance()
     return valeur;
 }
 
-//Fonction qui renvois un pointeur vers un instance valide
+//Fonction qui renvois un pointeur vers une instance valide
 Compilation* Compilation::InstanceActive()
 {
 #ifdef DEBUG_COMANDSAVE
@@ -1004,7 +1011,7 @@ QString Compilation::AddToRamTable(TableUsedRAM *TableRAM, QString Data)
 #endif /* DEBUG_COMANDSAVE */
 }
 
-//Fonction pour ajouter ou retourner une adresse RAM
+//Fonction qui retourne la liste des modules
 QStringList Compilation::ListeDesModules()
 {
 #ifdef DEBUG_COMANDSAVE
@@ -1054,6 +1061,8 @@ void Compilation::CompilationDate(CondHoraire *CondH, DonneFichier *DataToFill, 
 #endif /* DEBUG_COMANDSAVE */
     //Date actuelle
     QString Commande = "<M01M01LDX" + AddToRamTable(TableRAM, QString("M01DX")) + ">";
+    //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
     DataToFill->ListeIstruction.append(Commande);
     DataToFill->Commentaire.insert(Commande, tr("Condition sur la date :") + QString::number(CondH->DJour) + "/" + QString::number(CondH->DMois) + tr(" to ") + QString::number(CondH->EJour) + "/" + QString::number(CondH->EMois));
     //Date de début
@@ -1091,6 +1100,8 @@ void Compilation::CompilationHeure(CondHoraire *CondH, DonneFichier *DataToFill,
 #endif /* DEBUG_COMANDSAVE */
     //Date actuelle
     QString Commande = "<M01M01LDZ" + AddToRamTable(TableRAM, QString("M01DZ")) + ">";
+    //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
     DataToFill->ListeIstruction.append(Commande);
     DataToFill->Commentaire.insert(Commande, tr("Condition sur l'heure :") + QString::number(CondH->DHeure) + ":" + QString::number(CondH->DMinute) + tr(" to ") + QString::number(CondH->EHeure) + ":" + QString::number(CondH->EMinute));
     //Heure de début
@@ -1126,6 +1137,8 @@ void Compilation::CompilationSem(CondHoraire *CondH, DonneFichier *DataToFill, T
 #endif /* DEBUG_COMANDSAVE */
     //Date actuelle
     QString Commande = "<M01M01LDW" + AddToRamTable(TableRAM, QString("M01DW")) + ">";
+    //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
     DataToFill->ListeIstruction.append(Commande);
     DataToFill->Commentaire.insert(Commande, tr("Condition sur le jour de la semaine :") + QString::number(CondH->DJourSem) + tr(" to ") + QString::number(CondH->EJourSem));
     //semaine de début
@@ -1146,6 +1159,114 @@ void Compilation::CompilationSem(CondHoraire *CondH, DonneFichier *DataToFill, T
     DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DW")) + "SA" + AddToRamTable(TableRAM, QString("M01AJ")) + "L?R+2>");
     //Test validé, on enregistre le résultat
     DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01CA")) + "PV0001>");
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Retourne la priorité d'un mode
+int Compilation::InstancePriorite()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    QDomElement element = doc->documentElement();
+    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
+    {
+        if (qde.tagName() == TAG_PRIORITY)
+        {
+            return qde.text().toInt();
+        }
+    }
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    return 0;
+}
+
+//Retourne L'indice d'un mode
+int Compilation::InstanceIndice()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    QDomElement element = doc->documentElement();
+    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
+    {
+        if (qde.tagName() == TAG_ID)
+        {
+            return qde.text().toInt();
+        }
+    }
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    return 0;
+}
+
+//Retourne le nom d'un mode
+QString Compilation::InstanceNom()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    QDomElement element = doc->documentElement();
+    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
+    {
+        if (qde.tagName() == TAG_NOM)
+        {
+            return qde.text();
+        }
+    }
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    return QString::null;
+}
+
+//Retourne La description d'un mode
+QString Compilation::InstanceDescription()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    QDomElement element = doc->documentElement();
+    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
+    {
+        if (qde.tagName() == TAG_DESCRIPTION)
+        {
+            return qde.text();
+        }
+    }
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    return QString::null;
+}
+
+//Fonction pour modifier la priorité d'un mode
+void Compilation::setPriorite(int Priorite)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    QDomElement el = doc->documentElement();
+    delElement(doc, TAG_PRIORITY);
+    addElement(doc, &el, TAG_PRIORITY, QString::number(Priorite));
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Fonction pour modifier l'id d'un mode
+void Compilation::setIndice(int Indice)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    QDomElement el = doc->documentElement();
+    delElement(doc, TAG_ID);
+    addElement(doc, &el, TAG_ID, QString::number(Indice));
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

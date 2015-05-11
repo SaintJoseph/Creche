@@ -746,7 +746,28 @@ void SaveXmlFile::CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRA
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-
+    //définition du nom du fichier
+    DataToFill->ModeNom = "00";
+    //Variable locale avec le nombre d'instances
+    int NbInstance = Compilation::NbInstance();
+    //Fonction pour corriger les priorités des modes
+    if (!ControlePriorite()) {
+        QString Message = "<b>Mode d'éclairage et priorité :</b><br>";
+        for (int i = 0; i < 5; i++){
+            if (ListeModeOuvertPoint[i]){
+                Message.append("Id:");
+                Message.append(QString::number(ListeModeOuvertPoint[i]->InstanceIndice()));
+                Message.append(", ");
+                Message.append(ListeModeOuvertPoint[i]->InstanceNom());
+                Message.append(tr(", Priorité: <font color=\"#FF2A2A\">"));
+                Message.append(QString::number(ListeModeOuvertPoint[i]->InstancePriorite()));
+                Message.append("</font>, ");
+                Message.append(ListeModeOuvertPoint[i]->InstanceDescription());
+                Message.append("<br>");
+            }
+        }
+        QMessageBox::information(this, tr("Erreur dans les priorités"), Message);
+    }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -766,4 +787,39 @@ bool SaveXmlFile::onEditionRequested()
         return true;
     else
         return false;
+}
+
+//Controle des priorites
+bool SaveXmlFile::ControlePriorite()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //Chaque niveau de priorité entre 0 et 9 est accepté 1 X
+    //Le test est faux si la valeur de la priorité n'est comprise entre ces valeurs
+    //Le test est également faut si plusieurs mode ont la même priorité
+    //Tableau booléen pour chaque niveau de priorité
+    bool LesPrioriteTest[10] = {0,0,0,0,0,0,0,0,0,0};
+    //Boucle qui test les priorités
+    for (int i = 0; i < 5; i++){
+        if (ListeModeOuvertPoint[i]){
+            int Prio = ListeModeOuvertPoint[i]->InstancePriorite();
+            if (Prio < 10){
+                if (Prio > -1){
+                    if (!LesPrioriteTest[Prio])
+                        LesPrioriteTest[Prio] = true;
+                    else
+                       return false;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+    }
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    return true;
 }

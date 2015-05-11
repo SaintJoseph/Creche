@@ -117,6 +117,8 @@ private:
     //Fonction qui converti un nombre en Qstring de 4 carractères
     QString IntToQString(int Value);
     void CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRAM *TableRAM);
+    //Controle des priorites
+    bool ControlePriorite();
 };
 
 #endif // SAVEXMLFILE_H

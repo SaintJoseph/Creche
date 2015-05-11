@@ -97,7 +97,6 @@ EditeurProg::~EditeurProg()
     delete LigneFile;
     delete NomFile;
     delete LayoutMenu;
-    delete LayoutMenu;
 }
 
 //Fonction pour appliquer et réappliquer tous les labels en fonction des demande de traduction

@@ -135,6 +135,8 @@ public:
     QString InstanceNom();
     //Retourne La description d'un mode
     QString InstanceDescription();
+    //Renvois le mode actif
+    static int ModeActif();
 
     //Sauvegarde automatique active
     bool saveAuto = true;
@@ -147,20 +149,22 @@ signals:
     void DeleteMe(Compilation *);
     //Mise a jour du mode
     void CompilationUpdated();
+    //Demande l'affichage de NewModeDialogue une nouvelle fois
+    void AfficheNewMode(QString Nom, QString Description, int idMode, int priorite);
 
 public slots:
     void initialisationNouveauDom(QString Nom, QString Description, QString FichierNom, int idMode, int priorite);
     void initialisationFichierDom();
+    //Fonction qui met à jour les paramètres principaux d'un mode lumineux
+    void UpdateDom(QString Nom, QString Description, int idMode, int priorite);
     void ProposeID();
     void showNewModeDialog();
     //Retourne les condition Horaire sous forme de structure ou de texte
     void DemndeLectureCH(CondHoraire *CondH, int indice);
     void DemndeLectureCH(QPlainTextEdit *CondH);
     bool onControleCompilation();
-    //Fonction pour modifier la priorité d'un mode
-    void setPriorite(int Priorite);
-    //Fonction pour modifier l'id d'un mode
-    void setIndice(int Indice);
+    //Fonction pour modifier le mode actif
+    static void setModeActif(int ModeActive);
 
 protected:
     //re-implement processing of moue events
@@ -180,8 +184,9 @@ private:
 
     //Liste des instances pour une compilation de tous les modes à la fois
     static Compilation *ListeInstance[10];
-    static char nbInstance;
-    char Instance;
+    static int nbInstance;
+    int Instance;
+    static int ActiveModeNum;
 
     //Traitement des chaines de carractère
     QString Const_QString(int type);

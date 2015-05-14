@@ -31,6 +31,14 @@ public:
     void retranslate(QString lang);
     //Renvois le nom du module pour l'indice indiqué, sauf s'il n'y en pas ou qu'il n'est pas coché
     QStringList askeModules();
+    //Renvois La valeur de iniMode
+    bool InitialisationMode();
+
+public slots:
+    //Faire passer en mode edition plus initialisation
+    void FinInitialisation();
+    //Mise a jour des champs principaux
+    void UpdateAndShow(QString Nom, QString Description, int idMode, int priorite);
 
 private Q_SLOTS:
     void OnBrowse();
@@ -41,12 +49,14 @@ private Q_SLOTS:
 signals:
     void BoutonNouveau(QString, QString, QString, int, int);
     void AdapterID();
+    void BoutonValider(QString, QString, int, int);
 
 private:
     QString Chemin;
     QString indLangue;
     QDomDocument *docCommandeModule;
     ListeModule listemodules;
+    bool IniMode;
 
 };
 

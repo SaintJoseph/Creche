@@ -123,8 +123,8 @@ SaveXmlFile::SaveXmlFile(const QString & title, QWidget *parent , Qt::WindowFlag
         MainLayout->addWidget(ListeModeOuvertPoint[0]);
         int taille = WidgetScrollArea->height();
         WidgetScrollArea->setFixedHeight(taille + 45);
-        ActiveModeNum = ListeModeOuvert[0];
-        ChangeModeActif(ActiveModeNum);
+        Compilation::setModeActif(ListeModeOuvert[0]);
+        ChangeModeActif(Compilation::ModeActif());
         Flag1erInstanceNotInitialised = true;
         //On connect le signal avec l'instance
         connect(ListeModeOuvertPoint[0], SIGNAL(MouseClickEvent(int)), SLOT(ChangeModeActif(int)));
@@ -165,7 +165,6 @@ SaveXmlFile::~SaveXmlFile()
 }
 
 //Initialisation des variables statics
-int SaveXmlFile::ActiveModeNum = 0;
 int SaveXmlFile::ListeModeOuvert[] = {-1,-1,-1,-1,-1};
 Compilation *SaveXmlFile::ListeModeOuvertPoint[] = {NULL};
 
@@ -174,7 +173,7 @@ char SaveXmlFile::ActiveMode()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << "/" <<std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    return ActiveModeNum;
+    return Compilation::ModeActif();
 }
 
 void SaveXmlFile::NewMode()
@@ -253,12 +252,12 @@ void SaveXmlFile::SupprimerUneInstance(Compilation * Instance)
         {
             if (ListeModeOuvert[i] == id)
             {
-                if (ListeModeOuvert[i] == ActiveModeNum)
-                    ActiveModeNum = Compilation::InstanceActive()->InstanceValue();
+                if (ListeModeOuvert[i] == Compilation::ModeActif())
+                    Compilation::setModeActif(Compilation::InstanceActive()->InstanceValue());
                 ListeModeOuvert[i] = -1;
                 ListeModeOuvertPoint[i] = NULL;
                 //Si c'est le mode actif, on l'applique au premier de la liste
-                ChangeModeActif(ActiveModeNum);
+                ChangeModeActif(Compilation::ModeActif());
                 break;
             }
         }
@@ -281,12 +280,12 @@ void SaveXmlFile::DeleteMode()
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //permet de déterminer l'instance active à supprimer
-    if (ListeModeOuvertPoint[ListeModeOuvert[ActiveModeNum]] != NULL)
+    if (ListeModeOuvertPoint[ListeModeOuvert[Compilation::ModeActif()]] != NULL)
     {
         //Désactive la sauvegarde automatique
-        ListeModeOuvertPoint[ListeModeOuvert[ActiveModeNum]]->saveAuto = false;
+        ListeModeOuvertPoint[ListeModeOuvert[Compilation::ModeActif()]]->saveAuto = false;
         //Supprime l'instance avec l'id
-        SupprimerUneInstance(ListeModeOuvertPoint[ListeModeOuvert[ActiveModeNum]]);
+        SupprimerUneInstance(ListeModeOuvertPoint[ListeModeOuvert[Compilation::ModeActif()]]);
     }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
@@ -302,18 +301,18 @@ void SaveXmlFile::ChangeModeActif(int Instance)
 #endif /* DEBUG_COMANDSAVE */
     if (Compilation::NbInstance() > 1)
     {
-        if (Compilation::ReturnInstance(ActiveModeNum) != NULL)
-            Compilation::ReturnInstance(ActiveModeNum)->TurneLedOn(false);
+        if (Compilation::ReturnInstance(Compilation::ModeActif()) != NULL)
+            Compilation::ReturnInstance(Compilation::ModeActif())->TurneLedOn(false);
         if (Compilation::ReturnInstance(Instance) != NULL)
             Compilation::ReturnInstance(Instance)->TurneLedOn(true);
-        ActiveModeNum = Instance;
+        Compilation::setModeActif(Instance);
         emit ChangeActiveMode();
     }
     else
     {
-        ActiveModeNum = Compilation::InstanceActive()->InstanceValue();
-        if (Compilation::ReturnInstance(ActiveModeNum) != NULL)
-            Compilation::ReturnInstance(ActiveModeNum)->TurneLedOn(true);
+        Compilation::setModeActif(Compilation::InstanceActive()->InstanceValue());
+        if (Compilation::ReturnInstance(Compilation::ModeActif()) != NULL)
+            Compilation::ReturnInstance(Compilation::ModeActif())->TurneLedOn(true);
     }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
@@ -328,7 +327,7 @@ void SaveXmlFile::addCondition(CondHoraire *CondH, int indice)
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //Ici l'égalité est une recopie, on test le pointeur recopié
-    if (Compilation *comp = Compilation::ReturnInstance(ActiveModeNum))
+    if (Compilation *comp = Compilation::ReturnInstance(Compilation::ModeActif()))
         comp->addCondition(CondH, indice);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
@@ -359,7 +358,7 @@ bool SaveXmlFile::addValidation(int idState, bool Validation, bool Synchronisati
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << "/" << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    return Compilation::ReturnInstance(ActiveModeNum)->addValidation(idState, Validation, Synchronisation);
+    return Compilation::ReturnInstance(Compilation::ModeActif())->addValidation(idState, Validation, Synchronisation);
 }
 
 #ifdef DEBUG_COMANDSAVE
@@ -368,22 +367,22 @@ void SaveXmlFile::affichageqDebug(QString text)
 {
 
     //boucle pour l'affichage avec qdebug
-    qDebug() << "Contenu de listeModeOuvert[]" << text << "Mode actif" << ActiveModeNum;
+    qDebug() << "Contenu de listeModeOuvert[]" << text << "Mode actif" << Compilation::ModeActif();
     for (int i = 0; i < 5; i++)
     {
-        qDebug() << "ListeModeOuvert[" << i << "] =" << ListeModeOuvert[i] << ListeModeOuvertPoint[i] << (ListeModeOuvert[i] == ActiveModeNum?"Mode Actif":"");
+        qDebug() << "ListeModeOuvert[" << i << "] =" << ListeModeOuvert[i] << ListeModeOuvertPoint[i] << (ListeModeOuvert[i] == Compilation::ModeActif()?"Mode Actif":"");
     }
 }
 #endif /* DEBUG_COMANDSAVE */
 
-//Fonction qui retourne les condition horaire de linstance active
+//Fonction qui retourne les condition horaire de l'instance active
 Compilation* SaveXmlFile::InstanceActive()
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << "/" << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //Ici l'égalité est une recopie, on test le pointeur recopié
-    if (Compilation *comp = Compilation::ReturnInstance(ActiveModeNum))
+    if (Compilation *comp = Compilation::ReturnInstance(Compilation::ModeActif()))
         return comp;
     return NULL;
 }
@@ -411,7 +410,7 @@ void SaveXmlFile::SupprimerCondHoraire(int ValeurID)
     std::cout << func_name << "/" << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //Ici l'égalité est une recopie, on test le pointeur recopié
-    if (Compilation *comp = Compilation::ReturnInstance(ActiveModeNum))
+    if (Compilation *comp = Compilation::ReturnInstance(Compilation::ModeActif()))
         comp->SupprimeCondHoraire(ValeurID);
 }
 
@@ -483,7 +482,7 @@ void SaveXmlFile::onCompilationUpdated()
             }
         }
     }
-    if (test && mode)
+    if (test && mode && ControlePriorite())
         ButtonCompiler->setVisible(true);
     else
         ButtonCompiler->setVisible(false);

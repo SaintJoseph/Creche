@@ -1,7 +1,8 @@
 ﻿#include "Compile.h"
 
 //Initialisation du nombre d'instance
-char Compilation::nbInstance = 0;
+int Compilation::nbInstance = 0;
+int Compilation::ActiveModeNum = 0;
 Compilation *Compilation::ListeInstance[] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
 //Fonction qui renvois les donnée xml sous forme de QString
@@ -200,6 +201,8 @@ Compilation::Compilation(QWidget *parent) : QWidget(parent)
     connect(NewMode, SIGNAL(BoutonNouveau(QString,QString,QString,int,int)), this, SLOT(initialisationNouveauDom(QString,QString,QString,int,int)));
     connect(NewMode, SIGNAL(rejected()), this, SLOT(initialisationFichierDom()));
     connect(NewMode, SIGNAL(AdapterID()), this, SLOT(ProposeID()));
+    connect(NewMode, SIGNAL(BoutonValider(QString,QString,int,int)), this, SLOT(UpdateDom(QString,QString,int,int)));
+    connect(this, SIGNAL(AfficheNewMode(QString,QString,int,int)), NewMode, SLOT(UpdateAndShow(QString,QString,int,int)));
     connect(this, SIGNAL(IDproposer(int)), NewMode, SLOT(IDAdapter(int)));
 
     //Création de la base de l'arbre Xml
@@ -215,6 +218,7 @@ Compilation::~Compilation()
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
         delete NewMode;
+
         QFile file(Nomfichier);
         if (!saveAuto) {
             if (!file.exists())
@@ -240,7 +244,7 @@ Compilation::~Compilation()
     delete doc;
     if (!NewMode)
         delete NewMode;
-    ListeInstance[ (int) Instance] = NULL;
+    ListeInstance[Instance] = NULL;
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -252,7 +256,7 @@ void Compilation::initialisationNouveauDom(QString Nom, QString Description, QSt
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     LabelNom->setText(Nom);
-    LabelId->setText(QString::number(idMode));
+    LabelId->setText("-" + QString::number(idMode) + "-");
     //Arbre Xml implémenté
     Nomfichier = FichierNom;
     if (!Nomfichier.contains(".xml"))
@@ -274,6 +278,8 @@ void Compilation::initialisationNouveauDom(QString Nom, QString Description, QSt
         addElement(doc, &setmode, TAG_MODULE, Module);
     }
     setToolTip(Description);
+    //On indique à NewMode la fin de l'initialisation et on la cache
+    NewMode->FinInitialisation();
     NewMode->hide();
 
     //Controle et application des couleurs aux led en fonction
@@ -289,56 +295,66 @@ void Compilation::initialisationFichierDom()
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    Nomfichier = QFileDialog::getOpenFileName(this, tr("Ouvrir un fichier 'Effet lumineux Creche' "), "./", tr("Xml Files (*.Xml);;Text Files (*.txt);;All Files (*.*)"));
-    if (Nomfichier == NULL){
-        showNewModeDialog();
-    }
-    else
+    if(!NewMode->InitialisationMode())
     {
-        //On cache la fenètre de paramétrisation
-        NewMode->hide();
-        //On controle le fichier a ouvrir
-        if (!Nomfichier.contains(".xml"))
-            if (!Nomfichier.contains(".XML"))
-                if (!Nomfichier.contains(".Xml"))
-                    Nomfichier.append(".Xml");
-        QFile* file = new QFile(Nomfichier);
-        /* If we can't open it, let's show an error message. */
-        if (!file->open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QMessageBox::critical(this, tr("Erreur a l'ouverture du fichier"),tr("Une erreur est survenue lors de l'ouverture du fichier."),QMessageBox::Ok);
-            delete enregistrer;
-            emit DeleteMe(this);
+        Nomfichier = QFileDialog::getOpenFileName(this, tr("Ouvrir un fichier 'Effet lumineux Creche' "), "./", tr("Xml Files (*.Xml);;Text Files (*.txt);;All Files (*.*)"));
+        if (Nomfichier == NULL){
+            showNewModeDialog();
         }
+        else
+        {
+            //On indique à NewMode la fin de l'initialisation et on la cache
+            NewMode->FinInitialisation();
+            //On cache la fenètre de paramétrisation
+            NewMode->hide();
+            //On controle le fichier a ouvrir
+            if (!Nomfichier.contains(".xml"))
+                if (!Nomfichier.contains(".XML"))
+                    if (!Nomfichier.contains(".Xml"))
+                        Nomfichier.append(".Xml");
 
-        if (!doc->setContent(file))
-        {
-            QMessageBox::critical(this, tr("Erreur a la lecture du fichier"),tr("Une erreur est survenue pendant la lecture du fichier."),QMessageBox::Ok);
-            delete enregistrer;
-            emit DeleteMe(this);
-        }
-        file->close();
-        delete file;
-        //Attribution d'un nouvel id
-        delElement(doc, TAG_ID);
-        //Extraction du nom du mode
-        QDomElement element = doc->documentElement();
-        addElement(doc, element, TAG_ID, QString::number(NouvelId()));
-        LabelId->setText(doc->documentElement().attribute(ATTRIBUT_ID));
-        for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
-        {
-            //Prend le nom et vérifie l'initialisation du mode
-            if (qde.tagName() == TAG_NOM)
-            {
-                LabelNom->setText(qde.text());
+            QFile* file = new QFile(Nomfichier);
+            /* If we can't open it, let's show an error message. */
+            if (!file->open(QIODevice::ReadOnly | QIODevice::Text)) {
+                QMessageBox::critical(this, tr("Erreur a l'ouverture du fichier"),tr("Une erreur est survenue lors de l'ouverture du fichier."),QMessageBox::Ok);
+                delete enregistrer;
+                emit DeleteMe(this);
             }
-            //Extraction de la description
+
+            if (!doc->setContent(file))
             {
-                if (qde.tagName() == TAG_DESCRIPTION)
-                    setToolTip(qde.text());
+                QMessageBox::critical(this, tr("Erreur a la lecture du fichier"),tr("Une erreur est survenue pendant la lecture du fichier."),QMessageBox::Ok);
+                delete enregistrer;
+                emit DeleteMe(this);
             }
+            file->close();
+            delete file;
+            //Attribution d'un nouvel id
+            delElement(doc, TAG_ID);
+            //Extraction du nom du mode
+            QDomElement element = doc->documentElement();
+            addElement(doc, element, TAG_ID, QString::number(NouvelId()));
+            for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
+            {
+                //Prend le nom et vérifie l'initialisation du mode
+                if (qde.tagName() == TAG_NOM)
+                {
+                    LabelNom->setText(qde.text());
+                }
+                //Prend l'id et vérifie l'initialisation du mode
+                if (qde.tagName() == TAG_ID)
+                {
+                    LabelId->setText("-" + qde.text() + "-");
+                }
+                //Extraction de la description
+                {
+                    if (qde.tagName() == TAG_DESCRIPTION)
+                        setToolTip(qde.text());
+                }
+            }
+            //Controle et application des couleurs aux led en fonction
+            ControleCompilation();
         }
-        //Controle et application des couleurs aux led en fonction
-        ControleCompilation();
     }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
@@ -453,9 +469,14 @@ int Compilation::NouvelId()
     {
         if (ListeInstance[i] != NULL){
             QDomElement element = ListeInstance[i]->doc->documentElement();
-            if (element.tagName() == TAG_MODE)
-                if (element.attribute(ATTRIBUT_ID).toInt() > valeur)
-                    valeur = element.attribute(ATTRIBUT_ID).toInt();
+            for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
+            {
+                if (qde.tagName() == TAG_ID)
+                {
+                    if (qde.text().toInt() > valeur)
+                        valeur = qde.text().toInt();
+                }
+            }
         }
     }
     valeur++;
@@ -595,7 +616,11 @@ void Compilation::mouseDoubleClickEvent(QMouseEvent *e)
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    emit MouseClickEvent(Instance);
+    if (ActiveModeNum == Instance){
+        emit AfficheNewMode(InstanceNom(), InstanceDescription(), InstanceIndice(), InstancePriorite());
+    }
+    else
+        emit MouseClickEvent(Instance);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -607,9 +632,9 @@ void Compilation::TurneLedOn(bool On)
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    LedCond->turnOn(On);
-    LedIni->turnOn(On);
-    LedState->turnOn(On);
+        LedCond->turnOn(On);
+        LedIni->turnOn(On);
+        LedState->turnOn(On);
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -1244,29 +1269,48 @@ QString Compilation::InstanceDescription()
     return QString::null;
 }
 
-//Fonction pour modifier la priorité d'un mode
-void Compilation::setPriorite(int Priorite)
+//Fonction pour modifier le mode actif
+void Compilation::setModeActif(int ModeActive)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    QDomElement el = doc->documentElement();
-    delElement(doc, TAG_PRIORITY);
-    addElement(doc, &el, TAG_PRIORITY, QString::number(Priorite));
+    ActiveModeNum = ModeActive;
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
 }
 
-//Fonction pour modifier l'id d'un mode
-void Compilation::setIndice(int Indice)
+//Renvois le mode actif
+int Compilation::ModeActif()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    return ActiveModeNum;
+}
+
+//Slot pour appliquer les modification provenant de newmodedialog
+void Compilation::UpdateDom(QString Nom, QString Description, int idMode, int priorite)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     QDomElement el = doc->documentElement();
     delElement(doc, TAG_ID);
-    addElement(doc, &el, TAG_ID, QString::number(Indice));
+    addElement(doc, &el, TAG_ID, QString::number(idMode));
+    delElement(doc, TAG_PRIORITY);
+    addElement(doc, &el, TAG_PRIORITY, QString::number(priorite));
+    delElement(doc, TAG_NOM);
+    addElement(doc, &el, TAG_NOM, Nom);
+    delElement(doc, TAG_DESCRIPTION);
+    addElement(doc, &el, TAG_DESCRIPTION, Description);
+    //On cache alors la fenêtre
+    NewMode->hide();
+    LabelNom->setText(Nom);
+    LabelId->setText("-" + QString::number(idMode) + "-");
+    setToolTip(Description);
+    ControleCompilation();
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

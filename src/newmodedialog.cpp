@@ -17,6 +17,9 @@ NewModeDialog::NewModeDialog(QWidget *parent) :
     label_img->setPixmap(*Icone);
     ui->IconeLayout->addWidget(label_img, Qt::AlignLeft);
 
+    //Boolean qui indique si la class est en mode initialisation (false) ou édition (true)
+    IniMode = false;
+
     //Création l'arbre Xml avec la liste des commandes que l'on peut envoyer aux modules
     docCommandeModule = new QDomDocument();
     QFile *file = new QFile(":cmd.xml");
@@ -69,18 +72,23 @@ void NewModeDialog::OnBrowse()
 
 void NewModeDialog::OnNouveau()
 {
-    if (!ui->CheminFichier->text().endsWith('/') && !ui->CheminFichier->text().isEmpty())
-    {
-        QString CheminFichier = ui->CheminFichier->text();
-        if (!CheminFichier.contains(".xml"))
-            if (!CheminFichier.contains(".Xml"))
-                if (!CheminFichier.contains(".XML"))
-                    CheminFichier.append(".Xml");
-        emit BoutonNouveau(ui->NomMode->text(), ui->DescriptionTexte->toPlainText(), CheminFichier, ui->IdValue->value(), ui->PrioriteValue->value());
+    if (IniMode){
+        emit BoutonValider(ui->NomMode->text(), ui->DescriptionTexte->toPlainText(), ui->IdValue->value(), ui->PrioriteValue->value());
     }
-    else
-    {
-        QMessageBox::warning(this, tr("Nom de fichier manquant"), tr("Le chemin de fichier ou le nom de fichier est manquant."), QMessageBox::Ok, QMessageBox::Ok);
+    else {
+        if (!ui->CheminFichier->text().endsWith('/') && !ui->CheminFichier->text().isEmpty())
+        {
+            QString CheminFichier = ui->CheminFichier->text();
+            if (!CheminFichier.contains(".xml"))
+                if (!CheminFichier.contains(".Xml"))
+                    if (!CheminFichier.contains(".XML"))
+                        CheminFichier.append(".Xml");
+            emit BoutonNouveau(ui->NomMode->text(), ui->DescriptionTexte->toPlainText(), CheminFichier, ui->IdValue->value(), ui->PrioriteValue->value());
+        }
+        else
+        {
+            QMessageBox::warning(this, tr("Nom de fichier manquant"), tr("Le chemin de fichier ou le nom de fichier est manquant."), QMessageBox::Ok, QMessageBox::Ok);
+        }
     }
 }
 
@@ -129,3 +137,31 @@ QStringList NewModeDialog::askeModules()
     return liste;
 }
 
+//Faire passer en mode edition plus initialisation
+void NewModeDialog::FinInitialisation()
+{
+    //On cache la modification du chemin d'acces, car inutile pour la suite
+    ui->CheminFichier->hide();
+    ui->LabelNomFichier->hide();
+    ui->ParcourirDossier->hide();
+    //On change la fonctionnalité des deux boutons, (nom et connexion)
+    ui->Ouvrir->setText(tr("Cancel"));
+    ui->Nouveau->setText(tr("Valider"));
+    IniMode = true;
+}
+
+//Mise a jour des champs principaux
+void NewModeDialog::UpdateAndShow(QString Nom, QString Description, int idMode, int priorite){
+    ui->DescriptionTexte->setText(Description);
+    ui->NomMode->setText(Nom);
+    ui->PrioriteValue->setValue(priorite);
+    ui->IdValue->setValue(idMode);
+    //on termine par l'affichage de la fenetre
+    show();
+}
+
+//Renvois la valeur de IniMode
+bool NewModeDialog::InitialisationMode()
+{
+    return IniMode;
+}

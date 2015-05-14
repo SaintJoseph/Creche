@@ -30,8 +30,6 @@ class SaveXmlFile : public QDockWidget
 public:
     explicit SaveXmlFile(const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0);
     ~SaveXmlFile();
-    //Renvois le mode actif
-    char ActiveMode();
     //Fonction qui ajoute un Key pour une led donnée dans l'arbre des états
     bool addKey(int led, QString Module, int pause, Compilation::LedType Type, QString parametre = "");
     //Fonction qui ajoute une led dans l'arbre des états
@@ -67,6 +65,8 @@ public slots:
     void onDemandeCHToPlainText(CondHoraire *CondH, int indice);
     //Edition autorisée
     bool onEditionRequested();
+    //Renvois le mode actif
+    static char ActiveMode();
 
 private slots:
     //Créeation d'une nouvelle instance de compilation
@@ -103,8 +103,6 @@ private:
     //Tableau avec les instances de compilations ouvertes
     static int ListeModeOuvert[5];
     static Compilation *ListeModeOuvertPoint[5];
-    //Indique le mode actif
-    static int ActiveModeNum;
 
     //Fonction Globale pour les const QString
     QString static Const_QString(int type);

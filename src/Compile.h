@@ -125,8 +125,6 @@ public:
     bool CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM);
     //Fonction pour ajouter l'utilisation d'une adresse RAM
     QString AddToRamTable(TableUsedRAM *TableRAM, QString Data);
-    //Fonction qui renvois la liste des modules qu'elle utilise
-    QStringList ListeDesModules();
     //Retourne la priorité d'un mode
     int InstancePriorite();
     //Retourne L'indice d'un mode
@@ -135,6 +133,8 @@ public:
     QString InstanceNom();
     //Retourne La description d'un mode
     QString InstanceDescription();
+    //Retourne la liste des Modules Utilisés
+    QStringList InstanceModules();
     //Renvois le mode actif
     static int ModeActif();
 
@@ -150,7 +150,7 @@ signals:
     //Mise a jour du mode
     void CompilationUpdated();
     //Demande l'affichage de NewModeDialogue une nouvelle fois
-    void AfficheNewMode(QString Nom, QString Description, int idMode, int priorite);
+    void AfficheNewMode(QString, QString, int, int, QStringList );
 
 public slots:
     void initialisationNouveauDom(QString Nom, QString Description, QString FichierNom, int idMode, int priorite);

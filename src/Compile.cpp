@@ -202,7 +202,7 @@ Compilation::Compilation(QWidget *parent) : QWidget(parent)
     connect(NewMode, SIGNAL(rejected()), this, SLOT(initialisationFichierDom()));
     connect(NewMode, SIGNAL(AdapterID()), this, SLOT(ProposeID()));
     connect(NewMode, SIGNAL(BoutonValider(QString,QString,int,int)), this, SLOT(UpdateDom(QString,QString,int,int)));
-    connect(this, SIGNAL(AfficheNewMode(QString,QString,int,int)), NewMode, SLOT(UpdateAndShow(QString,QString,int,int)));
+    connect(this, SIGNAL(AfficheNewMode(QString,QString,int,int,QStringList)), NewMode, SLOT(UpdateAndShow(QString,QString,int,int, QStringList)));
     connect(this, SIGNAL(IDproposer(int)), NewMode, SLOT(IDAdapter(int)));
 
     //Création de la base de l'arbre Xml
@@ -235,6 +235,16 @@ Compilation::~Compilation()
         }
         else {
             if (!file.exists()) {
+                //Le fichier est créé et sauvegarder quand il n'existe pas
+                file.open(QIODevice::WriteOnly | QIODevice::Text);
+                QTextStream out(&file);
+                out << DomDocument();
+                file.close();
+            }
+            else {
+                //Le fichier est sauvegardé avec modification de nom de fichier
+                Nomfichier.replace(".xml","_AutoSave.xml", Qt::CaseInsensitive);
+                file.setFileName(Nomfichier);
                 file.open(QIODevice::WriteOnly | QIODevice::Text);
                 QTextStream out(&file);
                 out << DomDocument();
@@ -351,6 +361,17 @@ void Compilation::initialisationFichierDom()
                     if (qde.tagName() == TAG_DESCRIPTION)
                         setToolTip(qde.text());
                 }
+            }
+            //Si le fichier provient d'une sauvegarde automatique, on adapte le nom du fichier
+            if(Nomfichier.contains("AutoSave")){
+                if(Nomfichier.contains("_AutoSave.xml"))
+                    Nomfichier.replace("_AutoSave.xml",".xml");
+                if(Nomfichier.contains("AutoSave.xml"))
+                    Nomfichier.replace("AutoSave.xml",".xml");
+                if(Nomfichier.contains("_AutoSave"))
+                    Nomfichier.replace("_AutoSave","_");
+                if(Nomfichier.contains("AutoSave"))
+                    Nomfichier.replace("AutoSave","_");
             }
             //Controle et application des couleurs aux led en fonction
             ControleCompilation();
@@ -617,7 +638,7 @@ void Compilation::mouseDoubleClickEvent(QMouseEvent *e)
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     if (ActiveModeNum == Instance){
-        emit AfficheNewMode(InstanceNom(), InstanceDescription(), InstanceIndice(), InstancePriorite());
+        emit AfficheNewMode(InstanceNom(), InstanceDescription(), InstanceIndice(), InstancePriorite(), InstanceModules());
     }
     else
         emit MouseClickEvent(Instance);
@@ -721,7 +742,7 @@ bool Compilation::ControleCompilation()
         ControleInstance = test;
     //Controle sur les modules
     test = true;
-    QStringList liste = ListeDesModules();
+    QStringList liste = InstanceModules();
     //Teste les propriétés  priorité et Id
     if (liste.contains("M01") && liste.contains("M04") && prio && crtId) { //M01 et M04 sont indispensable au fonctionnement du système
         //M02 et M03 doivent être présent en même temps ou tous les deux absent
@@ -1036,29 +1057,6 @@ QString Compilation::AddToRamTable(TableUsedRAM *TableRAM, QString Data)
 #endif /* DEBUG_COMANDSAVE */
 }
 
-//Fonction qui retourne la liste des modules
-QStringList Compilation::ListeDesModules()
-{
-#ifdef DEBUG_COMANDSAVE
-    std::cout << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    QStringList liste;
-    QDomElement element = doc->documentElement();
-    //Controle du module référencé
-    for(QDomElement qqde = element.firstChildElement(); !qqde.isNull(); qqde = qqde.nextSiblingElement())
-    {
-        if (qqde.tagName() == TAG_MODULE)
-        {
-            //Ajout de la led indiquée
-            liste.append(qqde.text());
-        }
-    }
-#ifdef DEBUG_COMANDSAVE
-    std::cout << "/" << func_name << std::endl;
-#endif /* DEBUG_COMANDSAVE */
-    return liste;
-}
-
 //Fonction qui retourne l'état actuel du controle de compilation
 bool Compilation::onControleCompilation()
 {
@@ -1290,7 +1288,7 @@ int Compilation::ModeActif()
     return ActiveModeNum;
 }
 
-//Slot pour appliquer les modification provenant de newmodedialog
+//Slot pour appliquer les modifications provenant de newmodedialog
 void Compilation::UpdateDom(QString Nom, QString Description, int idMode, int priorite)
 {
 #ifdef DEBUG_COMANDSAVE
@@ -1305,6 +1303,14 @@ void Compilation::UpdateDom(QString Nom, QString Description, int idMode, int pr
     addElement(doc, &el, TAG_NOM, Nom);
     delElement(doc, TAG_DESCRIPTION);
     addElement(doc, &el, TAG_DESCRIPTION, Description);
+    //Pareillement pour la liste des modules
+    QStringList ListeDesModules = NewMode->askeModules();
+    //On supprime les modules existants du DOM
+    for (int i = 0; i < 15; i++)
+        delElement(doc, TAG_MODULE);
+    //On vient remettre la liste des modules demandés
+    foreach (QString Module, ListeDesModules)
+        addElement(doc, &el, TAG_MODULE, Module);
     //On cache alors la fenêtre
     NewMode->hide();
     LabelNom->setText(Nom);
@@ -1314,4 +1320,25 @@ void Compilation::UpdateDom(QString Nom, QString Description, int idMode, int pr
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
+}
+
+//Retourne la liste des modules utilisés par un mode lumineux
+QStringList Compilation::InstanceModules()
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    QStringList ListeModules;
+    QDomElement element = doc->documentElement();
+    for(QDomElement qde = element.firstChildElement(); !qde.isNull(); qde = qde.nextSiblingElement())
+    {
+        if (qde.tagName() == TAG_MODULE)
+        {
+            ListeModules.append(qde.text());
+        }
+    }
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    return ListeModules;
 }

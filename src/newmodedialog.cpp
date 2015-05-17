@@ -151,11 +151,20 @@ void NewModeDialog::FinInitialisation()
 }
 
 //Mise a jour des champs principaux
-void NewModeDialog::UpdateAndShow(QString Nom, QString Description, int idMode, int priorite){
+void NewModeDialog::UpdateAndShow(QString Nom, QString Description, int idMode, int priorite, QStringList Modules){
     ui->DescriptionTexte->setText(Description);
     ui->NomMode->setText(Nom);
     ui->PrioriteValue->setValue(priorite);
     ui->IdValue->setValue(idMode);
+    //On adapte la liste des CheckBox checkée
+    QHashIterator<QString, QCheckBox*> ListeItereateur(listemodules);
+    while (ListeItereateur.hasNext()) {
+        ListeItereateur.next();
+        if (Modules.contains(ListeItereateur.key()))
+           ListeItereateur.value()->setChecked(true);
+        else
+           ListeItereateur.value()->setChecked(false);
+    }
     //on termine par l'affichage de la fenetre
     show();
 }
@@ -165,3 +174,4 @@ bool NewModeDialog::InitialisationMode()
 {
     return IniMode;
 }
+

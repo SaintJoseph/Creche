@@ -38,7 +38,7 @@ public slots:
     //Faire passer en mode edition plus initialisation
     void FinInitialisation();
     //Mise a jour des champs principaux
-    void UpdateAndShow(QString Nom, QString Description, int idMode, int priorite);
+    void UpdateAndShow(QString Nom, QString Description, int idMode, int priorite, QStringList Modules);
 
 private Q_SLOTS:
     void OnBrowse();

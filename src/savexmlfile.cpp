@@ -505,7 +505,7 @@ void SaveXmlFile::onCompilationAsked()
     for (int i = 0; i < 5; i++){
         Compilation *Instance = ListeModeOuvertPoint[i];
         if (Instance) {
-            CompilationAssemblage->ListeModules.append(Instance->ListeDesModules());
+            CompilationAssemblage->ListeModules.append(Instance->InstanceModules());
         }
     }
     //La liste est triée et on enlève les doublons
@@ -749,23 +749,32 @@ void SaveXmlFile::CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRA
     DataToFill->ModeNom = "00";
     //Variable locale avec le nombre d'instances
     int NbInstance = Compilation::NbInstance();
-    //Fonction pour corriger les priorités des modes
-    if (!ControlePriorite()) {
-        QString Message = "<b>Mode d'éclairage et priorité :</b><br>";
-        for (int i = 0; i < 5; i++){
-            if (ListeModeOuvertPoint[i]){
-                Message.append("Id:");
-                Message.append(QString::number(ListeModeOuvertPoint[i]->InstanceIndice()));
-                Message.append(", ");
-                Message.append(ListeModeOuvertPoint[i]->InstanceNom());
-                Message.append(tr(", Priorité: <font color=\"#FF2A2A\">"));
-                Message.append(QString::number(ListeModeOuvertPoint[i]->InstancePriorite()));
-                Message.append("</font>, ");
-                Message.append(ListeModeOuvertPoint[i]->InstanceDescription());
-                Message.append("<br>");
+    //Tableau avec les priorités
+    int TabPriorite[5];
+    for (int i = 0; i < 5; i++){
+        TabPriorite[i] = ListeModeOuvertPoint[i]->InstancePriorite();
+    }
+    //Permutation des pointeurs pour avoir un classement en fonction des priorité
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (ListeModeOuvertPoint[i]) {
+                if (TabPriorite[i] < TabPriorite[i+1]) {
+                    //Permutation des valeurs
+                    int Permut = TabPriorite[i+1];
+                    TabPriorite[i+1] = TabPriorite[i];
+                    TabPriorite[i] = Permut;
+                    Compilation *Permutation = ListeModeOuvertPoint[i+1];
+                    ListeModeOuvertPoint[i+1] = ListeModeOuvertPoint[i];
+                    ListeModeOuvertPoint[i] = Permutation;
+                }
+            }
+            else {
+                //cas où nous avons un pointeur Null et pas le suivant
+                if (ListeModeOuvertPoint[i+1]) {
+                    ListeModeOuvertPoint[i] = ListeModeOuvertPoint[i+1];
+                }
             }
         }
-        QMessageBox::information(this, tr("Erreur dans les priorités"), Message);
     }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;

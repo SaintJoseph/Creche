@@ -712,12 +712,33 @@ void SaveXmlFile::onValidationClicked()
     }
     //Retour vers l'état de démarrage
     ChangeDockAffichage(false);
-    for (int i = 0; i < 5; i++) {
-        if (ListeModeOuvertPoint[i]) {
-            //Sauvegarde automatique sauvegardé, et fermeture
-            ListeModeOuvertPoint[i]->saveAuto = true;
-            //Dans ce cas on supprime toutes les instances existantes, avec forçage, car il y a 1 nouveau mode de créé
-            SupprimerUneInstance(ListeModeOuvertPoint[i]);
+    //On ferme toute les instances anciennes
+    //Cas où il n'y a qu'un mode lumineux
+    if (Compilation::NbInstance() == 1) {
+        //On crée une instance vide à un emplacement non utilisé
+        NewMode();
+        for (int i = 0; i < 5; i++) {
+            if (ListeModeOuvertPoint[i]) {
+                //Sauvegarde automatique sauvegardé, et fermeture
+                ListeModeOuvertPoint[i]->saveAuto = true;
+                //Dans ce cas on supprime toutes les instances existantes, avec forçage, car il y a 1 nouveau mode de créé
+                SupprimerUneInstance(ListeModeOuvertPoint[i]);
+            }
+        }
+    }
+    //Cas où il y en a plusieurs
+    else {
+        for (int i = 0; i < 5; i++) {
+            if (ListeModeOuvertPoint[i]) {
+                //Sauvegarde automatique sauvegardé, et fermeture
+                ListeModeOuvertPoint[i]->saveAuto = true;
+                //Dans ce cas on supprime toutes les instances existantes, avec forçage, car il y a 1 nouveau mode de créé
+                SupprimerUneInstance(ListeModeOuvertPoint[i]);
+            }
+            //On crée une instance vide à un emplacement non utilisé
+            if (i == 0) {
+                NewMode();
+            }
         }
     }
     emit CompilationStart(false);
@@ -752,18 +773,19 @@ void SaveXmlFile::CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRA
     //Tableau avec les priorités
     int TabPriorite[5];
     for (int i = 0; i < 5; i++){
-        TabPriorite[i] = ListeModeOuvertPoint[i]->InstancePriorite();
+        if (ListeModeOuvertPoint[i])
+            TabPriorite[i] = ListeModeOuvertPoint[i]->InstancePriorite();
     }
-    //Permutation des pointeurs pour avoir un classement en fonction des priorité
+    //Permutation des pointeurs pour avoir un classement en fonction des priorités
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            if (ListeModeOuvertPoint[i]) {
+            if (ListeModeOuvertPoint[i] && ListeModeOuvertPoint[i + 1]) {
                 if (TabPriorite[i] < TabPriorite[i+1]) {
                     //Permutation des valeurs
                     int Permut = TabPriorite[i+1];
                     TabPriorite[i+1] = TabPriorite[i];
                     TabPriorite[i] = Permut;
-                    Compilation *Permutation = ListeModeOuvertPoint[i+1];
+                    Compilation *Permutation = ListeModeOuvertPoint[i + 1];
                     ListeModeOuvertPoint[i+1] = ListeModeOuvertPoint[i];
                     ListeModeOuvertPoint[i] = Permutation;
                 }
@@ -771,7 +793,7 @@ void SaveXmlFile::CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRA
             else {
                 //cas où nous avons un pointeur Null et pas le suivant
                 if (ListeModeOuvertPoint[i+1]) {
-                    ListeModeOuvertPoint[i] = ListeModeOuvertPoint[i+1];
+                    ListeModeOuvertPoint[i] = ListeModeOuvertPoint[i + 1];
                 }
             }
         }

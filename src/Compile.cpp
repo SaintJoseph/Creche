@@ -965,7 +965,7 @@ void Compilation::retranslate(QString lang)
 }
 
 //Fonction pour la compilation des conditions Horaire
-bool Compilation::CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM)
+bool Compilation::CompilationCH(QString NomVaribleTest, DonneFichier *DataToFill, TableUsedRAM *TableRAM)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
@@ -973,12 +973,13 @@ bool Compilation::CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM
     //définition du nom du fichier
     DataToFill->ModeNom = "C";
     DataToFill->ModeNom.append(QString::number(Instance));
+    QString Commande;
     //Création des variables test de condition
     DataToFill->ListeIstruction.append("<M01M01ERM01VAA" + AddToRamTable(TableRAM, QString("M01VA")) + "V0000>");
     int indice = 0;
     //On récupère les données dans la structure adéquate, pour façiliter les opérations
     CondHoraire CondH;
-    DataToFill->ListeIstruction.append("<M01M01ERM01CBA" + AddToRamTable(TableRAM, QString("M01CB")) + "V0000>");
+    DataToFill->ListeIstruction.append("<M01M01ER" + NomVaribleTest + "A" + AddToRamTable(TableRAM, NomVaribleTest) + "V0000>");
     //Si on a des valeurs retournée
     while (indice < 10) {
         CondH = {0,0,0,0,0,0,0,0,0,0};
@@ -1023,7 +1024,22 @@ bool Compilation::CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM
             break;
         }
     }
+    //Finalisation des tests des CH
+    DataToFill->ListeIstruction.append("<M01M01RF" + AddToRamTable(TableRAM, QString("M01CB")) + "DV0001F00>");
+    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, NomVaribleTest) + "PV0001>");
+    DataToFill->ListeIstruction.append("<M01M01RF" + AddToRamTable(TableRAM, NomVaribleTest) + "EV0001F00>");
+#ifdef DEBUG_ARDUINO
+    Commande = ("<M01M01Z C" + QString::number(Instance) + " erreur et stop prog>");
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
+    DataToFill->ListeIstruction.append(Commande);
+    DataToFill->Commentaire.insert(Commande, tr("Stop de l'executable en cas d'erreur"));
     DataToFill->ListeIstruction.append("<M01M01RA0>");
+#else
+    Commande = "<M01M01RA0>";
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
+    DataToFill->ListeIstruction.append(Commade);
+    DataToFill->Commentaire.insert(Commande, tr("Stop de l'executable en cas d'erreur"))
+#endif
 
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;

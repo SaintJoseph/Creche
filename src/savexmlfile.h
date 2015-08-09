@@ -24,6 +24,9 @@
 
 #define PROGLIGNEITERATOR 2
 
+//pour la fonction addToRAMTable(), mot clef lorsque l'adresse mémoire n'est pas spécifique
+#define RAM_DEFAUT_VALUE 0
+
 class SaveXmlFile : public QDockWidget
 {
     Q_OBJECT
@@ -39,7 +42,7 @@ public:
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
     void retranslate(QString lang);
     //Fonction pour ajouter ou retourner une adresse RAM
-    QString AddToRamTable(TableUsedRAM *TableRAM, QString Data);
+    QString AddToRamTable(TableUsedRAM *TableRAM, QString Data, QString SpecialRef = RAM_DEFAUT_VALUE);
 
 signals:
     //Signal Pour la création d'un nouveau mode
@@ -114,9 +117,14 @@ private:
 #endif /* DEBUG_COMANDSAVE */
     //Fonction qui converti un nombre en Qstring de 4 carractères
     QString IntToQString(int Value);
+    //Fichier commun 00
     void CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRAM *TableRAM);
     //Controle des priorites
     bool ControlePriorite();
+    //Compilation d'une demande d'appel de sous programme
+    void CompilationAppelRegSousProg(QString variableRAM, QString fichier, int bouclage, DonneFichier *DataToFill, TableUsedRAM *TableRAM);
+    //Compilation fichier commun controle présence CP
+    void CompilationControlePrence(DonneFichier *DataToFill, TableUsedRAM *TableRAM);
 };
 
 #endif // SAVEXMLFILE_H

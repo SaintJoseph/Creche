@@ -44,6 +44,9 @@
 #define ATTRIBUT_TYPE "Type"
 #define ATTRIBUT_ID "id"
 
+// DEBUG_ARDUINO active des instructions de débugage dans le code pour l'arduino
+#define DEBUG_ARDUINO
+
 //Enumeration pour le type de condition horaire souhaitée
 typedef enum TypeCondHoraire{Periode = 0, Journalier, Hebdomadaire, Vide, View} TypeCondHoraire;
 
@@ -122,7 +125,7 @@ public:
     //Fonction qui applique et réapplique les labels pour introduire leur traduction quand c'est nécessaire
     void retranslate(QString lang);
     //Fonction qui compile les conditions horaires
-    bool CompilationCH(DonneFichier *DataToFill, TableUsedRAM *TableRAM);
+    bool CompilationCH(QString NomVaribleTest, DonneFichier *DataToFill, TableUsedRAM *TableRAM);
     //Fonction pour ajouter l'utilisation d'une adresse RAM
     QString AddToRamTable(TableUsedRAM *TableRAM, QString Data);
     //Retourne la priorité d'un mode
@@ -140,6 +143,8 @@ public:
 
     //Sauvegarde automatique active
     bool saveAuto = true;
+    //Sauvegarde de compilation
+    bool SaveCompil = false;
 
 signals:
     void IDproposer(int);

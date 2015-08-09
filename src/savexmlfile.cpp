@@ -499,7 +499,7 @@ void SaveXmlFile::onCompilationAsked()
 #endif /* DEBUG_COMANDSAVE */
     if (QMessageBox::warning(this, tr("Lancement de la compilation"), tr("<font color=\"#FF2A2A\"><b>ATTENTION:</b></font><br>Tous les modes d'éclairage ouvert, seront compilé.<br>Après confirmation il ne sera plus possible de modifier les données. Il sera possible d'éditer les fichiers compiler avant leur sauvegarde."), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) return;
     ChangeDockAffichage(true);
-    //Création de la structure qui va accuillir les données compilées
+    //Création de la structure qui va accueillir les données compilées
     CompilationAssemblage = new CompilationPreAssemblage;
     //On récupère les modules utilisés par chaque mode, sous la forme de QstringList
     for (int i = 0; i < 5; i++){
@@ -511,7 +511,10 @@ void SaveXmlFile::onCompilationAsked()
     //La liste est triée et on enlève les doublons
     CompilationAssemblage->ListeModules.removeDuplicates();
     CompilationAssemblage->ListeModules.sort();
-    //Création du fichier 00 et des fichiers de test principaux
+    foreach (QString Module, CompilationAssemblage->ListeModules) {
+        AddToRamTable(&CompilationAssemblage->Table, Module + "XP", QString::number(Module.remove(0,1).toInt(0, 16) + 256));
+    }
+    //Création du fichier 00
     DonneFichier *Fichier = new DonneFichier;
     CompilationFichierCommun(Fichier, &CompilationAssemblage->Table);
     CompilationAssemblage->DonneDesFichiers.insert(Fichier->ModeNom, Fichier);
@@ -520,23 +523,27 @@ void SaveXmlFile::onCompilationAsked()
         Compilation *Instance = ListeModeOuvertPoint[i];
         if (Instance) {
             DonneFichier *Fichier = new DonneFichier;
-            Instance->CompilationCH(Fichier, &CompilationAssemblage->Table);
+            Instance->CompilationCH("M01MC" ,Fichier, &CompilationAssemblage->Table);
             CompilationAssemblage->DonneDesFichiers.insert(Fichier->ModeNom, Fichier);
         }
     }
-
     //Lorsque la compilation pré Assemblage est terminée, on affiche les fichiers qui vont être créé
     //Puis à la validation des ces fichiers, il sont enregistrer sur la carte micro SD(ou ailleur)
     ListeModel = new QStringListModel(QStringList (CompilationAssemblage->DonneDesFichiers.keys()));
     FichierCree->setModel(ListeModel);
     emit CompilationStart(true);
+    TableUsedRAM::const_iterator i = CompilationAssemblage->Table.constBegin();
+    while (i != CompilationAssemblage->Table.constEnd()) {
+        std::cout << "RAM : " << i.key().toStdString() << ": " << i.value().toStdString() << std::endl;
+        i++;
+    }
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
 }
 
 //Fonction pour ajouter ou retourner une adresse RAM
-QString SaveXmlFile::AddToRamTable(TableUsedRAM *TableRAM, QString Data)
+QString SaveXmlFile::AddToRamTable(TableUsedRAM *TableRAM, QString Data, QString SpecialRef)
 {
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
@@ -545,7 +552,16 @@ QString SaveXmlFile::AddToRamTable(TableUsedRAM *TableRAM, QString Data)
         return QString("EEEE");
     QString RamAdresse = TableRAM->value(Data);
     if (RamAdresse.isEmpty()) {
-        RamAdresse = QString::number(TableRAM->count() + 1,16);
+        if (SpecialRef == RAM_DEFAUT_VALUE) {
+            RamAdresse = QString::number(TableRAM->count() + 1,16);
+        }
+        else {
+            if (SpecialRef.length() != 5) {
+                RamAdresse = SpecialRef;
+            }
+            else
+                return QString ("EEEE");
+        }
     if (RamAdresse.length() == 1)
         RamAdresse.prepend("000");
     else if (RamAdresse.length() == 2)
@@ -798,6 +814,39 @@ void SaveXmlFile::CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRA
             }
         }
     }
+#ifdef DEBUG_ARDUINO
+    DataToFill->ListeIstruction.append("<M00M01Z Start 00>");
+#endif
+    //mise à 0 de M01MB sytématiquement avec le fichier 00, permet la comparaison de modules
+    QString Commande = "<M01M01ERM01MBA" + AddToRamTable(TableRAM, QString("M01MB")) + "V0000>";
+    //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
+    DataToFill->ListeIstruction.append(Commande);
+#ifdef DEBUG_ARDUINO
+    DataToFill->Commentaire.insert(Commande, tr("mise à 0 de M01MB sytématique avec fichier 00"));
+#endif
+
+    //appel des conditions d'effet lumineux
+    CompilationAppelRegSousProg("M01M" + QString(QChar('C' + 0)),"C0",4,DataToFill, &CompilationAssemblage->Table);
+
+    //Fin de l'exe
+#ifdef DEBUG_ARDUINO
+    Commande = "<M01M00Z Fin exe normal avec 00>";
+    //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
+    DataToFill->ListeIstruction.append(Commande);
+    DataToFill->Commentaire.insert(Commande, tr("Fin de l'exe"));
+    Commande = "<M01M00RA0>";
+    DataToFill->ListeIstruction.append(Commande);
+#else
+    Commande = "<M01M00RA0>";
+    //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
+    DataToFill->ListeIstruction.append(Commande);
+    DataToFill->Commentaire.insert(Commande, tr("Fin de l'exe"));
+#endif
+
+
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
@@ -853,3 +902,73 @@ bool SaveXmlFile::ControlePriorite()
 #endif /* DEBUG_COMANDSAVE */
     return true;
 }
+
+//Compilation, programme un appel de sous programme pour le 00
+void SaveXmlFile::CompilationAppelRegSousProg(QString variableRAM, QString fichier, int bouclage, DonneFichier *DataToFill, TableUsedRAM *TableRAM)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //Comparaison de module entre M01MA et M01MB
+    QString Commande = "<M01M01RG" + AddToRamTable(TableRAM, variableRAM) + "MA" + AddToRamTable(TableRAM, QString("M01MB")) + "L?R+2>";
+    //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
+#ifdef DEBUG_ARDUINO
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
+#endif
+    DataToFill->ListeIstruction.append(Commande);
+#ifdef DEBUG_ARDUINO
+    DataToFill->Commentaire.insert(Commande, tr("Comparaison de modules"));
+#endif
+
+    //Si nok mise à zero de M01MA (valeur supérieur à la valeur de bouclage
+    Commande = "<M01M01ERM01MBA" + AddToRamTable(TableRAM, variableRAM) + "V" + IntToQString(bouclage + 1) + ">";
+    //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
+#ifdef DEBUG_ARDUINO
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
+#endif
+    DataToFill->ListeIstruction.append(Commande);
+#ifdef DEBUG_ARDUINO
+    DataToFill->Commentaire.insert(Commande, tr("Si nok mise à zero Variable principale"));
+#endif
+
+    //Controle sur le nombre d'appels de la fonction
+    Commande = "<M01M01RG" + AddToRamTable(TableRAM, variableRAM) + "IV" + IntToQString(bouclage) + "L?R+2>";
+    //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
+#ifdef DEBUG_ARDUINO
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
+#endif
+    DataToFill->ListeIstruction.append(Commande);
+#ifdef DEBUG_ARDUINO
+    DataToFill->Commentaire.insert(Commande, tr("Controle sur le nombre d'appels"));
+#endif
+
+    //Appels du sous programme souhaité, condition tjr vraie
+    Commande = "<M01M01RF" + AddToRamTable(TableRAM, QString("M01MB")) + "EV0000F" + fichier + ">";
+    //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
+#ifdef DEBUG_ARDUINO
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
+#endif
+    DataToFill->ListeIstruction.append(Commande);
+#ifdef DEBUG_ARDUINO
+    DataToFill->Commentaire.insert(Commande, tr("Appel du sous programme"));
+#endif
+
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+
+//Compilation fichier commun controle présence CP
+void SaveXmlFile::CompilationControlePrence(DonneFichier *DataToFill, TableUsedRAM *TableRAM)
+{
+#ifdef DEBUG_COMANDSAVE
+    std::cout << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+    //définition du nom du fichier
+    DataToFill->ModeNom = "CP";
+
+#ifdef DEBUG_COMANDSAVE
+    std::cout << "/" << func_name << std::endl;
+#endif /* DEBUG_COMANDSAVE */
+}
+

@@ -10,49 +10,49 @@
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="39"/>
-        <location filename="ComArduinoDock.cpp" line="609"/>
+        <location filename="ComArduinoDock.cpp" line="608"/>
         <source>Baude Rate</source>
         <translation>Baud Rate</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="42"/>
-        <location filename="ComArduinoDock.cpp" line="610"/>
+        <location filename="ComArduinoDock.cpp" line="609"/>
         <source>Parity</source>
         <translation>Parity</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="45"/>
-        <location filename="ComArduinoDock.cpp" line="611"/>
+        <location filename="ComArduinoDock.cpp" line="610"/>
         <source>Data Bit</source>
         <translation>Bit Data</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="48"/>
-        <location filename="ComArduinoDock.cpp" line="612"/>
+        <location filename="ComArduinoDock.cpp" line="611"/>
         <source>Stop Bit</source>
         <translation>Stop Bit</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="51"/>
-        <location filename="ComArduinoDock.cpp" line="613"/>
+        <location filename="ComArduinoDock.cpp" line="612"/>
         <source>Query Mode</source>
         <translation>Query Mode</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="54"/>
-        <location filename="ComArduinoDock.cpp" line="614"/>
+        <location filename="ComArduinoDock.cpp" line="613"/>
         <source>Liste des ports</source>
         <translation>Ports List</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="57"/>
-        <location filename="ComArduinoDock.cpp" line="615"/>
+        <location filename="ComArduinoDock.cpp" line="614"/>
         <source>Time Out</source>
         <translation>Time Out</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="107"/>
-        <location filename="ComArduinoDock.cpp" line="608"/>
+        <location filename="ComArduinoDock.cpp" line="607"/>
         <source>Envoyer</source>
         <translation>Send</translation>
     </message>
@@ -78,44 +78,44 @@ Lighting Effects</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="145"/>
-        <location filename="ComArduinoDock.cpp" line="606"/>
+        <location filename="ComArduinoDock.cpp" line="605"/>
         <source>Polling</source>
         <comment>Méthode utilisée</comment>
         <translation>Polling</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="146"/>
-        <location filename="ComArduinoDock.cpp" line="607"/>
+        <location filename="ComArduinoDock.cpp" line="606"/>
         <source>EventDriven</source>
         <comment>Méthode Utilisée</comment>
         <translation>EventDriven</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="177"/>
-        <location filename="ComArduinoDock.cpp" line="616"/>
+        <location filename="ComArduinoDock.cpp" line="615"/>
         <source>Envoi/Reception</source>
         <translation>Sending / Reception</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="205"/>
-        <location filename="ComArduinoDock.cpp" line="619"/>
+        <location filename="ComArduinoDock.cpp" line="618"/>
         <source>Outil pour s&apos;assurer que le PC communique bien avec l&apos;Arduino</source>
         <translation>Tool to be sure that the PC is in good connection with the Arduino</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="204"/>
-        <location filename="ComArduinoDock.cpp" line="618"/>
+        <location filename="ComArduinoDock.cpp" line="617"/>
         <source>Paramètres</source>
         <translation>Parameters</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="178"/>
-        <location filename="ComArduinoDock.cpp" line="617"/>
+        <location filename="ComArduinoDock.cpp" line="616"/>
         <source>Envois et réception de donnée avec le module Arduino</source>
         <translation>Sendings and receivings of data with the Arduino module</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="336"/>
+        <location filename="ComArduinoDock.cpp" line="335"/>
         <source>ddd dd MMM yyyy&lt;br&gt;hh:mm:ss ap</source>
         <comment>Date et Heure en mode 12h (am/pm), Exemple: Sam. 24 Aout 2013 (a la ligne) 10:25:14 am</comment>
         <translation>ddd dd MMM yyyy&lt;br&gt;hh:mm:ss ap</translation>
@@ -168,7 +168,7 @@ Donnees d&apos;eclairage -&gt; Arduino...</source>
 Lighting data -&gt; Arduino...</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="592"/>
+        <location filename="ComArduinoDock.cpp" line="591"/>
         <source>Lecture de l&apos;Arduino...</source>
         <translation>Reading of the Arduino...</translation>
     </message>
@@ -176,35 +176,35 @@ Lighting data -&gt; Arduino...</translation>
 <context>
     <name>Compilation</name>
     <message>
-        <location filename="Compile.cpp" line="901"/>
+        <location filename="Compile.cpp" line="954"/>
         <source>Enregistrer fichier Xml</source>
         <comment>Titre fenetre</comment>
         <translatorcomment>Title window</translatorcomment>
         <translation>Save file Xml</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="902"/>
+        <location filename="Compile.cpp" line="955"/>
         <source>&lt;font color=&quot;#FF2A2A&quot;&gt;Voulez-vous sauvegarder le fichier suivant:&lt;font&gt;</source>
         <translation>&lt;font color=&quot;#FF2A2A&quot;&gt;Do you want to save following file:&lt;font&gt;</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="903"/>
+        <location filename="Compile.cpp" line="956"/>
         <source>Enregistrer</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="904"/>
+        <location filename="Compile.cpp" line="957"/>
         <source>Ne pas enregistrer</source>
         <translation>Do not save</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="221"/>
+        <location filename="Compile.cpp" line="225"/>
         <source>&lt;font color=&quot;#FF2A2A&quot;&gt;&lt;b&gt;Xml file:&lt;/b&gt; %1&lt;/font&gt;</source>
         <oldsource>&lt;font color=&quot;#FF2A2A&quot;&gt;&lt;b&gt;Xml file :&lt;/b&gt; %1&lt;/font&gt;</oldsource>
         <translation>&lt;font color=&quot;#FF2A2A&quot;&gt;&lt;b&gt;Xml file :&lt;/b&gt;%1&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="223"/>
+        <location filename="Compile.cpp" line="227"/>
         <source>&lt;font color=&quot;#FF2A2A&quot;&gt;Le fichier Xml:&lt;br&gt;&lt;b&gt; %1 &lt;/b&gt;&lt;br&gt;&lt;font align=&quot;left&quot;&gt;existe déjà&lt;/font&gt;&lt;/font&gt;&lt;br&gt;The systeme is going to replace it</source>
         <oldsource>&lt;font color=&quot;#FF2A2A&quot;&gt;Le fichier Xml :&lt;br&gt;&lt;b&gt; %1 &lt;/b&gt;&lt;br&gt;&lt;font align=&quot;left&quot;&gt;existe déjà&lt;/font&gt;&lt;/font&gt;&lt;br&gt;The systeme is going to replace it</oldsource>
         <translation>&lt;font color=&quot;#FF2A2A&quot;&gt;file Xml :&lt;br&gt;&lt;b&gt; %1 &lt;/b&gt;&lt;br&gt;&lt;font align=&quot;left&quot;&gt;does already exist&lt;/font&gt;&lt;/font&gt;&lt;br&gt;The system is going to replace it</translation>
@@ -214,28 +214,28 @@ Lighting data -&gt; Arduino...</translation>
         <translation type="vanished">File with the details of light effects programed for the crib of the Saint Joseph church</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="897"/>
+        <location filename="Compile.cpp" line="950"/>
         <source>Initialisation du mode</source>
         <translation>Initialization of Lighting Effects Mode</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="134"/>
-        <location filename="Compile.cpp" line="898"/>
+        <location filename="Compile.cpp" line="135"/>
+        <location filename="Compile.cpp" line="951"/>
         <source>Conditions horaire programmée</source>
         <translation>Coded Time Conditions</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="899"/>
+        <location filename="Compile.cpp" line="952"/>
         <source>Effet lumineux (1 ou plus)</source>
         <translation>Signal of the status  of the Lighting Effect</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="145"/>
+        <location filename="Compile.cpp" line="146"/>
         <source>Nom à définir</source>
         <translation>To be named</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="149"/>
+        <location filename="Compile.cpp" line="150"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
@@ -245,64 +245,70 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
         <translation type="vanished">The Id of the white Led circuit 1 must be = 1, Id of the white Led circuit 2 = 2, Id of the white Led circuit 3 = 3, Id of the red Led = 4, Id of the orange Led = 5, Id of the blue Led = 6, at each stage the momentary Light intensity of each LED circuit is defined. Then the Arduino module calculates the variation gradient</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="906"/>
+        <location filename="Compile.cpp" line="959"/>
         <source>ID attribué à ce mode pour un fonctionnement multi mode</source>
         <translation>Identification allocated to this mode for a multimode working</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="264"/>
+        <location filename="Compile.cpp" line="278"/>
         <source>Fichier avec le détail des effets lumineux programmé pour la creche de l&apos;Eglise Saint Joseph</source>
         <translation>File with the detail of the coded lighting effects for the crib of the Saint Joseph church</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="293"/>
+        <location filename="Compile.cpp" line="310"/>
         <source>Ouvrir un fichier &apos;Effet lumineux Creche&apos; </source>
         <translation>Open a file &apos;Light effects Crib&apos; </translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="293"/>
+        <location filename="Compile.cpp" line="310"/>
         <source>Xml Files (*.Xml);;Text Files (*.txt);;All Files (*.*)</source>
         <translation>Xml files (*.Xml);;Text files (*.txt);;All files (*.*)</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="302"/>
+        <location filename="Compile.cpp" line="329"/>
         <source>Erreur a l&apos;ouverture du fichier</source>
         <translation>Error while opening the file</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="302"/>
+        <location filename="Compile.cpp" line="329"/>
         <source>Une erreur est survenue lors de l&apos;ouverture du fichier.</source>
         <translation>An error occured when opening the file.</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="309"/>
+        <location filename="Compile.cpp" line="336"/>
         <source>Erreur a la lecture du fichier</source>
         <translation>File reading error</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="309"/>
+        <location filename="Compile.cpp" line="336"/>
         <source>Une erreur est survenue pendant la lecture du fichier.</source>
         <translation>An error occured when reading the file.</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1058"/>
+        <location filename="Compile.cpp" line="1035"/>
+        <location filename="Compile.cpp" line="1041"/>
+        <source>Stop de l&apos;executable en cas d&apos;erreur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Compile.cpp" line="1106"/>
         <source>Condition sur la date :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1058"/>
-        <location filename="Compile.cpp" line="1095"/>
-        <location filename="Compile.cpp" line="1130"/>
+        <location filename="Compile.cpp" line="1106"/>
+        <location filename="Compile.cpp" line="1145"/>
+        <location filename="Compile.cpp" line="1182"/>
         <source> to </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1095"/>
+        <location filename="Compile.cpp" line="1145"/>
         <source>Condition sur l&apos;heure :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1130"/>
+        <location filename="Compile.cpp" line="1182"/>
         <source>Condition sur le jour de la semaine :</source>
         <translation type="unfinished"></translation>
     </message>
@@ -316,12 +322,12 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
         <translation type="vanished">The Id of the EON Led for the port must be = 7, detail of the spots (20°):2 green Id 0 and 1, 1 yellow Id 2, 5 hot white Id 3 -8&lt;br&gt;The Id of the latest EON Led spot for the port must be = 8, detail of the spot at 20°: 1 red Id 0</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="531"/>
+        <location filename="Compile.cpp" line="580"/>
         <source>   </source>
         <translation>   </translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="532"/>
+        <location filename="Compile.cpp" line="581"/>
         <source>Vide</source>
         <translation>Empty</translation>
     </message>
@@ -544,12 +550,12 @@ Lighting data -&gt; Arduino...</translation>
 <context>
     <name>EditeurProg</name>
     <message>
-        <location filename="editeurprog.cpp" line="109"/>
+        <location filename="editeurprog.cpp" line="108"/>
         <source>Enregistrer</source>
         <translation type="unfinished">Save</translation>
     </message>
     <message>
-        <location filename="editeurprog.cpp" line="110"/>
+        <location filename="editeurprog.cpp" line="109"/>
         <source>Fermer</source>
         <translation type="unfinished">Close</translation>
     </message>
@@ -934,40 +940,50 @@ Lighting data -&gt; Arduino...</translation>
         <translation>New</translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="25"/>
+        <location filename="newmodedialog.cpp" line="28"/>
         <source>Erreur a l&apos;ouverture du fichier</source>
         <translation type="unfinished">Error while opening the file</translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="25"/>
+        <location filename="newmodedialog.cpp" line="28"/>
         <source>Une erreur à l&apos;ouverture du fichier &quot;CommandeModule.xml&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="28"/>
+        <location filename="newmodedialog.cpp" line="31"/>
         <source>Erreur a la lecture du fichier</source>
         <translation type="unfinished">File reading error</translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="28"/>
+        <location filename="newmodedialog.cpp" line="31"/>
         <source>Une erreur à la lecture du fichier &quot;CommandeModule.xml&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="63"/>
+        <location filename="newmodedialog.cpp" line="66"/>
         <source>Selectionnez un dossier pour sauvegarder le fichier d&apos;Effets lumineux de creche</source>
         <oldsource>SÃ©lectionnez un dossier pour sauvegarder le fichier d&apos;Effets lumineux de creche</oldsource>
         <translation>Select a folder to save the file Light effects of crib</translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="83"/>
+        <location filename="newmodedialog.cpp" line="90"/>
         <source>Nom de fichier manquant</source>
         <translation>Name of missing file</translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="83"/>
+        <location filename="newmodedialog.cpp" line="90"/>
         <source>Le chemin de fichier ou le nom de fichier est manquant.</source>
         <translation>The path of file or the name of file is missing.</translation>
+    </message>
+    <message>
+        <location filename="newmodedialog.cpp" line="148"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="newmodedialog.cpp" line="149"/>
+        <source>Valider</source>
+        <translation type="unfinished">Validate</translation>
     </message>
 </context>
 <context>
@@ -1072,13 +1088,13 @@ Lighting data -&gt; Arduino...</translation>
     <name>SaveXmlFile</name>
     <message>
         <location filename="savexmlfile.cpp" line="38"/>
-        <location filename="savexmlfile.cpp" line="426"/>
+        <location filename="savexmlfile.cpp" line="425"/>
         <source>New Mode</source>
         <translation>New Mode</translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="43"/>
-        <location filename="savexmlfile.cpp" line="425"/>
+        <location filename="savexmlfile.cpp" line="424"/>
         <source>Enreg. et Fermer</source>
         <comment>Espace limité pour écrire &quot;Enregistrer et Fermer&quot; en entier.</comment>
         <translatorcomment>Limited space to write &quot;Save and close&quot; entirely</translatorcomment>
@@ -1086,31 +1102,31 @@ Lighting data -&gt; Arduino...</translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="48"/>
-        <location filename="savexmlfile.cpp" line="429"/>
+        <location filename="savexmlfile.cpp" line="428"/>
         <source>Compiler...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="52"/>
-        <location filename="savexmlfile.cpp" line="428"/>
+        <location filename="savexmlfile.cpp" line="427"/>
         <source>Lancer la compilation de tous les modes d&apos;éclairage ouvert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="54"/>
-        <location filename="savexmlfile.cpp" line="430"/>
+        <location filename="savexmlfile.cpp" line="429"/>
         <source>Valider</source>
         <translation type="unfinished">Validate</translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="58"/>
-        <location filename="savexmlfile.cpp" line="427"/>
+        <location filename="savexmlfile.cpp" line="426"/>
         <source>Valider l&apos;ensemble des fichiers compilé, sélectionez le dossier de destination.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="60"/>
-        <location filename="savexmlfile.cpp" line="424"/>
+        <location filename="savexmlfile.cpp" line="423"/>
         <source>Liste Modes (max 5)</source>
         <comment>Espace limiter pour faire une phrase entière.</comment>
         <translatorcomment>Limited space in order to make an entire sentence</translatorcomment>
@@ -1122,33 +1138,64 @@ Lighting data -&gt; Arduino...</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="271"/>
+        <location filename="savexmlfile.cpp" line="270"/>
         <source>Supression non authorisée</source>
         <translation>Deletion not allowed</translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="271"/>
+        <location filename="savexmlfile.cpp" line="270"/>
         <source>Il faut minimum 1 mode pour réaliser un effet lumineux.</source>
         <translation>At least 1 Mode is required to produce a Light effect.</translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="399"/>
+        <location filename="savexmlfile.cpp" line="398"/>
         <source>Vide</source>
         <translation>Empty</translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="501"/>
+        <location filename="savexmlfile.cpp" line="500"/>
         <source>Lancement de la compilation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="501"/>
+        <location filename="savexmlfile.cpp" line="500"/>
         <source>&lt;font color=&quot;#FF2A2A&quot;&gt;&lt;b&gt;ATTENTION:&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Tous les modes d&apos;éclairage ouvert, seront compilé.&lt;br&gt;Après confirmation il ne sera plus possible de modifier les données. Il sera possible d&apos;éditer les fichiers compiler avant leur sauvegarde.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="644"/>
+        <location filename="savexmlfile.cpp" line="659"/>
         <source>Sauvegarde sur la carte micro SD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="826"/>
+        <source>mise à 0 de M01MB sytématique avec fichier 00</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="838"/>
+        <location filename="savexmlfile.cpp" line="846"/>
+        <source>Fin de l&apos;exe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="920"/>
+        <source>Comparaison de modules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="931"/>
+        <source>Si nok mise à zero Variable principale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="942"/>
+        <source>Controle sur le nombre d&apos;appels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="953"/>
+        <source>Appel du sous programme</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

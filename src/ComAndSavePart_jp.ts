@@ -10,49 +10,49 @@
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="39"/>
-        <location filename="ComArduinoDock.cpp" line="609"/>
+        <location filename="ComArduinoDock.cpp" line="608"/>
         <source>Baude Rate</source>
         <translation>ボーレート</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="42"/>
-        <location filename="ComArduinoDock.cpp" line="610"/>
+        <location filename="ComArduinoDock.cpp" line="609"/>
         <source>Parity</source>
         <translation>パリティ</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="45"/>
-        <location filename="ComArduinoDock.cpp" line="611"/>
+        <location filename="ComArduinoDock.cpp" line="610"/>
         <source>Data Bit</source>
         <translation>データビット</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="48"/>
-        <location filename="ComArduinoDock.cpp" line="612"/>
+        <location filename="ComArduinoDock.cpp" line="611"/>
         <source>Stop Bit</source>
         <translation>ストップビット</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="51"/>
-        <location filename="ComArduinoDock.cpp" line="613"/>
+        <location filename="ComArduinoDock.cpp" line="612"/>
         <source>Query Mode</source>
         <translation>クエリモード</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="54"/>
-        <location filename="ComArduinoDock.cpp" line="614"/>
+        <location filename="ComArduinoDock.cpp" line="613"/>
         <source>Liste des ports</source>
         <translation>ポートのリスト</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="57"/>
-        <location filename="ComArduinoDock.cpp" line="615"/>
+        <location filename="ComArduinoDock.cpp" line="614"/>
         <source>Time Out</source>
         <translation>タイム·アウト</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="107"/>
-        <location filename="ComArduinoDock.cpp" line="608"/>
+        <location filename="ComArduinoDock.cpp" line="607"/>
         <source>Envoyer</source>
         <translation>送る</translation>
     </message>
@@ -78,44 +78,44 @@ Effets Lumineux</source>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="145"/>
-        <location filename="ComArduinoDock.cpp" line="606"/>
+        <location filename="ComArduinoDock.cpp" line="605"/>
         <source>Polling</source>
         <comment>Méthode utilisée</comment>
         <translation>ポーリング</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="146"/>
-        <location filename="ComArduinoDock.cpp" line="607"/>
+        <location filename="ComArduinoDock.cpp" line="606"/>
         <source>EventDriven</source>
         <comment>Méthode Utilisée</comment>
         <translation>イベントドリブン</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="177"/>
-        <location filename="ComArduinoDock.cpp" line="616"/>
+        <location filename="ComArduinoDock.cpp" line="615"/>
         <source>Envoi/Reception</source>
         <translation>終結部/レセプション</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="178"/>
-        <location filename="ComArduinoDock.cpp" line="617"/>
+        <location filename="ComArduinoDock.cpp" line="616"/>
         <source>Envois et réception de donnée avec le module Arduino</source>
         <translation>Arduinoのモジュールで出荷し、データ受信</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="204"/>
-        <location filename="ComArduinoDock.cpp" line="618"/>
+        <location filename="ComArduinoDock.cpp" line="617"/>
         <source>Paramètres</source>
         <translation>設定</translation>
     </message>
     <message>
         <location filename="ComArduinoDock.cpp" line="205"/>
-        <location filename="ComArduinoDock.cpp" line="619"/>
+        <location filename="ComArduinoDock.cpp" line="618"/>
         <source>Outil pour s&apos;assurer que le PC communique bien avec l&apos;Arduino</source>
         <translation>PCがアルドゥイーノとよく伝えていることを確認するためのツール</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="336"/>
+        <location filename="ComArduinoDock.cpp" line="335"/>
         <source>ddd dd MMM yyyy&lt;br&gt;hh:mm:ss ap</source>
         <comment>Date et Heure en mode 12h (am/pm), Exemple: Sam. 24 Aout 2013 (a la ligne) 10:25:14 am</comment>
         <translation>ddd dd MMM yyyy&lt;br&gt;hh:mm:ss ap</translation>
@@ -164,7 +164,7 @@ Donnees d&apos;eclairage -&gt; Arduino...</source>
 データライティング - &gt; Arduinoの...</translation>
     </message>
     <message>
-        <location filename="ComArduinoDock.cpp" line="592"/>
+        <location filename="ComArduinoDock.cpp" line="591"/>
         <source>Lecture de l&apos;Arduino...</source>
         <translation>アルドゥイーノを読む...</translation>
     </message>
@@ -172,85 +172,91 @@ Donnees d&apos;eclairage -&gt; Arduino...</source>
 <context>
     <name>Compilation</name>
     <message>
-        <location filename="Compile.cpp" line="134"/>
-        <location filename="Compile.cpp" line="898"/>
+        <location filename="Compile.cpp" line="135"/>
+        <location filename="Compile.cpp" line="951"/>
         <source>Conditions horaire programmée</source>
         <translation>利用規約プログラムされたスケジュール</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="145"/>
+        <location filename="Compile.cpp" line="146"/>
         <source>Nom à définir</source>
         <translation>定義する名前</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="149"/>
+        <location filename="Compile.cpp" line="150"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="221"/>
+        <location filename="Compile.cpp" line="225"/>
         <source>&lt;font color=&quot;#FF2A2A&quot;&gt;&lt;b&gt;Xml file:&lt;/b&gt; %1&lt;/font&gt;</source>
         <translation>&lt;font color=&quot;#FF2A2A&quot;&gt;&lt;b&gt;xmlファイル：&lt;/b&gt; %1&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="223"/>
+        <location filename="Compile.cpp" line="227"/>
         <source>&lt;font color=&quot;#FF2A2A&quot;&gt;Le fichier Xml:&lt;br&gt;&lt;b&gt; %1 &lt;/b&gt;&lt;br&gt;&lt;font align=&quot;left&quot;&gt;existe déjà&lt;/font&gt;&lt;/font&gt;&lt;br&gt;The systeme is going to replace it</source>
         <translation>&lt;font color=&quot;#FF2A2A&quot;&gt;xmlファイル：:&lt;br&gt;&lt;b&gt; %1 &lt;/b&gt;&lt;br&gt;&lt;font align=&quot;left&quot;&gt;すでに&lt;/font&gt;&lt;/font&gt;&lt;br&gt;システムは、それを交換しようとしている</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="264"/>
+        <location filename="Compile.cpp" line="278"/>
         <source>Fichier avec le détail des effets lumineux programmé pour la creche de l&apos;Eglise Saint Joseph</source>
         <translation>セントジョセフ教会のベビーベッドにプログラムの詳細な照明効果を持つファイル</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="293"/>
+        <location filename="Compile.cpp" line="310"/>
         <source>Ouvrir un fichier &apos;Effet lumineux Creche&apos; </source>
         <translation>[ファイルを開く&apos;クリブ光の効果」</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="293"/>
+        <location filename="Compile.cpp" line="310"/>
         <source>Xml Files (*.Xml);;Text Files (*.txt);;All Files (*.*)</source>
         <translation>XMLファイル (*.Xml);;テキストファイル(*.txt);;すべてのファイル(*.*)</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="302"/>
+        <location filename="Compile.cpp" line="329"/>
         <source>Erreur a l&apos;ouverture du fichier</source>
         <translation>ファイルを開く際にエラーが発生</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="302"/>
+        <location filename="Compile.cpp" line="329"/>
         <source>Une erreur est survenue lors de l&apos;ouverture du fichier.</source>
         <translation>ファイルを開くときにエラーが発生しました。</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="309"/>
+        <location filename="Compile.cpp" line="336"/>
         <source>Erreur a la lecture du fichier</source>
         <translation>ファイルの読み取りエラー</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="309"/>
+        <location filename="Compile.cpp" line="336"/>
         <source>Une erreur est survenue pendant la lecture du fichier.</source>
         <translation>ファイルの読み取り中にエラーが発生しました。</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1058"/>
+        <location filename="Compile.cpp" line="1035"/>
+        <location filename="Compile.cpp" line="1041"/>
+        <source>Stop de l&apos;executable en cas d&apos;erreur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Compile.cpp" line="1106"/>
         <source>Condition sur la date :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1058"/>
-        <location filename="Compile.cpp" line="1095"/>
-        <location filename="Compile.cpp" line="1130"/>
+        <location filename="Compile.cpp" line="1106"/>
+        <location filename="Compile.cpp" line="1145"/>
+        <location filename="Compile.cpp" line="1182"/>
         <source> to </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1095"/>
+        <location filename="Compile.cpp" line="1145"/>
         <source>Condition sur l&apos;heure :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="1130"/>
+        <location filename="Compile.cpp" line="1182"/>
         <source>Condition sur le jour de la semaine :</source>
         <translation type="unfinished"></translation>
     </message>
@@ -266,12 +272,12 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
         <translation type="vanished">ID LED TORガントリ= 7小売スポット（20°）でなければなりません：2 ID0と1の緑、黄1 ID 2、5白いホットIdは3-7、1赤ID 8</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="531"/>
+        <location filename="Compile.cpp" line="580"/>
         <source>   </source>
         <translation> </translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="532"/>
+        <location filename="Compile.cpp" line="581"/>
         <source>Vide</source>
         <translation>空の</translation>
     </message>
@@ -280,38 +286,38 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
         <translation type="vanished">同期は、古いシステムを使用してシステムを段階的に廃止することができます。検証は、一周期（同時に検証）によってサイクルあたり4回行われ、同期時間れる</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="897"/>
+        <location filename="Compile.cpp" line="950"/>
         <source>Initialisation du mode</source>
         <translation>初期化モード</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="899"/>
+        <location filename="Compile.cpp" line="952"/>
         <source>Effet lumineux (1 ou plus)</source>
         <translation>光の効果（1つ以上）</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="901"/>
+        <location filename="Compile.cpp" line="954"/>
         <source>Enregistrer fichier Xml</source>
         <comment>Titre fenetre</comment>
         <translation>xmlファイルを保存します</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="902"/>
+        <location filename="Compile.cpp" line="955"/>
         <source>&lt;font color=&quot;#FF2A2A&quot;&gt;Voulez-vous sauvegarder le fichier suivant:&lt;font&gt;</source>
         <translation>&lt;font color=&quot;#FF2A2A&quot;&gt;ファイルを保存しますか：&lt;font&gt;</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="903"/>
+        <location filename="Compile.cpp" line="956"/>
         <source>Enregistrer</source>
         <translation>登録</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="904"/>
+        <location filename="Compile.cpp" line="957"/>
         <source>Ne pas enregistrer</source>
         <translation>保存しないでください</translation>
     </message>
     <message>
-        <location filename="Compile.cpp" line="906"/>
+        <location filename="Compile.cpp" line="959"/>
         <source>ID attribué à ce mode pour un fonctionnement multi mode</source>
         <translation>マルチモードにこのモードに割り当てられたID</translation>
     </message>
@@ -319,12 +325,12 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
 <context>
     <name>EditeurProg</name>
     <message>
-        <location filename="editeurprog.cpp" line="109"/>
+        <location filename="editeurprog.cpp" line="108"/>
         <source>Enregistrer</source>
         <translation type="unfinished">登録</translation>
     </message>
     <message>
-        <location filename="editeurprog.cpp" line="110"/>
+        <location filename="editeurprog.cpp" line="109"/>
         <source>Fermer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -709,39 +715,49 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
         <translation>新しい</translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="25"/>
+        <location filename="newmodedialog.cpp" line="28"/>
         <source>Erreur a l&apos;ouverture du fichier</source>
         <translation type="unfinished">ファイルを開く際にエラーが発生</translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="25"/>
+        <location filename="newmodedialog.cpp" line="28"/>
         <source>Une erreur à l&apos;ouverture du fichier &quot;CommandeModule.xml&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="28"/>
+        <location filename="newmodedialog.cpp" line="31"/>
         <source>Erreur a la lecture du fichier</source>
         <translation type="unfinished">ファイルの読み取りエラー</translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="28"/>
+        <location filename="newmodedialog.cpp" line="31"/>
         <source>Une erreur à la lecture du fichier &quot;CommandeModule.xml&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="63"/>
+        <location filename="newmodedialog.cpp" line="66"/>
         <source>Selectionnez un dossier pour sauvegarder le fichier d&apos;Effets lumineux de creche</source>
         <translation>明るいエフェクトファイルマネージャを保存するフォルダを選択</translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="83"/>
+        <location filename="newmodedialog.cpp" line="90"/>
         <source>Nom de fichier manquant</source>
         <translation>不足しているファイル名</translation>
     </message>
     <message>
-        <location filename="newmodedialog.cpp" line="83"/>
+        <location filename="newmodedialog.cpp" line="90"/>
         <source>Le chemin de fichier ou le nom de fichier est manquant.</source>
         <translation>ファイルパスまたはファイル名がありません。</translation>
+    </message>
+    <message>
+        <location filename="newmodedialog.cpp" line="148"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="newmodedialog.cpp" line="149"/>
+        <source>Valider</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -846,44 +862,44 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
     <name>SaveXmlFile</name>
     <message>
         <location filename="savexmlfile.cpp" line="38"/>
-        <location filename="savexmlfile.cpp" line="426"/>
+        <location filename="savexmlfile.cpp" line="425"/>
         <source>New Mode</source>
         <translation>新型</translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="43"/>
-        <location filename="savexmlfile.cpp" line="425"/>
+        <location filename="savexmlfile.cpp" line="424"/>
         <source>Enreg. et Fermer</source>
         <comment>Espace limité pour écrire &quot;Enregistrer et Fermer&quot; en entier.</comment>
         <translation>保存して閉じます</translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="48"/>
-        <location filename="savexmlfile.cpp" line="429"/>
+        <location filename="savexmlfile.cpp" line="428"/>
         <source>Compiler...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="52"/>
-        <location filename="savexmlfile.cpp" line="428"/>
+        <location filename="savexmlfile.cpp" line="427"/>
         <source>Lancer la compilation de tous les modes d&apos;éclairage ouvert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="54"/>
-        <location filename="savexmlfile.cpp" line="430"/>
+        <location filename="savexmlfile.cpp" line="429"/>
         <source>Valider</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="58"/>
-        <location filename="savexmlfile.cpp" line="427"/>
+        <location filename="savexmlfile.cpp" line="426"/>
         <source>Valider l&apos;ensemble des fichiers compilé, sélectionez le dossier de destination.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="savexmlfile.cpp" line="60"/>
-        <location filename="savexmlfile.cpp" line="424"/>
+        <location filename="savexmlfile.cpp" line="423"/>
         <source>Liste Modes (max 5)</source>
         <comment>Espace limiter pour faire une phrase entière.</comment>
         <translation>モードの一覧（最大5）</translation>
@@ -894,33 +910,64 @@ a chaque state on définit l&apos;intensité lumineuse instantanée de chaque ci
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="271"/>
+        <location filename="savexmlfile.cpp" line="270"/>
         <source>Supression non authorisée</source>
         <translation>無断持ち出し</translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="271"/>
+        <location filename="savexmlfile.cpp" line="270"/>
         <source>Il faut minimum 1 mode pour réaliser un effet lumineux.</source>
         <translation>これは、発光効果のために少なくとも一つのモードを取ります。</translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="399"/>
+        <location filename="savexmlfile.cpp" line="398"/>
         <source>Vide</source>
         <translation>空の</translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="501"/>
+        <location filename="savexmlfile.cpp" line="500"/>
         <source>Lancement de la compilation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="501"/>
+        <location filename="savexmlfile.cpp" line="500"/>
         <source>&lt;font color=&quot;#FF2A2A&quot;&gt;&lt;b&gt;ATTENTION:&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Tous les modes d&apos;éclairage ouvert, seront compilé.&lt;br&gt;Après confirmation il ne sera plus possible de modifier les données. Il sera possible d&apos;éditer les fichiers compiler avant leur sauvegarde.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="savexmlfile.cpp" line="644"/>
+        <location filename="savexmlfile.cpp" line="659"/>
         <source>Sauvegarde sur la carte micro SD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="826"/>
+        <source>mise à 0 de M01MB sytématique avec fichier 00</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="838"/>
+        <location filename="savexmlfile.cpp" line="846"/>
+        <source>Fin de l&apos;exe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="920"/>
+        <source>Comparaison de modules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="931"/>
+        <source>Si nok mise à zero Variable principale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="942"/>
+        <source>Controle sur le nombre d&apos;appels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="savexmlfile.cpp" line="953"/>
+        <source>Appel du sous programme</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

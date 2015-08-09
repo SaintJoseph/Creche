@@ -511,12 +511,18 @@ void SaveXmlFile::onCompilationAsked()
     //La liste est triée et on enlève les doublons
     CompilationAssemblage->ListeModules.removeDuplicates();
     CompilationAssemblage->ListeModules.sort();
+    //On attribue directement les variables avec adresse fixe pour éviter leur sur-écriture
     foreach (QString Module, CompilationAssemblage->ListeModules) {
-        AddToRamTable(&CompilationAssemblage->Table, Module + "XP", QString::number(Module.remove(0,1).toInt(0, 16) + 256));
+        QString Ref = Module + "XP";
+        AddToRamTable(&CompilationAssemblage->Table, Ref, QString::number(Module.remove(0,1).toInt() + 256, 16));
     }
     //Création du fichier 00
     DonneFichier *Fichier = new DonneFichier;
     CompilationFichierCommun(Fichier, &CompilationAssemblage->Table);
+    CompilationAssemblage->DonneDesFichiers.insert(Fichier->ModeNom, Fichier);
+    //Création du fichier CP (Contrôle Présence
+    Fichier = new DonneFichier;
+    CompilationControlePrence(Fichier, &CompilationAssemblage->Table);
     CompilationAssemblage->DonneDesFichiers.insert(Fichier->ModeNom, Fichier);
     //Appel des fonctions de compilation de chaque mode,
     for (int i = 0; i < 5; i++){
@@ -555,13 +561,8 @@ QString SaveXmlFile::AddToRamTable(TableUsedRAM *TableRAM, QString Data, QString
         if (SpecialRef == RAM_DEFAUT_VALUE) {
             RamAdresse = QString::number(TableRAM->count() + 1,16);
         }
-        else {
-            if (SpecialRef.length() != 5) {
-                RamAdresse = SpecialRef;
-            }
-            else
-                return QString ("EEEE");
-        }
+        else
+            RamAdresse = SpecialRef;
     if (RamAdresse.length() == 1)
         RamAdresse.prepend("000");
     else if (RamAdresse.length() == 2)
@@ -826,6 +827,8 @@ void SaveXmlFile::CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRA
     DataToFill->Commentaire.insert(Commande, tr("mise à 0 de M01MB sytématique avec fichier 00"));
 #endif
 
+    //appel controle présence
+    CompilationAppelRegSousProg("M01VP","CP",1,DataToFill, &CompilationAssemblage->Table);
     //appel des conditions d'effet lumineux
     CompilationAppelRegSousProg("M01M" + QString(QChar('C' + 0)),"C0",4,DataToFill, &CompilationAssemblage->Table);
 
@@ -921,7 +924,7 @@ void SaveXmlFile::CompilationAppelRegSousProg(QString variableRAM, QString fichi
 #endif
 
     //Si nok mise à zero de M01MA (valeur supérieur à la valeur de bouclage
-    Commande = "<M01M01ERM01MBA" + AddToRamTable(TableRAM, variableRAM) + "V" + IntToQString(bouclage + 1) + ">";
+    Commande = "<M01M01ER" + variableRAM + "A" + AddToRamTable(TableRAM, variableRAM) + "V" + IntToQString(bouclage + 1) + ">";
     //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
 #ifdef DEBUG_ARDUINO
     Commande.append(QString::number(DataToFill->Commentaire.size()));
@@ -966,7 +969,104 @@ void SaveXmlFile::CompilationControlePrence(DonneFichier *DataToFill, TableUsedR
 #endif /* DEBUG_COMANDSAVE */
     //définition du nom du fichier
     DataToFill->ModeNom = "CP";
+    QString Commande;
+    //On reset chaque adresse mémoire lié à la présence d'un module sur le réseau
+    foreach (QString Module, CompilationAssemblage->ListeModules) {
+        //Dans la fonction AddToRamTable on ne précise plus l'adresse particuliaire car elle à déjà été définie dans la fonction main de la compilation
+        Commande = "<M01M01ER" + Module + "XPA" + AddToRamTable(TableRAM, QString(Module + "XP")) + "V0000>";
+        DataToFill->ListeIstruction.append(Commande);
+    }
+    Commande = "<M01M01ERM01VAA" + AddToRamTable(TableRAM, QString("M01VA")) + "V0000>";
+    DataToFill->ListeIstruction.append(Commande);
+    Commande = "<A00M01XP>";
+#ifdef DEBUG_ARDUINO
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
+#endif
+    DataToFill->ListeIstruction.append(Commande);
+#ifdef DEBUG_ARDUINO
+    DataToFill->Commentaire.insert(Commande, tr("Demande de présence pour tous"));
+#endif
+    Commande = "<M01M01RD03E8>";
+    DataToFill->ListeIstruction.append(Commande);
+    int index = 0, nbLigne = CompilationAssemblage->ListeModules.size();
+    //Test de la présence de chaque module sur le réseau
+    foreach (QString Module, CompilationAssemblage->ListeModules) {
+        //Dans la fonction AddToRamTable on ne précise plus l'adresse particuliaire car elle à déjà été définie dans la fonction main de la compilation
+        Commande = "<M01M01RG" + AddToRamTable(TableRAM, QString(Module + "XP")) + "V0001L?R+" + QString::number(nbLigne + index++ * 3 + 4) + ">";
+        DataToFill->ListeIstruction.append(Commande);
+    }
+    Commande = "<M01M00ZTous modules present>";
+#ifdef DEBUG_ARDUINO
+    Commande.append(QString::number(DataToFill->Commentaire.size()));
+#endif
+    DataToFill->ListeIstruction.append(Commande);
+#ifdef DEBUG_ARDUINO
+    DataToFill->Commentaire.insert(Commande, tr("Tous les modules sont présent"));
+#endif
+    Commande = "<M01M01RF0001EV0000F00>";
+    DataToFill->ListeIstruction.append(Commande);
+    Commande = "<M01M00ZErreur dans l'exe de CP>";
+    DataToFill->ListeIstruction.append(Commande);
+    Commande = "<M01M01RA0>";
+    DataToFill->ListeIstruction.append(Commande);
+    //Liste d'instruction spécifique pour chaque module en cas d'absence de ce module sur le réseau
+    index = 0;
+    foreach (QString Module, CompilationAssemblage->ListeModules) {
+        //Dans la fonction AddToRamTable on ne précise plus l'adresse particuliaire car elle à déjà été définie dans la fonction main de la compilation
+        Commande = "<M01M00Z" + Module + " ne répond pas>";
+        DataToFill->ListeIstruction.append(Commande);
+        Commande = "<M01M01RO" + AddToRamTable(TableRAM, QString(Module + "VA")) + "PV0001>";
+        DataToFill->ListeIstruction.append(Commande);
+        Commande = "<M01M01RG" + AddToRamTable(TableRAM, QString(Module + "VA")) + "IV0005L?R-" + QString::number(nbLigne + index * 4 + 7) + ">";
+        DataToFill->ListeIstruction.append(Commande);
+        //Attention après la dernière utilisation de l'index on l'incrémente pour la boucle suivante
+        Commande = "<M01M01RG" + AddToRamTable(TableRAM, QString(Module + "VA")) + "EV0005L?R+" + QString::number((nbLigne - index++ - 1) * 4 + 1) + ">";
+        DataToFill->ListeIstruction.append(Commande);
+    }
+    Commande = "<M01M00Z Fin exe, 1 M ne répond pas>";
+    DataToFill->ListeIstruction.append(Commande);
+    Commande = "<M01M01RA0>";
+    DataToFill->ListeIstruction.append(Commande);
 
+/*
+ * #Fichier de controle des présences
+#On met toutes les présences à zero
+0001 <M01M01ERM01XPA0101V0000>
+0002 <M01M01ERM04XPA0104V0000>
+0003 <M01M01ERM02XPA0102V0000>
+0004 <M01M01ERM03XPA0103V0000>
+
+0010 <M01M01ERM01VCA0004V0000>
+#Demande de présence
+0011 <A00M01XP>
+0012 <M01M01RD03E8>
+
+#Test sur les présences
+0020 <M01M01RG0104DV0001L0033>
+0021 <M01M01RG0102DV0001L003B>
+0022 <M01M01RG0103DV0001L0043>
+
+#Tous les modules sont présent
+0030 <M01M01ZTous modules present>
+0031 <M01M01RF0001EV0000F00>
+0032 <M01M01ZErreur dans l'exe de CP>
+
+#fin de controle des présences
+0033 <M01M00Z M4 ne répond pas>
+0035 <M01M01RO0004PV0001>
+0037 <M01M01RG0004IV0005L0012>
+0039 <M01M01RG0004EV0005L0049>
+003B <M01M00Z M2 ne répond pas>
+003D <M01M01RO0004PV0001>
+003F <M01M01RG0004IV0005L0012>
+0041 <M01M01RG0004EV0005L0049>
+0043 <M01M00Z M3 ne répond pas>
+0045 <M01M01RO0004PV0001>
+0047 <M01M01RG0004IV0005L0012>
+
+0049 <M01M01Z Fin exe, 1 M ne répond pas>
+004B <M01M01RA0>
+ */
 #ifdef DEBUG_COMANDSAVE
     std::cout << "/" << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */

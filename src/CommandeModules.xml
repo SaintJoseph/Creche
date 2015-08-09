@@ -405,7 +405,7 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
       </TypeCmd>
       <TypeCmd Nom:fr="Démarre" Nom:en="Start" Nom:nl="Start" Cmd="D"/>
       <TypeCmd Nom:fr="Variable utilisateur" Nom:en="" Nom:nl="" Cmd="V">
-         <Commande Nom:fr="Présence" Nom:en="" Nom:nl="" Cmd="P" Hexa="true"  Format="HHHH">
+         <Commande Nom:fr="Présence globale " Nom:en="" Nom:nl="" Cmd="P" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
          </Commande>
          <Commande Nom:fr="Résutat complet d'un test" Nom:en="" Nom:nl="" Cmd="A" Hexa="true"  Format="HHHH">

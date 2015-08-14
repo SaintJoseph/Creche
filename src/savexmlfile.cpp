@@ -659,7 +659,7 @@ void SaveXmlFile::onValidationClicked()
 #endif /* DEBUG_COMANDSAVE */
     QString PathToSDCard = QFileDialog::getExistingDirectory(this, tr("Sauvegarde sur la carte micro SD"));
     QFile File;
-    QString TextFinal, Comment;
+    QString TextFinal, Comment, TextUsedRam;
     DonneFichier *FileData;
     foreach (QString FileNom, ListeModel->stringList()) {
         FileData = CompilationAssemblage->DonneDesFichiers.value(FileNom);
@@ -710,11 +710,11 @@ void SaveXmlFile::onValidationClicked()
                            break;
                        }
                        if (MoreNine)
-                           Ligne.replace(index, 5, IntToQString(LigneSaut));
+                           Ligne.replace(index, 5, IntToQString(LigneSaut).toUpper());
                        else
-                           Ligne.replace(index, 4, IntToQString(LigneSaut));
+                           Ligne.replace(index, 4, IntToQString(LigneSaut).toUpper());
                    }
-                   TextFinal.append(IntToQString(CompteurLigne).toUpper() + QString(" ") + Ligne.mid(Ligne.indexOf('<')).remove(QChar(' '), Qt::CaseSensitive).toUpper() + QString("\n"));
+                   TextFinal.append(IntToQString(CompteurLigne).toUpper() + QString(" ") + Ligne.mid(Ligne.indexOf('<'), Ligne.indexOf('>') - Ligne.indexOf('<') + 1) + QString("\n"));
                    CompteurLigne += PROGLIGNEITERATOR;
                }
                else {
@@ -727,6 +727,20 @@ void SaveXmlFile::onValidationClicked()
         out << TextFinal;
         File.close();
     }
+    //Création du fichier avec l'utilisation de la RAM
+    TableUsedRAM::const_iterator i = CompilationAssemblage->Table.constBegin();
+    LECommandeModules Interpreteur;
+    TextUsedRam = "#Fichier Used_RAM\n#Créé le " + QDate::currentDate().toString() + " T " + QTime::currentTime().toString() + "\nListe des adresses RAM uilisée, description ascociées, spécification de leur utilisation.\n";
+    while (i != CompilationAssemblage->Table.constEnd()) {
+        //On utilise la fonction d'interprétation des commandes du "commande module" pour traduire ce à quoi correspond chaque adresse RAM utilisée
+        TextUsedRam.append(i.key() + " : " + i.value() + " : " + Interpreteur.Interpretation("<M00" + i.key() + ">").remove("Pour Programme PC,").replace("provenant de","De"));
+        i++;
+    }
+    File.setFileName(PathToSDCard + "/Used_RAM");
+    File.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&File);
+    out << TextUsedRam;
+    File.close();
     //Retour vers l'état de démarrage
     ChangeDockAffichage(false);
     //On ferme toute les instances anciennes
@@ -975,9 +989,9 @@ void SaveXmlFile::CompilationControlePrence(DonneFichier *DataToFill, TableUsedR
         //Dans la fonction AddToRamTable on ne précise plus l'adresse particuliaire car elle à déjà été définie dans la fonction main de la compilation
         Commande = "<M01M01ER" + Module + "XPA" + AddToRamTable(TableRAM, QString(Module + "XP")) + "V0000>";
         DataToFill->ListeIstruction.append(Commande);
+        Commande = "<M01M01ER" + Module + "VAA" + AddToRamTable(TableRAM, QString(Module + "VA")) + "V0000>";
+        DataToFill->ListeIstruction.append(Commande);
     }
-    Commande = "<M01M01ERM01VAA" + AddToRamTable(TableRAM, QString("M01VA")) + "V0000>";
-    DataToFill->ListeIstruction.append(Commande);
     Commande = "<A00M01XP>";
 #ifdef DEBUG_ARDUINO
     Commande.append(QString::number(DataToFill->Commentaire.size()));
@@ -1003,7 +1017,7 @@ void SaveXmlFile::CompilationControlePrence(DonneFichier *DataToFill, TableUsedR
 #ifdef DEBUG_ARDUINO
     DataToFill->Commentaire.insert(Commande, tr("Tous les modules sont présent"));
 #endif
-    Commande = "<M01M01RF0001EV0000F00>";
+    Commande = "<M01M01RF" + AddToRamTable(TableRAM, "M01VA") + "EV0000F00>";
     DataToFill->ListeIstruction.append(Commande);
     Commande = "<M01M00ZErreur dans l'exe de CP>";
     DataToFill->ListeIstruction.append(Commande);

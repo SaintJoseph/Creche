@@ -1138,7 +1138,7 @@ void Compilation::CompilationHeure(CondHoraire *CondH, DonneFichier *DataToFill,
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
     //Date actuelle
-    QString Commande = "<M01M01LDZ" + AddToRamTable(TableRAM, QString("M01DZ")) + ">";
+    QString Commande = "<M01M01LAZ" + AddToRamTable(TableRAM, QString("M01AZ")) + ">";
     //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
     Commande.append(QString::number(DataToFill->Commentaire.size()));
     DataToFill->ListeIstruction.append(Commande);
@@ -1154,13 +1154,13 @@ void Compilation::CompilationHeure(CondHoraire *CondH, DonneFichier *DataToFill,
     //Ajoute 1 jour sur l'heure de fin
     DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01AF")) + "PV05A0>");
     //Test sur le dépassement
-    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DZ")) + "SA" + AddToRamTable(TableRAM, QString("M01AE")) + "L?R+2>");
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01AZ")) + "SA" + AddToRamTable(TableRAM, QString("M01AE")) + "L?R+2>");
     //Ajoute 1 jour sur l'heure actuel
-    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01DZ")) + "PV05A0>");
+    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01AZ")) + "PV05A0>");
     //1er Test sur l'heure actuel
-    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DZ")) + "IA" + AddToRamTable(TableRAM, QString("M01AE")) + "L?R+3>");
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01AZ")) + "IA" + AddToRamTable(TableRAM, QString("M01AE")) + "L?R+3>");
     //2eme Test sur l'heure actuel
-    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01DZ")) + "SA" + AddToRamTable(TableRAM, QString("M01AF")) + "L?R+2>");
+    DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01AZ")) + "SA" + AddToRamTable(TableRAM, QString("M01AF")) + "L?R+2>");
     //Test validé, on enregistre le résultat
     DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, QString("M01CA")) + "PV0001>");
 #ifdef DEBUG_COMANDSAVE

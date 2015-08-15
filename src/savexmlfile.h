@@ -22,7 +22,7 @@
 #include "editeurprog.h"
 
 
-#define PROGLIGNEITERATOR 2
+#define PROGLIGNEITERATOR 3
 
 //pour la fonction addToRAMTable(), mot clef lorsque l'adresse mémoire n'est pas spécifique
 #define RAM_DEFAUT_VALUE 0

@@ -1006,7 +1006,7 @@ void SaveXmlFile::CompilationControlePrence(DonneFichier *DataToFill, TableUsedR
     //Test de la présence de chaque module sur le réseau
     foreach (QString Module, CompilationAssemblage->ListeModules) {
         //Dans la fonction AddToRamTable on ne précise plus l'adresse particuliaire car elle à déjà été définie dans la fonction main de la compilation
-        Commande = "<M01M01RG" + AddToRamTable(TableRAM, QString(Module + "XP")) + "V0001L?R+" + QString::number(nbLigne + index++ * 3 + 4) + ">";
+        Commande = "<M01M01RG" + AddToRamTable(TableRAM, QString(Module + "XP")) + "V0001L?R+" + QString::number(nbLigne + index++ * 3 + 5) + ">";
         DataToFill->ListeIstruction.append(Commande);
     }
     Commande = "<M01M00ZTous modules present>";
@@ -1017,6 +1017,8 @@ void SaveXmlFile::CompilationControlePrence(DonneFichier *DataToFill, TableUsedR
 #ifdef DEBUG_ARDUINO
     DataToFill->Commentaire.insert(Commande, tr("Tous les modules sont présent"));
 #endif
+    Commande = "<M01M01ERM01VPA" + AddToRamTable(TableRAM, "M01VP") + "V0000>";
+    DataToFill->ListeIstruction.append(Commande);
     Commande = "<M01M01RF" + AddToRamTable(TableRAM, "M01VA") + "EV0000F00>";
     DataToFill->ListeIstruction.append(Commande);
     Commande = "<M01M00ZErreur dans l'exe de CP>";
@@ -1031,7 +1033,7 @@ void SaveXmlFile::CompilationControlePrence(DonneFichier *DataToFill, TableUsedR
         DataToFill->ListeIstruction.append(Commande);
         Commande = "<M01M01RO" + AddToRamTable(TableRAM, QString(Module + "VA")) + "PV0001>";
         DataToFill->ListeIstruction.append(Commande);
-        Commande = "<M01M01RG" + AddToRamTable(TableRAM, QString(Module + "VA")) + "IV0005L?R-" + QString::number(nbLigne + index * 4 + 7) + ">";
+        Commande = "<M01M01RG" + AddToRamTable(TableRAM, QString(Module + "VA")) + "IV0005L?R-" + QString::number(nbLigne + index * 4 + 8) + ">";
         DataToFill->ListeIstruction.append(Commande);
         //Attention après la dernière utilisation de l'index on l'incrémente pour la boucle suivante
         Commande = "<M01M01RG" + AddToRamTable(TableRAM, QString(Module + "VA")) + "EV0005L?R+" + QString::number((nbLigne - index++ - 1) * 4 + 1) + ">";

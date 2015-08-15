@@ -665,7 +665,7 @@ void saveRAM(String mesg) {
 
 //Fonction qui réagit au commande pour modifier le bloc executable
 void modifExecutable () {
-  word time, address, value, ligne;
+  word time, address, value, ligne, timeD;
   switch (rxCmd[1])
   {
     case 'A' : case 'a' :
@@ -738,36 +738,30 @@ void modifExecutable () {
           value *= 5; //Chaque variable est stokée sur 5 bytes
           value += 9;
           if (value > 13 && value < 0x7FFA)
-             value = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
+             timeD = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
        }
        address *= 5; //Chaque variable est stokée sur 5 bytes
        address += 9;
        if (address > 13 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
           time = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
+          //Pour les comparaison de valeurs et dans le cas d'une valeur, alors on réattribue la variable timeD
           switch(rxCmd[6]) {
              case 'E':
-                if (time == value) {
-                   IndiceFile = word(rxCmd[13], rxCmd[14]);
-                   NumLigne = 0x0000;
-                }
+                if (rxCmd[7] == 'V') timeD = value;
+                if (time == timeD) NumLigne = 0x0000;
                 break;
              case 'S':
-                if (time > value) {
-                   IndiceFile = word(rxCmd[13], rxCmd[14]);
-                   NumLigne = 0x0000;
-                }
+                if (rxCmd[7] == 'V') timeD = value;
+                if (time > timeD) NumLigne = 0x0000;
                 break;
              case 'I':
-                if (time < value) {
-                   IndiceFile = word(rxCmd[13], rxCmd[14]);
-                   NumLigne = 0x0000;
-                }
+                if (rxCmd[7] == 'V') timeD = value;
+                if (time < timeD) NumLigne = 0x0000;
                 break;
              case 'D':
-                if (time != value) {
-                   IndiceFile = word(rxCmd[13], rxCmd[14]);
-                   NumLigne = 0x0000;
-                }
+                if (rxCmd[7] == 'V') timeD = value;
+                if (time != timeD) NumLigne = 0x0000;
+                break;
              case 'M':
                 if (rxCmd[7] == 'A' && spiRam.read_byte((int)address) == spiRam.read_byte((int)value)) {
                    IndiceFile = word(rxCmd[13], rxCmd[14]);
@@ -802,7 +796,7 @@ void modifExecutable () {
           value *= 5; //Chaque variable est stokée sur 5 bytes
           value += 9;
           if (value > 13 && value < 0x7FFA)
-             value = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
+             timeD = word((byte)spiRam.read_byte((int)value + 3), (byte)spiRam.read_byte((int)value + 4));
        }
        //On accède normalement à la ligne, sauf si le num de ligne est a une adresse mémoire : rxCmd[12] == 'L'
        if (rxCmd[12] == 'A') { //On compare des valeurs entre 2 adresses mémoire
@@ -815,26 +809,28 @@ void modifExecutable () {
        address += 9;
        if (address > 13 && address < 0x7FFA) { //Les première adresse sont réservé pour l'Executant et limité par le composant
           time = word((byte)spiRam.read_byte((int)address + 3), (byte)spiRam.read_byte((int)address + 4));
+          String str = "A/V: " + ByteToString(rxCmd[7]) + ", M : " + ByteToString((byte)spiRam.read_byte((int)timeD)) + ", " + ByteToString((byte)spiRam.read_byte((int)time));
+          //str = str + ", T : " + (char)spiRam.read_byte((int)timeD + 1) + ", " + (char)spiRam.read_byte((int)time + 1) + ", C : " + (char)spiRam.read_byte((int)timeD + 2) + ", " + (char)spiRam.read_byte((int)time + 2);
+          //logFile( str, "Test G", Seria);
+          //str = "addresse " + WordToString(address) + ", time " + WordToString(time) + ", ligne " + WordToString(ligne) + ", value " + WordToString(value) + ", timeD " + WordToString(timeD);
+          //logFile( str, "Test G", Seria);
+          //Pour les comparaison de valeurs et dans le cas d'une valeur, alors on réattribue la variable timeD
           switch(rxCmd[6]) {
              case 'E':
-                if (time == value) {
-                   NumLigne = ligne - 1;
-                }
+                if (rxCmd[7] == 'V') timeD = value;
+                if (time == timeD) NumLigne = ligne - 1;
                 break;
              case 'S':
-                if (time > value) {
-                   NumLigne = ligne - 1;
-                }
+                if (rxCmd[7] == 'V') timeD = value;
+                if (time > timeD) NumLigne = ligne - 1;
                 break;
              case 'I':
-                if (time < value) {
-                   NumLigne = ligne - 1;
-                }
+                if (rxCmd[7] == 'V') timeD = value;
+                if (time < timeD) NumLigne = ligne - 1;
                 break;
              case 'D':
-                if (time != value) {
-                   NumLigne = ligne - 1;
-                }
+                if (rxCmd[7] == 'V') timeD = value;
+                if (time != timeD) NumLigne = ligne - 1;
                 break;
              case 'M':
                 if (rxCmd[7] == 'A' && spiRam.read_byte((int)address) == spiRam.read_byte((int)value)) {

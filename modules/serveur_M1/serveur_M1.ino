@@ -748,19 +748,31 @@ void modifExecutable () {
           switch(rxCmd[6]) {
              case 'E':
                 if (rxCmd[7] == 'V') timeD = value;
-                if (time == timeD) NumLigne = 0x0000;
+                if (time == timeD) {
+                   NumLigne = 0x0000;
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                }
                 break;
              case 'S':
                 if (rxCmd[7] == 'V') timeD = value;
-                if (time > timeD) NumLigne = 0x0000;
+                if (time > timeD) {
+                   NumLigne = 0x0000;
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                }
                 break;
              case 'I':
                 if (rxCmd[7] == 'V') timeD = value;
-                if (time < timeD) NumLigne = 0x0000;
+                if (time < timeD) {
+                   NumLigne = 0x0000;
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                }
                 break;
              case 'D':
                 if (rxCmd[7] == 'V') timeD = value;
-                if (time != timeD) NumLigne = 0x0000;
+                if (time != timeD) {
+                   NumLigne = 0x0000;
+                   IndiceFile = word(rxCmd[13], rxCmd[14]);
+                }
                 break;
              case 'M':
                 if (rxCmd[7] == 'A' && spiRam.read_byte((int)address) == spiRam.read_byte((int)value)) {

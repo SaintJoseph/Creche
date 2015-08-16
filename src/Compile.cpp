@@ -976,6 +976,8 @@ bool Compilation::CompilationCH(QString NomVaribleTest, DonneFichier *DataToFill
     QString Commande;
     //Création des variables test de condition
     DataToFill->ListeIstruction.append("<M01M01ERM01VAA" + AddToRamTable(TableRAM, QString("M01VA")) + "V0000>");
+    //Reset de la variable condition pour appeller le sous prog conditions horaire
+    DataToFill->ListeIstruction.append("<M01M01ERM01M" + QString(NomVaribleTest.at(4).toLatin1() + 5) + "A" + AddToRamTable(TableRAM, QString("M01M" + QString(NomVaribleTest.at(4).toLatin1() + 5))) + "V0000>");
     int indice = 0;
     //On récupère les données dans la structure adéquate, pour façiliter les opérations
     CondHoraire CondH;
@@ -998,7 +1000,7 @@ bool Compilation::CompilationCH(QString NomVaribleTest, DonneFichier *DataToFill
             //Controle du test
             DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01CA")) + "DV0002L?R+2>");
             //Validation du test
-            DataToFill->ListeIstruction.append("<M01M01ERM01CBA" + AddToRamTable(TableRAM, QString("M01CB")) + "V0001>");
+            DataToFill->ListeIstruction.append("<M01M01ERM01" + NomVaribleTest + "A" + AddToRamTable(TableRAM, NomVaribleTest) + "V0001>");
             break;
         case Journalier:
             DataToFill->ListeIstruction.append("<M01M01ERM01CAA" + AddToRamTable(TableRAM, QString("M01CA")) + "V0000>");
@@ -1007,7 +1009,7 @@ bool Compilation::CompilationCH(QString NomVaribleTest, DonneFichier *DataToFill
             //Controle du test
             DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01CA")) + "DV0001L?R+2>");
             //Validation du test
-            DataToFill->ListeIstruction.append("<M01M01ERM01CBA" + AddToRamTable(TableRAM, QString("M01CB")) + "V0001>");
+            DataToFill->ListeIstruction.append("<M01M01ERM01" + NomVaribleTest + "A" + AddToRamTable(TableRAM, NomVaribleTest) + "V0001>");
             break;
         case Hebdomadaire:
             DataToFill->ListeIstruction.append("<M01M01ERM01CAA" + AddToRamTable(TableRAM, QString("M01CA")) + "V0000>");
@@ -1018,16 +1020,14 @@ bool Compilation::CompilationCH(QString NomVaribleTest, DonneFichier *DataToFill
             //Controle du test
             DataToFill->ListeIstruction.append("<M01M01RG" + AddToRamTable(TableRAM, QString("M01CA")) + "DV0002L?R+2>");
             //Validation du test
-            DataToFill->ListeIstruction.append("<M01M01ERM01CBA" + AddToRamTable(TableRAM, QString("M01CB")) + "V0001>");
+            DataToFill->ListeIstruction.append("<M01M01ERM01" + NomVaribleTest + "A" + AddToRamTable(TableRAM, NomVaribleTest) + "V0001>");
             break;
         default:
             break;
         }
     }
-    //Finalisation des tests des CH
-    DataToFill->ListeIstruction.append("<M01M01RF" + AddToRamTable(TableRAM, QString("M01CB")) + "DV0001F00>");
-    DataToFill->ListeIstruction.append("<M01M01RO" + AddToRamTable(TableRAM, NomVaribleTest) + "PV0001>");
-    DataToFill->ListeIstruction.append("<M01M01RF" + AddToRamTable(TableRAM, NomVaribleTest) + "EV0001F00>");
+    //Finalisation des tests des CH, condition tjr vraie
+    DataToFill->ListeIstruction.append("<M01M01RF" + AddToRamTable(TableRAM, NomVaribleTest) + "IV0002F00>");
 #ifdef DEBUG_ARDUINO
     Commande = ("<M01M01Z C" + QString::number(Instance) + " erreur et stop prog>");
     Commande.append(QString::number(DataToFill->Commentaire.size()));

@@ -408,30 +408,51 @@ Pour les messages à destination du PC, seul l'attribut "Aide" est utilisé.
          <Commande Nom:fr="Présence globale " Nom:en="" Nom:nl="" Cmd="P" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
          </Commande>
-         <Commande Nom:fr="Résutat complet d'un test" Nom:en="" Nom:nl="" Cmd="A" Hexa="true"  Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
+         <Commande Nom:fr="Résultat d'un test local" Nom:en="" Nom:nl="" Cmd="A" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Valeur"/>
          </Commande>
       </TypeCmd>
       <TypeCmd Nom:fr="Variable conditions" Nom:en="" Nom:nl="" Cmd="C">
-         <Commande Nom:fr="Test intermediaire" Nom:en="" Nom:nl="" Cmd="A" Hexa="true"  Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
+         <Commande Nom:fr="Test intermediaire horodateur" Nom:en="" Nom:nl="" Cmd="A" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Valeur"/>
          </Commande>
          <Commande Nom:fr="Test global de conditions" Nom:en="" Nom:nl="" Cmd="B" Hexa="true"  Format="HHHH">
             <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
          </Commande>
+         <Commande Nom:fr="Variable de ref. pour Exe_00" Nom:en="" Nom:nl="" Cmd="C" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
+         </Commande>
       </TypeCmd>
-      <TypeCmd Nom:fr="Variable Principale" Nom:en="" Nom:nl="" Cmd="M">
-         <Commande Nom:fr="2ème Test Boucle Principale" Nom:en="" Nom:nl="" Cmd="A" Hexa="true"  Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
+      <TypeCmd Nom:fr="Test horodateur " Nom:en="" Nom:nl="" Cmd="M">
+         <Commande Nom:fr="1er mode (on/off à l'heure actuel)" Nom:en="" Nom:nl="" Cmd="A" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off"/>
          </Commande>
-         <Commande Nom:fr="1er Test Boucle Principale" Nom:en="" Nom:nl="" Cmd="B" Hexa="true"  Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
+         <Commande Nom:fr="2ème mode (on/off à l'heure actuel)" Nom:en="" Nom:nl="" Cmd="B" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off"/>
          </Commande>
-         <Commande Nom:fr="3ème Test Boucle Principale" Nom:en="" Nom:nl="" Cmd="C" Hexa="true"  Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
+         <Commande Nom:fr="3ème mode (on/off à l'heure actuel)" Nom:en="" Nom:nl="" Cmd="C" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off"/>
          </Commande>
-         <Commande Nom:fr="4ème Test Boucle Principale" Nom:en="" Nom:nl="" Cmd="D" Hexa="true"  Format="HHHH">
-            <Parametre Aide:en="" Aide:nl="" Aide:fr="Adresse, Valeur"/>
+         <Commande Nom:fr="4ème mode (on/off à l'heure actuel)" Nom:en="" Nom:nl="" Cmd="D" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off"/>
+         </Commande>
+         <Commande Nom:fr="5ème mode (on/off à l'heure actuel)" Nom:en="" Nom:nl="" Cmd="E" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="1=>On 0=>Off"/>
+         </Commande>
+         <Commande Nom:fr="1er mode valeur pour faire la mise à jour" Nom:en="" Nom:nl="" Cmd="F" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Valeur"/>
+         </Commande>
+         <Commande Nom:fr="2ème mode valeur pour faire la mise à jour" Nom:en="" Nom:nl="" Cmd="G" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Valeur"/>
+         </Commande>
+         <Commande Nom:fr="3ème mode valeur pour faire la mise à jour" Nom:en="" Nom:nl="" Cmd="H" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Valeur"/>
+         </Commande>
+         <Commande Nom:fr="4ème mode valeur pour faire la mise à jour" Nom:en="" Nom:nl="" Cmd="I" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Valeur"/>
+         </Commande>
+         <Commande Nom:fr="5ème mode valeur pour faire la mise à jour" Nom:en="" Nom:nl="" Cmd="J" Hexa="true"  Format="HHHH">
+            <Parametre Aide:en="" Aide:nl="" Aide:fr="Valeur"/>
          </Commande>
       </TypeCmd>
       <TypeCmd Nom:fr="Opérations spéciales" Nom:en="Special operations" Nom:nl="Bijzondere werkingen" Cmd="X">

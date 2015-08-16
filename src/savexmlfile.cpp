@@ -529,7 +529,7 @@ void SaveXmlFile::onCompilationAsked()
         Compilation *Instance = ListeModeOuvertPoint[i];
         if (Instance) {
             DonneFichier *Fichier = new DonneFichier;
-            Instance->CompilationCH("M01MC" ,Fichier, &CompilationAssemblage->Table);
+            Instance->CompilationCH("M01M" + QString('A' + i) ,Fichier, &CompilationAssemblage->Table);
             CompilationAssemblage->DonneDesFichiers.insert(Fichier->ModeNom, Fichier);
         }
     }
@@ -832,19 +832,25 @@ void SaveXmlFile::CompilationFichierCommun(DonneFichier *DataToFill, TableUsedRA
 #ifdef DEBUG_ARDUINO
     DataToFill->ListeIstruction.append("<M00M01Z Start 00>");
 #endif
-    //mise à 0 de M01MB sytématiquement avec le fichier 00, permet la comparaison de modules
-    QString Commande = "<M01M01ERM01MBA" + AddToRamTable(TableRAM, QString("M01MB")) + "V0000>";
+    //mise à 0 de M01CC sytématiquement avec le fichier 00, permet la comparaison de modules
+    QString Commande = "<M01M01ERM01CCA" + AddToRamTable(TableRAM, QString("M01CC")) + "V0000>";
     //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
     Commande.append(QString::number(DataToFill->Commentaire.size()));
     DataToFill->ListeIstruction.append(Commande);
 #ifdef DEBUG_ARDUINO
-    DataToFill->Commentaire.insert(Commande, tr("mise à 0 de M01MB sytématique avec fichier 00"));
+    DataToFill->Commentaire.insert(Commande, tr("mise à 0 de M01CC sytématique avec fichier 00"));
 #endif
 
     //appel controle présence
     CompilationAppelRegSousProg("M01VP","CP",1,DataToFill, &CompilationAssemblage->Table);
-    //appel des conditions d'effet lumineux
-    CompilationAppelRegSousProg("M01M" + QString(QChar('C' + 0)),"C0",4,DataToFill, &CompilationAssemblage->Table);
+    //appel des conditions d'effet lumineux (METTRE UNE BOUCLE FOR 0 -> 4)
+    CompilationAppelRegSousProg("M01M" + QString(QChar('F' + 0)),"C0",4,DataToFill, &CompilationAssemblage->Table);
+
+    //Mise en pause du programme avec un off général
+    Commande = "<A00M01XB0>";
+    DataToFill->ListeIstruction.append(Commande);
+    Commande = "<M01M01RG" + AddToRamTable(TableRAM, QString("M01CC")) + "DV0000L0000>";
+    DataToFill->ListeIstruction.append(Commande);
 
     //Fin de l'exe
 #ifdef DEBUG_ARDUINO
@@ -926,8 +932,8 @@ void SaveXmlFile::CompilationAppelRegSousProg(QString variableRAM, QString fichi
 #ifdef DEBUG_COMANDSAVE
     std::cout << func_name << std::endl;
 #endif /* DEBUG_COMANDSAVE */
-    //Comparaison de module entre M01MA et M01MB
-    QString Commande = "<M01M01RG" + AddToRamTable(TableRAM, variableRAM) + "MA" + AddToRamTable(TableRAM, QString("M01MB")) + "L?R+2>";
+    //Comparaison de module entre M01MA et M01CC
+    QString Commande = "<M01M01RG" + AddToRamTable(TableRAM, variableRAM) + "MA" + AddToRamTable(TableRAM, QString("M01CC")) + "L?R+2>";
     //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
 #ifdef DEBUG_ARDUINO
     Commande.append(QString::number(DataToFill->Commentaire.size()));
@@ -948,26 +954,15 @@ void SaveXmlFile::CompilationAppelRegSousProg(QString variableRAM, QString fichi
     DataToFill->Commentaire.insert(Commande, tr("Si nok mise à zero Variable principale"));
 #endif
 
-    //Controle sur le nombre d'appels de la fonction
-    Commande = "<M01M01RG" + AddToRamTable(TableRAM, variableRAM) + "IV" + IntToQString(bouclage) + "L?R+2>";
+    //Controle sur le nombre d'appels de la fonction et appel du sous programme
+    Commande = "<M01M01RF" + AddToRamTable(TableRAM, variableRAM) + "SV" + IntToQString(bouclage) + "F" + fichier + ">";
     //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
 #ifdef DEBUG_ARDUINO
     Commande.append(QString::number(DataToFill->Commentaire.size()));
 #endif
     DataToFill->ListeIstruction.append(Commande);
 #ifdef DEBUG_ARDUINO
-    DataToFill->Commentaire.insert(Commande, tr("Controle sur le nombre d'appels"));
-#endif
-
-    //Appels du sous programme souhaité, condition tjr vraie
-    Commande = "<M01M01RF" + AddToRamTable(TableRAM, QString("M01MB")) + "EV0000F" + fichier + ">";
-    //On ajoute un numéro unique qui n'est pas interprété pour unifier la commande
-#ifdef DEBUG_ARDUINO
-    Commande.append(QString::number(DataToFill->Commentaire.size()));
-#endif
-    DataToFill->ListeIstruction.append(Commande);
-#ifdef DEBUG_ARDUINO
-    DataToFill->Commentaire.insert(Commande, tr("Appel du sous programme"));
+    DataToFill->Commentaire.insert(Commande, tr("Controle sur le nombre d'appels, et appel du sous prog"));
 #endif
 
 #ifdef DEBUG_COMANDSAVE
@@ -1017,9 +1012,9 @@ void SaveXmlFile::CompilationControlePrence(DonneFichier *DataToFill, TableUsedR
 #ifdef DEBUG_ARDUINO
     DataToFill->Commentaire.insert(Commande, tr("Tous les modules sont présent"));
 #endif
-    Commande = "<M01M01ERM01VPA" + AddToRamTable(TableRAM, "M01VP") + "V0000>";
+    Commande = "<M01M01ERM01VPA" + AddToRamTable(TableRAM, "M01VP") + "V0001>";
     DataToFill->ListeIstruction.append(Commande);
-    Commande = "<M01M01RF" + AddToRamTable(TableRAM, "M01VA") + "EV0000F00>";
+    Commande = "<M01M01RF" + AddToRamTable(TableRAM, "M01VP") + "EV0001F00>";
     DataToFill->ListeIstruction.append(Commande);
     Commande = "<M01M00ZErreur dans l'exe de CP>";
     DataToFill->ListeIstruction.append(Commande);
